@@ -1,0 +1,31 @@
+url: https://kosugitti.github.io/mdspace/
+
+template:
+  bootstrap: 5
+
+navbar:
+  structure:
+    left: [intro, reference, articles]
+    right: [search, github]
+  components:
+    github:
+      icon: fa-github
+      href: https://github.com/kosugitti/mdspace
+
+articles:
+- title: Getting Started
+  contents:
+  - introduction
+- title: MDS Models
+  contents:
+  - classical-mds
+  - kruskal-mds
+- title: Advanced Models
+  contents:
+  - indscal
+  - ellipse-model
+  - hfm
+  - vonmises
+- title: Shiny GUI
+  contents:
+  - shiny-guide

@@ -11,18 +11,23 @@ Description: Provides various multidimensional scaling (MDS) algorithms
     and von Mises model (Shojima). Includes an interactive Shiny application
     for GUI-based analysis and visualization.
 License: MIT + file LICENSE
-URL: https://github.com/kosugitti/mdspace
+URL: https://github.com/kosugitti/mdspace,
+    https://kosugitti.github.io/mdspace/
 BugReports: https://github.com/kosugitti/mdspace/issues
 Depends:
     R (>= 4.1.0)
 Imports:
     shiny
 Suggests:
+    knitr,
+    pkgdown,
+    rmarkdown,
     smacof,
     exametrika,
     igraph,
     kohonen,
     testthat (>= 3.0.0)
+VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
