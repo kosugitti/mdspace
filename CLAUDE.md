@@ -42,20 +42,40 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 
 ## 実装予定モデル
 
+### 基礎モデル（テキスト基礎編対応）
+
 | 関数名 | モデル | 参考文献 | 状態 |
 |--------|--------|----------|------|
 | classical_mds() | 古典的MDS（Torgerson法） | Torgerson (1952) | 未実装 |
 | kruskal_mds() | 非計量MDS（Kruskal法） | Kruskal (1964) | 未実装 |
 | indscal_mds() | 個人差MDS（INDSCAL） | Carroll & Chang (1970) | 未実装 |
 | prefmap_mds() | 選好マッピング（PREFMAP） | Carroll (1972) | 未実装 |
+| dual_scaling() | 双対尺度法 / コレスポンデンス分析 | Nishisato (1980) / Benzécri (1973) | 未実装 |
+| mca() | 多重対応分析 | Greenacre (1984) | 未実装 |
+| som() | 自己組織化写像（SOM） | Kohonen (1982) | 未実装 |
+
+### 発展モデル（テキスト発展編対応）
+
+| 関数名 | モデル | 参考文献 | 状態 |
+|--------|--------|----------|------|
 | hfm_mds() | 階層的因子モデル（HFM） | 千野 (Chino) | 未実装 |
+| dynascal_mds() | DYNASCAL | 千野 (Chino) | 未実装 |
 | ellipse1_mds() | 楕円モデル I | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
 | ellipse2_mds() | 楕円モデル II | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
 | ellipse3_mds() | 楕円モデル III | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
 | vonmises_mds() | フォンミーゼスモデル | 荘島 (Shojima) | 未実装 |
-| som() | 自己組織化写像（SOM） | Kohonen (1982) | 未実装 |
+
+### Shiny連携（外部パッケージ経由）
+
+| パッケージ | 用途 | Shiny内で利用 |
+|-----------|------|--------------|
+| smacof | スライドベクトルモデル等、mdspaceで自作しないMDS手法 | オプション |
+| exametrika | Biclustering | オプション |
+| igraph | ネットワーク分析・可視化 | オプション |
+| kohonen | SOM（参照実装との比較用） | オプション |
 
 ※ 今後追加の可能性あり
+※ 双対尺度法とコレスポンデンス分析は数学的に同等（表現形が異なる）
 
 ## ディレクトリ構成
 - R/: パッケージ関数（base R のみ）
