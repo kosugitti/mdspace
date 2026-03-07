@@ -80,6 +80,8 @@
 </div>
 <div class="section level2">
 <h2 id="実装予定モデル">実装予定モデル<a class="anchor" aria-label="anchor" href="#%E5%AE%9F%E8%A3%85%E4%BA%88%E5%AE%9A%E3%83%A2%E3%83%87%E3%83%AB"></a></h2>
+<div class="section level3">
+<h3 id="基礎モデルテキスト基礎編対応">基礎モデル（テキスト基礎編対応）<a class="anchor" aria-label="anchor" href="#%E5%9F%BA%E7%A4%8E%E3%83%A2%E3%83%87%E3%83%AB%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E5%9F%BA%E7%A4%8E%E7%B7%A8%E5%AF%BE%E5%BF%9C"></a></h3>
 <table class="table"><colgroup><col width="25%"><col width="25%"><col width="31%"><col width="18%"></colgroup><thead><tr class="header"><th>関数名</th>
 <th>モデル</th>
 <th>参考文献</th>
@@ -100,31 +102,69 @@
 <td>選好マッピング（PREFMAP）</td>
 <td>Carroll (1972)</td>
 <td>未実装</td>
-</tr><tr class="odd"><td>hfm_mds()</td>
-<td>階層的因子モデル（HFM）</td>
-<td>千野 (Chino)</td>
+</tr><tr class="odd"><td>dual_scaling()</td>
+<td>双対尺度法 / コレスポンデンス分析</td>
+<td>Nishisato (1980) / Benzécri (1973)</td>
 <td>未実装</td>
-</tr><tr class="even"><td>ellipse1_mds()</td>
-<td>楕円モデル I</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+</tr><tr class="even"><td>mca()</td>
+<td>多重対応分析</td>
+<td>Greenacre (1984)</td>
 <td>未実装</td>
-</tr><tr class="odd"><td>ellipse2_mds()</td>
-<td>楕円モデル II</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
-<td>未実装</td>
-</tr><tr class="even"><td>ellipse3_mds()</td>
-<td>楕円モデル III</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
-<td>未実装</td>
-</tr><tr class="odd"><td>vonmises_mds()</td>
-<td>フォンミーゼスモデル</td>
-<td>荘島 (Shojima)</td>
-<td>未実装</td>
-</tr><tr class="even"><td>som()</td>
+</tr><tr class="odd"><td>som()</td>
 <td>自己組織化写像（SOM）</td>
 <td>Kohonen (1982)</td>
 <td>未実装</td>
-</tr></tbody></table><p>※ 今後追加の可能性あり</p>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="発展モデルテキスト発展編対応">発展モデル（テキスト発展編対応）<a class="anchor" aria-label="anchor" href="#%E7%99%BA%E5%B1%95%E3%83%A2%E3%83%87%E3%83%AB%E3%83%86%E3%82%AD%E3%82%B9%E3%83%88%E7%99%BA%E5%B1%95%E7%B7%A8%E5%AF%BE%E5%BF%9C"></a></h3>
+<table class="table"><colgroup><col width="25%"><col width="25%"><col width="31%"><col width="18%"></colgroup><thead><tr class="header"><th>関数名</th>
+<th>モデル</th>
+<th>参考文献</th>
+<th>状態</th>
+</tr></thead><tbody><tr class="odd"><td>hfm_mds()</td>
+<td>階層的因子モデル（HFM）</td>
+<td>千野 (Chino)</td>
+<td>未実装</td>
+</tr><tr class="even"><td>dynascal_mds()</td>
+<td>DYNASCAL</td>
+<td>千野 (Chino)</td>
+<td>未実装</td>
+</tr><tr class="odd"><td>ellipse1_mds()</td>
+<td>楕円モデル I</td>
+<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+<td>未実装</td>
+</tr><tr class="even"><td>ellipse2_mds()</td>
+<td>楕円モデル II</td>
+<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+<td>未実装</td>
+</tr><tr class="odd"><td>ellipse3_mds()</td>
+<td>楕円モデル III</td>
+<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+<td>未実装</td>
+</tr><tr class="even"><td>vonmises_mds()</td>
+<td>フォンミーゼスモデル</td>
+<td>荘島 (Shojima)</td>
+<td>未実装</td>
+</tr></tbody></table></div>
+<div class="section level3">
+<h3 id="shiny連携外部パッケージ経由">Shiny連携（外部パッケージ経由）<a class="anchor" aria-label="anchor" href="#shiny%E9%80%A3%E6%90%BA%E5%A4%96%E9%83%A8%E3%83%91%E3%83%83%E3%82%B1%E3%83%BC%E3%82%B8%E7%B5%8C%E7%94%B1"></a></h3>
+<table class="table"><colgroup><col width="35%"><col width="19%"><col width="45%"></colgroup><thead><tr class="header"><th>パッケージ</th>
+<th>用途</th>
+<th>Shiny内で利用</th>
+</tr></thead><tbody><tr class="odd"><td>smacof</td>
+<td>スライドベクトルモデル等、mdspaceで自作しないMDS手法</td>
+<td>オプション</td>
+</tr><tr class="even"><td>exametrika</td>
+<td>Biclustering</td>
+<td>オプション</td>
+</tr><tr class="odd"><td>igraph</td>
+<td>ネットワーク分析・可視化</td>
+<td>オプション</td>
+</tr><tr class="even"><td>kohonen</td>
+<td>SOM（参照実装との比較用）</td>
+<td>オプション</td>
+</tr></tbody></table><p>※ 今後追加の可能性あり ※ 双対尺度法とコレスポンデンス分析は数学的に同等（表現形が異なる）</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="ディレクトリ構成">ディレクトリ構成<a class="anchor" aria-label="anchor" href="#%E3%83%87%E3%82%A3%E3%83%AC%E3%82%AF%E3%83%88%E3%83%AA%E6%A7%8B%E6%88%90"></a></h2>
