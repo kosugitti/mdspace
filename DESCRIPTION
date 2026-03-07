@@ -1,0 +1,30 @@
+Package: mdspace
+Type: Package
+Title: Multidimensional Scaling with Interactive Visualization
+Version: 0.0.1
+Authors@R:
+    person("Koji", "Kosugi", , "kosugitti@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0002-0520-2492"))
+Description: Provides various multidimensional scaling (MDS) algorithms
+    including classical MDS (Torgerson), nonmetric MDS (Kruskal), individual
+    differences MDS (INDSCAL), ellipse model (Okada-Imaizumi), HFM (Chino),
+    and von Mises model (Shojima). Includes an interactive Shiny application
+    for GUI-based analysis and visualization.
+License: MIT + file LICENSE
+URL: https://github.com/kosugitti/mdspace
+BugReports: https://github.com/kosugitti/mdspace/issues
+Depends:
+    R (>= 4.1.0)
+Imports:
+    shiny
+Suggests:
+    smacof,
+    exametrika,
+    igraph,
+    kohonen,
+    testthat (>= 3.0.0)
+Encoding: UTF-8
+LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Config/testthat/edition: 3
