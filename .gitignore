@@ -6,3 +6,6 @@
 inst/doc
 Meta
 doc
+
+# 参考文献PDF(第三者の刊行済み論文。公開リポジトリなので追跡しない)
+develop/references/
