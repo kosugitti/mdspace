@@ -53,35 +53,15 @@ hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none")) {
     stop("`ndim` must be between 1 and n.")
   }
 
-  # 対称部と歪対称部 -------------------------------------------------------------
-  dec <- asym_decomp(X)
-  S <- dec$S
-  K <- dec$K
-  # エルミート行列 H = S + iK の固有値分解 -------------------------------------------
-  H <- matrix(complex(real = S, imaginary = K), n, n, dimnames = dimnames(S))
-  ev <- eigen(H, symmetric = TRUE)
-  lam <- Re(ev$values)
-  ord <- order(abs(lam), decreasing = TRUE)
-  lam <- lam[ord]
-  U <- ev$vectors[, ord, drop = FALSE]
-
-  # 複素平面の回転を固定する ------------------------------------------------------
-  if (rotate != "none") {
-    for (t in seq_len(n)) {
-      U[, t] <- .rotate_plane(U[, t], method = rotate)
-    }
-  }
-
+  # エルミート行列 H = S + iK を固有値分解し，各平面の回転を固定する ------------------
+  H <- .hermitian(X)
+  eg <- .hfm_eigen(H, rotate = rotate)
+  lam <- eg$values
   keep <- seq_len(ndim)
-  coord <- U[, keep, drop = FALSE] %*% diag(sqrt(abs(lam[keep])), ndim)
+  coord <- eg$vectors[, keep, drop = FALSE] %*% diag(sqrt(abs(lam[keep])), ndim)
   rownames(coord) <- rownames(X)
   colnames(coord) <- paste0("D", keep)
-
-  conf <- matrix(0, n, 2 * ndim)
-  conf[, seq(1, 2 * ndim, 2)] <- Re(coord)
-  conf[, seq(2, 2 * ndim, 2)] <- Im(coord)
-  rownames(conf) <- rownames(X)
-  colnames(conf) <- paste0(rep(c("Re", "Im"), ndim), rep(keep, each = 2))
+  conf <- .complex_to_conf(coord)
 
   # 適合の指標: 次元ごとの GOF と，残した次元で再現できなかった二乗和の割合
   # (距離モデルではないので stress は使わない)
@@ -160,4 +140,40 @@ plot.mdspace_hfm <- function(x, dim = 1, ...) {
     z <- -z
   }
   return(z)
+}
+
+# 正方行列からエルミート行列 H = S + iK を作る --------------------------------------
+.hermitian <- function(X) {
+  dec <- asym_decomp(X)
+  n <- nrow(X)
+  H <- matrix(complex(real = dec$S, imaginary = dec$K), n, n,
+              dimnames = dimnames(dec$S))
+  return(H)
+}
+
+# エルミート行列の固有値分解: 絶対値の大きい順に並べ，各平面の回転を固定する ---------------
+.hfm_eigen <- function(H, rotate = c("std", "varimax", "none")) {
+  rotate <- match.arg(rotate)
+  ev <- eigen(H, symmetric = TRUE)
+  lam <- Re(ev$values)
+  ord <- order(abs(lam), decreasing = TRUE)
+  lam <- lam[ord]
+  U <- ev$vectors[, ord, drop = FALSE]
+  if (rotate != "none") {
+    for (t in seq_len(ncol(U))) {
+      U[, t] <- .rotate_plane(U[, t], method = rotate)
+    }
+  }
+  return(list(values = lam, vectors = U))
+}
+
+# 複素座標(n x ndim)を実部・虚部を並べた実行列(n x 2ndim)にする -----------------------
+.complex_to_conf <- function(coord) {
+  ndim <- ncol(coord)
+  conf <- matrix(0, nrow(coord), 2 * ndim)
+  conf[, seq(1, 2 * ndim, 2)] <- Re(coord)
+  conf[, seq(2, 2 * ndim, 2)] <- Im(coord)
+  rownames(conf) <- rownames(coord)
+  colnames(conf) <- paste0(rep(c("Re", "Im"), ndim), rep(seq_len(ndim), each = 2))
+  return(conf)
 }

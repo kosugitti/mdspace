@@ -65,7 +65,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 | 関数名 | モデル | 参考文献 | 状態 |
 |--------|--------|----------|------|
 | hfm_mds() | エルミート形式モデル(Hermitian Form Model, HFM) | Chino & Shiraiwa (1993) | 実装済み(2026-11-07) |
-| gstatis_mds() | GSTATIS(二相三元の HFM) | Chino, Grorud & Yoshino (1996) | 未実装 |
+| gstatis_mds() | GSTATIS(二相三元の HFM) | Chino, Grorud & Yoshino (1996) | 実装済み(2026-11-07) |
 | dynascal_mds() | DYNASCAL | 千野 (Chino) | 未実装 |
 | circle_mds() | 円モデル(radius-distance) | Okada & Imaizumi (1987) | 未実装 |
 | ellipse_mds() | 楕円モデル I〜III(引数で切り替え) | Okada (1990) | 未実装 |

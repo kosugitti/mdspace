@@ -105,3 +105,40 @@ par(mfrow = c(1, 2))
 plot(fit_soc, dim = 1)
 plot(fit_soc, dim = 2)
 par(mfrow = c(1, 1))
+
+
+
+# 7. GSTATIS: socioKG の N ゼミ 10 人 × 5 時点 -------------------------------------
+# 欠測は 4 で埋める(2014 年の例と同じ)
+socio_list <- socioKG$Nsemi[paste0("T", 1:5)] %>%
+  map(function(m) {
+    m[is.na(m)] <- 4
+    dimnames(m) <- list(paste0("P", 1:10), paste0("P", 1:10))
+    return(m)
+  })
+
+fit_gst <- gstatis_mds(socio_list, ndim = 2)
+fit_gst
+
+# 第1段: 時点どうしの RV 係数と，時点の配置
+round(fit_gst$rv, 3)
+plot(fit_gst, type = "interstructure")
+
+# 第2段: 妥協(5 時点の加重平均)の HFM
+plot(fit_gst, type = "compromise", dim = 1)
+plot(fit_gst, type = "compromise", dim = 2)
+
+# 第3段: 各時点を妥協の平面へ射影した軌跡(黒丸が妥協の位置，T5 が最後の時点)
+par(mfrow = c(1, 2))
+plot(fit_gst, type = "trajectory", dim = 1)
+plot(fit_gst, type = "trajectory", dim = 2)
+par(mfrow = c(1, 1))
+
+# 視点を2つ作る(RV の第2成分を重みにした妥協)
+fit_gst2 <- gstatis_mds(socio_list, ndim = 2, ncomp = 2)
+fit_gst2$weights
+plot(fit_gst2, type = "compromise", dim = 1, view = 2)
+
+# 時点ごとに行列の大きさをそろえる場合(STATIS の通常の正規化)
+fit_gst_norm <- gstatis_mds(socio_list, ndim = 2, scale = "norm")
+fit_gst_norm$weights
