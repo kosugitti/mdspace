@@ -12,12 +12,16 @@ for GUI-based analysis and visualization.
   : Coerce data to a square proximity matrix
 - [`asym_decomp()`](https://kosugitti.github.io/mdspace/reference/asym_decomp.md)
   : Decompose a square matrix into symmetric and skew-symmetric parts
+- [`gstatis_mds()`](https://kosugitti.github.io/mdspace/reference/gstatis_mds.md)
+  : GSTATIS: STATIS for a set of asymmetric matrices via Hermitian forms
 - [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)
   : Hermitian form model for asymmetric proximities
 - [`plot(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace.md)
   : Plot the configuration of an mdspace object
 - [`plot(`*`<mdspace_asym>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_asym.md)
   : Plot the skew-symmetric part as a heat map
+- [`plot(`*`<mdspace_gstatis>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_gstatis.md)
+  : Plot a GSTATIS solution
 - [`plot(`*`<mdspace_hfm>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_hfm.md)
   : Plot one complex plane of an HFM solution
 - [`print(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.mdspace.md)

@@ -78,7 +78,17 @@
 <li>2001年の VB 版 GSTATIS(<code>Labo/Study：バックアップ/Chikage/非対称ＭＤＳスペシャル/GSTATIS.bas</code>)を発見。標準型の回転の向きが逆の疑い(設計メモ 6)</li>
 <li>確認用スクリプト <code>develop/20261107.R</code>(4x4 の例・2019年版との一致・回転の比較・studentmigration・socioKG)</li>
 <li>DESCRIPTION の ORCID を 0000-0001-5816-0099(先生の正しい番号)に訂正してコミット</li>
-<li>次: 先生が <code>develop/20261107.R</code> で確かめる→ GSTATIS(<code>gstatis_mds()</code>)か円モデル</li>
+<li>次: 先生が <code>develop/20261107.R</code> で確かめる→ GSTATIS(<code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code>)か円モデル</li>
+</ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-07土午前の続き">2026-11-07(土・午前の続き)<a class="anchor" aria-label="anchor" href="#id_2026-11-07%E5%9C%9F%E5%8D%88%E5%89%8D%E3%81%AE%E7%B6%9A%E3%81%8D"></a></h2>
+<ul><li>HFM の適合指標を Stress から Unexplained SS(1 − 累積GOF)に変更(先生の指示)</li>
+<li>
+<code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code> を実装し，千野先生の FORTRAN 版の出力(1999-12-30 のメール・<code>Labo/Study：バックアップ/修士論文/Gstatis/GSTATISのoutput.txt</code>)と照合。出力は縦長の CSV 8本にした(<code>develop/references/chino1999_gstatis/</code>・git 管理外)。入力 19 行列は socioKG と完全一致</li>
+<li>原論文 Chino, Grorud &amp; Yoshino「A revised version of GSTATIS」(BSJ 抄録 pp.409-412)を発見し，第3段を改訂版(行ベクトルの射影 Ψ^{-1/2}O*h・負の固有値は i 倍)に合わせて直した。重みは GRV の固有ベクトルそのもの</li>
+<li>照合の結果は全段一致(RV・妥協の固有値・軌跡 582 値・Lp ノルム 2,340 値・距離)。<code>develop/20261107_chino_check.R</code>。未特定は欠測の埋め方だけ(設計メモ 6)</li>
+<li>コミット 9c3d113〜3f47502(push は 9c3d113 以降まだ)</li>
+<li>次: 欠測の扱い(千野版の再現か，mdspace 独自の補完か)を先生と決める→円モデル</li>
 </ul></div>
 </div>
 

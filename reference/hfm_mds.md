@@ -35,9 +35,10 @@ hfm_mds(x, ndim = 2, rotate = c("std", "varimax", "none"))
 An object of class `c("mdspace_hfm", "mdspace")` with `coord` (n x ndim
 complex matrix), `conf` (n x 2\*ndim real matrix: real and imaginary
 parts of each dimension), `eigen` (all eigenvalues), `gof`
-(`lambda^2 / sum(lambda^2)` for each dimension), `stress` (share of the
-sum of squares of `H` not reproduced by the kept dimensions), and
-`hermitian` (`H`).
+(`lambda^2 / sum(lambda^2)` for each dimension), `unexplained` (share of
+the sum of squares of `H` not reproduced by the kept dimensions, i.e.
+1 - cumulative GOF), and `hermitian` (`H`). HFM is not a distance model,
+so `stress` is `NA`.
 
 ## Details
 
@@ -65,11 +66,12 @@ fit
 #> mdspace: hfm 
 #> Call: hfm_mds(x = x, ndim = 2)
 #> Objects: 4  Dimensions: 2 
-#> Stress: 0.0144 
+#> Unexplained SS (1 - cumulative GOF): 0.0144 
 #> 
 #>                  D1      D2
 #> eigenvalue -11.4501 10.8290
 #> gof          0.5203  0.4653
+#> cumulative   0.5203  0.9856
 #> Note: negative eigenvalues reverse the reading of angles in those planes.
 plot(fit, dim = 1)
 ```
