@@ -9,6 +9,8 @@
   type = c("trajectory", "compromise", "interstructure"),
   dim = 1,
   view = 1,
+  objects = NULL,
+  scale = c("none", "max"),
   ...
 )
 }
@@ -19,7 +21,14 @@
 
 \item{dim}{Which complex dimension to plot.}
 
-\item{view}{Which compromise (point of view) for \code{type = "compromise"}.}
+\item{view}{Which compromise (point of view).}
+
+\item{objects}{Objects to draw in \code{type = "trajectory"} (names or
+indices); all by default.}
+
+\item{scale}{\code{"none"} or \code{"max"}: with \code{"max"} each object's trajectory is
+divided by its largest norm over sources (over all kept dimensions), as
+printed by Chino's program.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -27,9 +36,10 @@
 \code{x}, invisibly.
 }
 \description{
-\code{type = "interstructure"} plots the occasions on the first two eigenvectors
-of the RV matrix. \code{type = "compromise"} plots one complex plane of a
+\code{type = "interstructure"} plots the sources on the first two eigenvectors
+of the GRV matrix. \code{type = "compromise"} plots one complex plane of a
 compromise like \code{\link[=plot.mdspace_hfm]{plot.mdspace_hfm()}}. \code{type = "trajectory"} draws, for each
-object, its positions over the occasions joined by lines, with the
-compromise position as a filled point.
+object, its images over the sources joined by lines (step 3); the filled
+point is the image of the compromise row, i.e. the weighted mean of the
+images with the GRV weights.
 }

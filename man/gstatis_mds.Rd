@@ -10,7 +10,8 @@ gstatis_mds(
   ncomp = 1,
   threshold = 1,
   scale = c("none", "norm"),
-  rotate = c("std", "varimax", "none")
+  rotate = c("std", "varimax", "none"),
+  project = c("row", "column")
 )
 }
 \arguments{
@@ -25,45 +26,59 @@ eigenvalue exceeds \code{threshold}, as in the 2001 program.}
 
 \item{threshold}{Eigenvalue threshold used when \code{ncomp = NULL}.}
 
-\item{scale}{\code{"none"} or \code{"norm"}; see Details.}
+\item{scale}{\code{"none"} (default, as in Chino's program) or \code{"norm"} (each
+\code{H_i} divided by its Frobenius norm before step 2, the usual STATIS
+normalization).}
 
 \item{rotate}{Rotation of each complex plane; see \code{\link[=hfm_mds]{hfm_mds()}}.}
+
+\item{project}{\code{"row"} (default, as in Chino's program) or \code{"column"}:
+which vectors of \code{H_i} are projected in step 3.}
 }
 \value{
 An object of class \code{c("mdspace_gstatis", "mdspace")} with
 \code{conf}, \code{coord}, \code{eigen}, \code{gof}, \code{unexplained} (as in \code{\link[=hfm_mds]{hfm_mds()}}, for the
 first compromise), \code{rv} (RV matrix), \code{rv_eigen} (its eigenvalues and
-vectors), \code{weights} (\verb{T x ncomp}), \code{compromise} (list of HFM fits, one per
-point of view), and \code{trajectory} (complex array \verb{n x ndim x T}).
+vectors), \code{weights} (\verb{q x ncomp}), \code{compromise} (list, one per point of
+view, each with the HFM of \code{Xi_a}, its \code{trajectory}, \code{lpnorm}, and
+\code{distance}, the Frobenius distance \verb{||H_i - Xi_a||} for each source),
+\code{trajectory} and \code{lpnorm} (those of the first point of view; complex
+array \verb{n x ndim x q} and array \verb{q x q x n}), and \code{occasion} (HFM of each
+source, see \code{\link[=hfm_mds]{hfm_mds()}}).
 }
 \description{
-A set of \code{T} square asymmetric matrices on the same \code{n} objects (e.g. the
-same group rated at \code{T} occasions) is analyzed in three steps.
+A set of \code{q} square asymmetric matrices on the same \code{n} objects (e.g. the
+same group rated at \code{q} occasions) is analyzed in three steps, following
+the revised version of GSTATIS (Chino, Grorud, & Yoshino).
 }
 \details{
 \enumerate{
-\item \strong{Interstructure.} Each matrix is turned into its Hermitian form
-\code{H_t = S_t + iK_t}. The generalized RV coefficient between occasions is
-\verb{Re tr(H_s H_t) / sqrt(tr(H_s H_s) tr(H_t H_t))}, and the \verb{T x T} RV
-matrix is eigen-decomposed.
-\item \strong{Compromise.} The \code{k}-th eigenvector \code{v_k} of the RV matrix gives the
-weights of a compromise \verb{C_k = sum_t v_tk H_t}. The first one is the
-usual compromise; later ones are other "points of view". Each compromise
-is analyzed by HFM (see \code{\link[=hfm_mds]{hfm_mds()}}).
-\item \strong{Trajectories.} Each occasion is projected onto the planes of the first
-compromise: \verb{Z_t = H_t U |Lambda|^\{-1/2\} sign(Lambda)}, where \code{U} and
-\code{Lambda} are the eigenvectors and eigenvalues of \code{C_1}. If \code{H_t} equals
-\code{C_1}, \code{Z_t} equals the compromise coordinates.
+\item \strong{Inter-structure.} Each matrix is turned into its Hermitian form
+\code{H_i = S_i + iK_i}. The generalized RV coefficient between sources is
+\verb{GRV(H_i, H_i') = tr(H_i H_i') / sqrt(tr(H_i^2) tr(H_i'^2))}, and the
+\verb{q x q} GRV matrix is eigen-decomposed.
+\item \strong{Intra-structure.} The \code{a}-th eigenvector \code{beta_a} of the GRV matrix
+gives the weights of the compromise \verb{Xi_a = sum_i beta_ia H_i}, which is
+analyzed by HFM (see \code{\link[=hfm_mds]{hfm_mds()}}). The sign of an eigenvector is
+arbitrary: \code{beta_1} is signed so that its sum is positive, and each
+later \code{beta_a} so that its largest element in absolute value is
+positive. Flipping \code{beta_a} negates \code{Xi_a}, which swaps positive and
+negative planes and so turns the trajectories by 90 degrees.
+\item \strong{Trajectories (revised step 3).} The \code{j}-th row (or column) vector
+\code{h_j} of each \code{H_i} is projected onto the compromise configuration
+\verb{O_p = U |Psi|^\{1/2\}}: the image is \verb{Psi^\{-1/2\} O_p* h_j}, where a
+negative eigenvalue \code{psi} is read as \verb{sqrt(psi) = i sqrt(|psi|)}. With
+unit eigenvectors \code{U} this is \verb{D U* h_j} with \code{D = 1} for a positive and
+\code{-i} for a negative eigenvalue. The distance between two sources for
+object \code{j}, \verb{||Psi^\{-1/2\} O_p* (h_j^(i) - h_j^(i'))||}, is returned in
+\code{lpnorm}.
 }
 
-The first eigenvector of the RV matrix is signed so that its weights sum to
-a positive value and then rescaled to sum to 1, so that the first
-compromise is a weighted mean of the occasions and the trajectories are on
-the same scale as the compromise. (The 2001 program used the raw
-eigenvector; the configuration differs only by a constant factor.) Later
-points of view use the raw eigenvectors. With \code{scale = "norm"} each \code{H_t} is divided by its
-Frobenius norm before step 2 (the usual STATIS normalization); the default
-\code{"none"} follows the 2001 Visual Basic program and the 2014 R code.
+The results reproduce the FORTRAN program by N. Chino (output of
+1999-12-30): the GRV matrix, its eigenvalues and eigenvectors, the
+eigenvalues of the compromises, and all the trajectories (the program
+prints each object's trajectory divided by its largest norm over sources;
+see \code{plot(..., scale = "max")}).
 }
 \examples{
 set.seed(1)
@@ -75,9 +90,13 @@ plot(fit, type = "trajectory", dim = 1)
 }
 \references{
 Chino, N., Grorud, A., & Yoshino, R. (1996). A complex analysis for
-two-mode three-way asymmetric relational data. Paper presented at the
-Fifth Conference of the International Federation of Classification
-Societies, Kobe, Japan.
+two-mode three-way asymmetric relational data. \emph{Abstracts of the talks at
+the 5th Conference of the International Federation of Classification
+Societies}, Vol. 2, 83-86.
+
+Chino, N., Grorud, A., & Yoshino, R. A revised version of GSTATIS.
+\emph{Proceedings of the Annual Meeting of the Behaviormetric Society of
+Japan}, 409-412.
 
 Lavit, C., Escoufier, Y., Sabatier, R., & Traissac, P. (1994). The ACT
 (STATIS method). \emph{Computational Statistics & Data Analysis}, 18, 97-119.

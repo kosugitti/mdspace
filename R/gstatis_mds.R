@@ -2,30 +2,35 @@
 
 #' GSTATIS: STATIS for a set of asymmetric matrices via Hermitian forms
 #'
-#' A set of `T` square asymmetric matrices on the same `n` objects (e.g. the
-#' same group rated at `T` occasions) is analyzed in three steps.
+#' A set of `q` square asymmetric matrices on the same `n` objects (e.g. the
+#' same group rated at `q` occasions) is analyzed in three steps, following
+#' the revised version of GSTATIS (Chino, Grorud, & Yoshino).
 #'
-#' 1. **Interstructure.** Each matrix is turned into its Hermitian form
-#'    `H_t = S_t + iK_t`. The generalized RV coefficient between occasions is
-#'    `Re tr(H_s H_t) / sqrt(tr(H_s H_s) tr(H_t H_t))`, and the `T x T` RV
-#'    matrix is eigen-decomposed.
-#' 2. **Compromise.** The `k`-th eigenvector `v_k` of the RV matrix gives the
-#'    weights of a compromise `C_k = sum_t v_tk H_t`. The first one is the
-#'    usual compromise; later ones are other "points of view". Each compromise
-#'    is analyzed by HFM (see [hfm_mds()]).
-#' 3. **Trajectories.** Each occasion is projected onto the planes of the first
-#'    compromise: `Z_t = H_t U |Lambda|^{-1/2} sign(Lambda)`, where `U` and
-#'    `Lambda` are the eigenvectors and eigenvalues of `C_1`. If `H_t` equals
-#'    `C_1`, `Z_t` equals the compromise coordinates.
+#' 1. **Inter-structure.** Each matrix is turned into its Hermitian form
+#'    `H_i = S_i + iK_i`. The generalized RV coefficient between sources is
+#'    `GRV(H_i, H_i') = tr(H_i H_i') / sqrt(tr(H_i^2) tr(H_i'^2))`, and the
+#'    `q x q` GRV matrix is eigen-decomposed.
+#' 2. **Intra-structure.** The `a`-th eigenvector `beta_a` of the GRV matrix
+#'    gives the weights of the compromise `Xi_a = sum_i beta_ia H_i`, which is
+#'    analyzed by HFM (see [hfm_mds()]). The sign of an eigenvector is
+#'    arbitrary: `beta_1` is signed so that its sum is positive, and each
+#'    later `beta_a` so that its largest element in absolute value is
+#'    positive. Flipping `beta_a` negates `Xi_a`, which swaps positive and
+#'    negative planes and so turns the trajectories by 90 degrees.
+#' 3. **Trajectories (revised step 3).** The `j`-th row (or column) vector
+#'    `h_j` of each `H_i` is projected onto the compromise configuration
+#'    `O_p = U |Psi|^{1/2}`: the image is `Psi^{-1/2} O_p* h_j`, where a
+#'    negative eigenvalue `psi` is read as `sqrt(psi) = i sqrt(|psi|)`. With
+#'    unit eigenvectors `U` this is `D U* h_j` with `D = 1` for a positive and
+#'    `-i` for a negative eigenvalue. The distance between two sources for
+#'    object `j`, `||Psi^{-1/2} O_p* (h_j^(i) - h_j^(i'))||`, is returned in
+#'    `lpnorm`.
 #'
-#' The first eigenvector of the RV matrix is signed so that its weights sum to
-#' a positive value and then rescaled to sum to 1, so that the first
-#' compromise is a weighted mean of the occasions and the trajectories are on
-#' the same scale as the compromise. (The 2001 program used the raw
-#' eigenvector; the configuration differs only by a constant factor.) Later
-#' points of view use the raw eigenvectors. With `scale = "norm"` each `H_t` is divided by its
-#' Frobenius norm before step 2 (the usual STATIS normalization); the default
-#' `"none"` follows the 2001 Visual Basic program and the 2014 R code.
+#' The results reproduce the FORTRAN program by N. Chino (output of
+#' 1999-12-30): the GRV matrix, its eigenvalues and eigenvectors, the
+#' eigenvalues of the compromises, and all the trajectories (the program
+#' prints each object's trajectory divided by its largest norm over sources;
+#' see `plot(..., scale = "max")`).
 #'
 #' @param x A list of square matrices with the same labels, or an
 #'   `n x n x T` array.
@@ -34,18 +39,30 @@
 #'   `ncomp = NULL` with `threshold` to keep every RV component whose
 #'   eigenvalue exceeds `threshold`, as in the 2001 program.
 #' @param threshold Eigenvalue threshold used when `ncomp = NULL`.
-#' @param scale `"none"` or `"norm"`; see Details.
+#' @param scale `"none"` (default, as in Chino's program) or `"norm"` (each
+#'   `H_i` divided by its Frobenius norm before step 2, the usual STATIS
+#'   normalization).
+#' @param project `"row"` (default, as in Chino's program) or `"column"`:
+#'   which vectors of `H_i` are projected in step 3.
 #' @param rotate Rotation of each complex plane; see [hfm_mds()].
 #' @return An object of class `c("mdspace_gstatis", "mdspace")` with
 #'   `conf`, `coord`, `eigen`, `gof`, `unexplained` (as in [hfm_mds()], for the
 #'   first compromise), `rv` (RV matrix), `rv_eigen` (its eigenvalues and
-#'   vectors), `weights` (`T x ncomp`), `compromise` (list of HFM fits, one per
-#'   point of view), and `trajectory` (complex array `n x ndim x T`).
+#'   vectors), `weights` (`q x ncomp`), `compromise` (list, one per point of
+#'   view, each with the HFM of `Xi_a`, its `trajectory`, `lpnorm`, and
+#'   `distance`, the Frobenius distance `||H_i - Xi_a||` for each source),
+#'   `trajectory` and `lpnorm` (those of the first point of view; complex
+#'   array `n x ndim x q` and array `q x q x n`), and `occasion` (HFM of each
+#'   source, see [hfm_mds()]).
 #' @references
 #' Chino, N., Grorud, A., & Yoshino, R. (1996). A complex analysis for
-#'   two-mode three-way asymmetric relational data. Paper presented at the
-#'   Fifth Conference of the International Federation of Classification
-#'   Societies, Kobe, Japan.
+#'   two-mode three-way asymmetric relational data. *Abstracts of the talks at
+#'   the 5th Conference of the International Federation of Classification
+#'   Societies*, Vol. 2, 83-86.
+#'
+#' Chino, N., Grorud, A., & Yoshino, R. A revised version of GSTATIS.
+#'   *Proceedings of the Annual Meeting of the Behaviormetric Society of
+#'   Japan*, 409-412.
 #'
 #' Lavit, C., Escoufier, Y., Sabatier, R., & Traissac, P. (1994). The ACT
 #'   (STATIS method). *Computational Statistics & Data Analysis*, 18, 97-119.
@@ -59,9 +76,11 @@
 #' @export
 gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
                         scale = c("none", "norm"),
-                        rotate = c("std", "varimax", "none")) {
+                        rotate = c("std", "varimax", "none"),
+                        project = c("row", "column")) {
   cl <- match.call()
   scale <- match.arg(scale)
+  project <- match.arg(project)
   rotate <- match.arg(rotate)
 
   # 入力を正方行列のリストにそろえる -------------------------------------------------
@@ -107,13 +126,16 @@ gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
   dimnames(rv) <- list(occ, occ)
   rv_eig <- eigen(rv, symmetric = TRUE)
   V <- rv_eig$vectors
+  # 固有ベクトルの符号は不定なので決めておく: 第1は和が正，第2以降は絶対値が最大の要素が正
   if (sum(V[, 1]) < 0) {
     V[, 1] <- -V[, 1]
   }
-  # 第1の妥協は重みの和を 1 にして時点の加重平均にする
-  W <- V
-  W[, 1] <- V[, 1] / sum(V[, 1])
-  dimnames(W) <- list(occ, paste0("C", seq_len(nT)))
+  for (k in seq_len(nT)[-1]) {
+    if (V[which.max(abs(V[, k])), k] < 0) {
+      V[, k] <- -V[, k]
+    }
+  }
+  # 妥協の重みは GRV の固有ベクトルそのもの(論文の式3・千野の FORTRAN 版と同じ)
   dimnames(V) <- list(occ, paste0("C", seq_len(nT)))
 
   if (is.null(ncomp)) {
@@ -122,43 +144,59 @@ gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
   ncomp <- min(ncomp, nT)
 
   # 第2段: 視点ごとの妥協行列を HFM にかける ------------------------------------------
+  # 第3段: 各時点の行(列)ベクトルを妥協の配置へ射影する(改訂版の式5) -------------------
+  keep <- seq_len(ndim)
   comp <- vector("list", ncomp)
   for (k in seq_len(ncomp)) {
-    Ck <- Reduce(`+`, Map(function(h, w) h * w, H, W[, k]))
-    eg <- .hfm_eigen(Ck, rotate = rotate)
+    Xi <- Reduce(`+`, Map(function(h, w) h * w, H, V[, k]))
+    eg <- .hfm_eigen(Xi, rotate = rotate)
     lam <- eg$values
-    keep <- seq_len(ndim)
     coord <- eg$vectors[, keep, drop = FALSE] %*% diag(sqrt(abs(lam[keep])), ndim)
     dimnames(coord) <- list(labs, paste0("D", keep))
     gof <- lam^2 / sum(lam^2)
-    comp[[k]] <- list(matrix = Ck, vectors = eg$vectors, eigen = lam,
-                      coord = coord, gof = gof,
-                      unexplained = 1 - sum(gof[keep]))
+    # Psi^{-1/2} O* h = D U* h(負の固有値は sqrt(psi) = i sqrt|psi| と読むので D = -i)
+    U <- eg$vectors[, keep, drop = FALSE]
+    D <- ifelse(lam[keep] < 0, -1i, 1 + 0i)
+    traj <- array(0i, dim = c(n, ndim, nT),
+                  dimnames = list(labs, paste0("D", keep), occ))
+    for (t in seq_len(nT)) {
+      # 行ベクトル h_j の像: sum_l conj(u_l) H[j, l]。列なら sum_l conj(u_l) H[l, j]
+      Ht <- if (project == "row") H[[t]] else t(H[[t]])
+      traj[, , t] <- (Ht %*% Conj(U)) %*% diag(D, ndim)
+    }
+    # 対象ごとの時点間の距離(Lp ノルム)
+    lp <- array(0, dim = c(nT, nT, n), dimnames = list(occ, occ, labs))
+    for (j in seq_len(n)) {
+      Z <- matrix(traj[j, , ], nrow = ndim)
+      for (s1 in seq_len(nT)) {
+        for (s2 in seq_len(nT)) {
+          lp[s1, s2, j] <- sqrt(sum(Mod(Z[, s1] - Z[, s2])^2))
+        }
+      }
+    }
+    # 各時点のエルミート行列と妥協行列のフロベニウス距離
+    dist_xi <- stats::setNames(vapply(H, function(h) sqrt(sum(Mod(h - Xi)^2)), numeric(1)), occ)
+    comp[[k]] <- list(matrix = Xi, weights = V[, k], vectors = eg$vectors,
+                      eigen = lam, coord = coord, gof = gof,
+                      unexplained = 1 - sum(gof[keep]),
+                      trajectory = traj, lpnorm = lp, distance = dist_xi)
   }
   names(comp) <- paste0("C", seq_len(ncomp))
-
-  # 第3段: 各時点を第1の妥協空間へ射影して軌跡を作る -----------------------------------
   c1 <- comp[[1]]
-  keep <- seq_len(ndim)
-  U1 <- c1$vectors[, keep, drop = FALSE]
-  lam1 <- c1$eigen[keep]
-  if (any(abs(lam1) < 1e-10 * max(abs(c1$eigen)))) {
-    warning("Some kept eigenvalues of the compromise are near 0; trajectories are unstable.")
-  }
-  P <- U1 %*% diag(sign(lam1) / sqrt(abs(lam1)), ndim)
-  traj <- array(0i, dim = c(n, ndim, nT),
-                dimnames = list(labs, paste0("D", keep), occ))
-  for (t in seq_len(nT)) {
-    traj[, , t] <- H[[t]] %*% P
-  }
+
+  # 準備段階: 各時点の HFM ---------------------------------------------------------
+  occasion <- lapply(X, hfm_mds, ndim = ndim, rotate = rotate)
+  names(occasion) <- occ
 
   out <- .new_mdspace("gstatis", conf = .complex_to_conf(c1$coord), data = X,
                       call = cl, ndim = ndim, coord = c1$coord,
                       eigen = c1$eigen, gof = c1$gof,
                       unexplained = c1$unexplained,
                       rv = rv, rv_eigen = list(values = rv_eig$values, vectors = V),
-                      weights = W[, seq_len(ncomp), drop = FALSE],
-                      compromise = comp, trajectory = traj, scale = scale)
+                      weights = V[, seq_len(ncomp), drop = FALSE],
+                      compromise = comp, trajectory = c1$trajectory,
+                      lpnorm = c1$lpnorm, occasion = occasion,
+                      scale = scale, project = project)
   return(out)
 }
 
@@ -170,7 +208,7 @@ print.mdspace_gstatis <- function(x, digits = 4, ...) {
   cat("\nRV eigenvalues (interstructure):\n")
   ev <- x$rv_eigen$values
   print(round(rbind(eigenvalue = ev, share = ev / sum(ev)), digits))
-  cat("\nWeights of the first compromise:\n")
+  cat("\nWeights of the first compromise (GRV eigenvector):\n")
   print(round(x$weights[, 1], digits))
   k <- ncol(x$coord)
   cat("\nFirst compromise, Unexplained SS (1 - cumulative GOF):",
@@ -184,22 +222,30 @@ print.mdspace_gstatis <- function(x, digits = 4, ...) {
 
 #' Plot a GSTATIS solution
 #'
-#' `type = "interstructure"` plots the occasions on the first two eigenvectors
-#' of the RV matrix. `type = "compromise"` plots one complex plane of a
+#' `type = "interstructure"` plots the sources on the first two eigenvectors
+#' of the GRV matrix. `type = "compromise"` plots one complex plane of a
 #' compromise like [plot.mdspace_hfm()]. `type = "trajectory"` draws, for each
-#' object, its positions over the occasions joined by lines, with the
-#' compromise position as a filled point.
+#' object, its images over the sources joined by lines (step 3); the filled
+#' point is the image of the compromise row, i.e. the weighted mean of the
+#' images with the GRV weights.
 #'
 #' @param x An object of class `mdspace_gstatis`.
 #' @param type `"trajectory"`, `"compromise"`, or `"interstructure"`.
 #' @param dim Which complex dimension to plot.
-#' @param view Which compromise (point of view) for `type = "compromise"`.
+#' @param view Which compromise (point of view).
+#' @param objects Objects to draw in `type = "trajectory"` (names or
+#'   indices); all by default.
+#' @param scale `"none"` or `"max"`: with `"max"` each object's trajectory is
+#'   divided by its largest norm over sources (over all kept dimensions), as
+#'   printed by Chino's program.
 #' @param ... Passed to [graphics::plot()].
 #' @return `x`, invisibly.
 #' @export
 plot.mdspace_gstatis <- function(x, type = c("trajectory", "compromise", "interstructure"),
-                                 dim = 1, view = 1, ...) {
+                                 dim = 1, view = 1, objects = NULL,
+                                 scale = c("none", "max"), ...) {
   type <- match.arg(type)
+  scale <- match.arg(scale)
   if (type == "interstructure") {
     V <- x$rv_eigen$vectors
     ev <- x$rv_eigen$values
@@ -207,13 +253,13 @@ plot.mdspace_gstatis <- function(x, type = c("trajectory", "compromise", "inters
     lim <- c(-1, 1) * max(abs(xy)) * 1.2
     graphics::plot(xy, asp = 1, xlim = lim, ylim = lim, pch = 16,
                    xlab = "Component 1", ylab = "Component 2",
-                   main = "GSTATIS interstructure", ...)
+                   main = "GSTATIS inter-structure", ...)
     graphics::abline(h = 0, v = 0, col = "grey80", lty = 3)
     graphics::text(xy, labels = rownames(V), pos = 3, cex = 0.8)
     return(invisible(x))
   }
+  cp <- x$compromise[[view]]
   if (type == "compromise") {
-    cp <- x$compromise[[view]]
     z <- cp$coord[, dim]
     lim <- c(-1, 1) * max(Mod(z)) * 1.2
     graphics::plot(Re(z), Im(z), asp = 1, xlim = lim, ylim = lim, type = "n",
@@ -226,16 +272,26 @@ plot.mdspace_gstatis <- function(x, type = c("trajectory", "compromise", "inters
     graphics::text(Re(z), Im(z), labels = x$labels, pos = 3, cex = 0.8)
     return(invisible(x))
   }
-  # 軌跡: 時点ごとの位置を線でつなぎ，妥協の位置を黒丸で示す
-  tr <- x$trajectory[, dim, , drop = TRUE]
-  z0 <- x$coord[, dim]
-  # 原点も含めた点の範囲に合わせて描く(縦横比は 1)
+  # 軌跡: 時点ごとの像を線でつなぎ，妥協の行の像(重みつき平均)を黒丸で示す
+  arr <- cp$trajectory
+  if (scale == "max") {
+    for (j in seq_len(dim(arr)[1])) {
+      m <- max(sqrt(colSums(Mod(matrix(arr[j, , ], nrow = dim(arr)[2]))^2)))
+      if (m > 0) arr[j, , ] <- arr[j, , ] / m
+    }
+  }
+  tr <- matrix(arr[, dim, ], nrow = dim(arr)[1], dimnames = list(x$labels, dimnames(arr)[[3]]))
+  w <- cp$weights
+  z0 <- as.vector(tr %*% w) / sum(w)
+  sel <- if (is.null(objects)) seq_len(nrow(tr)) else objects
+  tr <- tr[sel, , drop = FALSE]
+  z0 <- stats::setNames(z0, x$labels)[sel]
   allz <- c(tr, z0, 0)
   xlim <- range(Re(allz)) + c(-1, 1) * 0.08 * diff(range(Re(allz)))
   ylim <- range(Im(allz)) + c(-1, 1) * 0.08 * diff(range(Im(allz)))
   graphics::plot(0, 0, type = "n", asp = 1, xlim = xlim, ylim = ylim,
                  xlab = "Real", ylab = "Imaginary",
-                 main = sprintf("GSTATIS trajectories, dimension %d", dim), ...)
+                 main = sprintf("GSTATIS trajectories, view %d, dimension %d", view, dim), ...)
   graphics::abline(h = 0, v = 0, col = "grey80", lty = 3)
   nT <- ncol(tr)
   cols <- grDevices::hcl.colors(nrow(tr), "Dark 3")
@@ -246,6 +302,6 @@ plot.mdspace_gstatis <- function(x, type = c("trajectory", "compromise", "inters
                    col = cols[j], cex = 0.5, pos = 4)
   }
   graphics::points(Re(z0), Im(z0), pch = 16, col = cols)
-  graphics::text(Re(z0), Im(z0), labels = x$labels, pos = 3, cex = 0.8, col = cols)
+  graphics::text(Re(z0), Im(z0), labels = rownames(tr), pos = 3, cex = 0.8, col = cols)
   return(invisible(x))
 }
