@@ -8,11 +8,28 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 ### 現在の状態（2026-11-07更新）
 
 - 設計の正本は `develop/設計メモ_20261107.md`(既存 R
-  でできること・骨組み・工程・nASYMS から取り入れること・決定事項)
+  でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)
 - 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude
   は作らない)，楕円は1関数 `ellipse_mds()` で引数切り替え，CRAN
-  は非対称系がそろってから検討
-- 週末の楽しみとして非対称系から順に作る(土台→HFM→円→楕円→二相三元円→スライドベクトル→DYNASCAL→フォンミーゼス→等高線)
+  は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は
+  asymmetry を包む
+- **実装済み**:
+  [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)(回転
+  std/varimax/none・適合は Unexplained
+  SS)，[`gstatis_mds()`](https://kosugitti.github.io/mdspace/reference/gstatis_mds.md)(改訂版
+  GSTATIS・千野版 FORTRAN
+  の出力と全段一致)，[`as_proximity()`](https://kosugitti.github.io/mdspace/reference/as_proximity.md)・[`asym_decomp()`](https://kosugitti.github.io/mdspace/reference/asym_decomp.md)・[`missing_pattern()`](https://kosugitti.github.io/mdspace/reference/missing_pattern.md)，欠測は
+  `missing = "impute"`(片側は転置・対角と両側は MINERS 法＝Chino &
+  Harshman 1996・その時点にいない人はエラー)。テスト 66 件
+- 照合: 千野版の出力は
+  `Labo/Study：バックアップ/修士論文/Gstatis/GSTATISのoutput.txt`(1999)。CSV
+  は `develop/references/chino1999_gstatis/`(git
+  管理外・ゼミ生のデータ)，照合スクリプトは
+  `develop/20261107_chino_check.R`。先生の目視用は `develop/20261107.R`
+- 次:
+  千野先生の他のモデル(DYNASCAL・ASYMSCAL・GIPSCAL・HCM・複素差分系)の論文を集めて翻訳→実装の順を決める。GSTATIS
+  の事例データ探し(socioKG
+  は欠席者が多く不向き)。週末の楽しみとして非対称系を順に(円→楕円→二相三元円→DYNASCAL→フォンミーゼス→等高線)
 - 照合の基準: 岡太・今泉の公式 Shiny
   nASYMS(<https://nasyms.shinyapps.io/nASYMS/> ・マニュアルは
   `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024)

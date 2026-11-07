@@ -47,8 +47,10 @@ hfm_mds(
   the MINERS method: starting from the mean of the observed cells in the
   same row and column, they are replaced by the rank-`p` HFM
   reconstruction `Re(H) + Im(H)` until the largest change is below
-  `tol`. An object whose whole row and column are missing is an error.
-  See
+  `tol`. This is the refactoring method of Chino and Harshman (1996), a
+  generalization of Thomson's refactoring method, and the MINERS option
+  of the 2001 Visual Basic program. An object whose whole row and column
+  are missing is an error. See
   [`missing_pattern()`](https://kosugitti.github.io/mdspace/reference/missing_pattern.md).
 
 - impute_ndim:
@@ -85,6 +87,11 @@ cases the plane is then flipped, if needed, so that the object with the
 largest absolute real part lies on the positive side.
 
 ## References
+
+Chino, N., & Harshman, R. A. (1996). A refactoring method for fitting
+HFM that allows self-similarity estimation and missing values.
+*Proceedings of the 24th Annual Meeting of the Behaviormetric Society of
+Japan*, 206-207.
 
 Chino, N., & Shiraiwa, K. (1993). Geometrical structures of some
 non-distance models for asymmetric MDS. *Behaviormetrika*, 20(1), 35-47.

@@ -86,3 +86,9 @@
 - 先生の判断: socioKG は ④(その時点にいない人)が多く GSTATIS
   の事例には向かない＝合うデータを探す(全時点そろった二相三元の非対称データ)。データ探しは
   MDS 本の `データ候補一覧.md` とあわせて
+- 千野先生の論文の在庫を確認: Chino & Harshman (1996) の refactoring
+  法が欠測処理の原典と判明(MINERS
+  法の出典として追記)。DYNASCAL・ASYMSCAL・GIPSCAL・HCM・Chino &
+  Shiraiwa (1993)
+  は手元に無い→裏で収集中(届いたら翻訳して読むべきリストへ)。`文献ライブラリ/chinonda・b・c.pdf`
+  は名前の付け違いで千野先生の論文ではない

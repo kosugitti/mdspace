@@ -96,8 +96,10 @@ part), and the diagonal cells and pairs missing on both sides are
 estimated by the MINERS method: starting from the mean of the observed
 cells in the same row and column, they are replaced by the rank-<code>p</code>
 HFM reconstruction <code>Re(H) + Im(H)</code> until the largest change is below
-<code>tol</code>. An object whose whole row and column are missing is an error.
-See <code><a href="missing_pattern.html">missing_pattern()</a></code>.</p></dd>
+<code>tol</code>. This is the refactoring method of Chino and Harshman (1996), a
+generalization of Thomson's refactoring method, and the MINERS option of
+the 2001 Visual Basic program. An object whose whole row and column are
+missing is an error. See <code><a href="missing_pattern.html">missing_pattern()</a></code>.</p></dd>
 
 
 <dt id="arg-impute-ndim">impute_ndim<a class="anchor" aria-label="anchor" href="#arg-impute-ndim"></a></dt>
@@ -136,7 +138,11 @@ lies on the positive side.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
-    <p>Chino, N., &amp; Shiraiwa, K. (1993). Geometrical structures of
+    <p>Chino, N., &amp; Harshman, R. A. (1996). A refactoring method for
+fitting HFM that allows self-similarity estimation and missing values.
+<em>Proceedings of the 24th Annual Meeting of the Behaviormetric Society of
+Japan</em>, 206-207.</p>
+<p>Chino, N., &amp; Shiraiwa, K. (1993). Geometrical structures of
 some non-distance models for asymmetric MDS. <em>Behaviormetrika</em>, 20(1),
 35-47.</p>
     </div>
