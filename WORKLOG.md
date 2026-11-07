@@ -36,3 +36,12 @@
 - 確認用スクリプト `develop/20261107.R`(4x4 の例・2019年版との一致・回転の比較・studentmigration・socioKG)
 - DESCRIPTION の ORCID を 0000-0001-5816-0099(先生の正しい番号)に訂正してコミット
 - 次: 先生が `develop/20261107.R` で確かめる→ GSTATIS(`gstatis_mds()`)か円モデル
+
+## 2026-11-07(土・午前の続き)
+
+- HFM の適合指標を Stress から Unexplained SS(1 − 累積GOF)に変更(先生の指示)
+- `gstatis_mds()` を実装し，千野先生の FORTRAN 版の出力(1999-12-30 のメール・`Labo/Study：バックアップ/修士論文/Gstatis/GSTATISのoutput.txt`)と照合。出力は縦長の CSV 8本にした(`develop/references/chino1999_gstatis/`・git 管理外)。入力 19 行列は socioKG と完全一致
+- 原論文 Chino, Grorud & Yoshino「A revised version of GSTATIS」(BSJ 抄録 pp.409-412)を発見し，第3段を改訂版(行ベクトルの射影 Ψ^{-1/2}O*h・負の固有値は i 倍)に合わせて直した。重みは GRV の固有ベクトルそのもの
+- 照合の結果は全段一致(RV・妥協の固有値・軌跡 582 値・Lp ノルム 2,340 値・距離)。`develop/20261107_chino_check.R`。未特定は欠測の埋め方だけ(設計メモ 6)
+- コミット 9c3d113〜3f47502(push は 9c3d113 以降まだ)
+- 次: 欠測の扱い(千野版の再現か，mdspace 独自の補完か)を先生と決める→円モデル
