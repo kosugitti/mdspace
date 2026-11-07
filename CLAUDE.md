@@ -4,9 +4,11 @@
 MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。
 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。
 
-### 現在の状態（2026-04-14更新）
-- SMACOF アルゴリズム（ratio MDS）の開発用コードが `develop/2026MMDSchap8.R` で動作確認済み
-- 次: `classical_mds()` を R/ に実装 → `kruskal_mds()` のパッケージ関数化
+### 現在の状態（2026-11-07更新）
+- 設計の正本は `develop/設計メモ_20261107.md`(既存 R でできること・骨組み・工程・nASYMS から取り入れること・決定事項)
+- 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude は作らない)，楕円は1関数 `ellipse_mds()` で引数切り替え，CRAN は非対称系がそろってから検討
+- 週末の楽しみとして非対称系から順に作る(土台→HFM→円→楕円→二相三元円→スライドベクトル→DYNASCAL→フォンミーゼス→等高線)
+- 照合の基準: 岡太・今泉の公式 Shiny nASYMS(https://nasyms.shinyapps.io/nASYMS/ ・マニュアルは `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024) の表1.19・1.14
 
 ## コーディング規約
 
@@ -62,11 +64,12 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 
 | 関数名 | モデル | 参考文献 | 状態 |
 |--------|--------|----------|------|
-| hfm_mds() | 階層的因子モデル（HFM） | 千野 (Chino) | 未実装 |
+| hfm_mds() | エルミート形式モデル(Hermitian Form Model, HFM) | Chino & Shiraiwa (1993) | 実装済み(2026-11-07) |
+| gstatis_mds() | GSTATIS(二相三元の HFM) | Chino, Grorud & Yoshino (1996) | 未実装 |
 | dynascal_mds() | DYNASCAL | 千野 (Chino) | 未実装 |
-| ellipse1_mds() | 楕円モデル I | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
-| ellipse2_mds() | 楕円モデル II | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
-| ellipse3_mds() | 楕円モデル III | 岡太・今泉 (Okada & Imaizumi) | 未実装 |
+| circle_mds() | 円モデル(radius-distance) | Okada & Imaizumi (1987) | 未実装 |
+| ellipse_mds() | 楕円モデル I〜III(引数で切り替え) | Okada (1990) | 未実装 |
+| (未定) | 二相三元の円モデル | Okada & Imaizumi (1997) | 未実装 |
 | vonmises_mds() | フォンミーゼスモデル | 荘島 (Shojima) | 未実装 |
 | contour_mds() | 等高線マップモデル | Abelson (1954-55); 小杉・藤原 (2004) | 未実装 |
 

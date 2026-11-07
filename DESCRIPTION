@@ -17,7 +17,10 @@ BugReports: https://github.com/kosugitti/mdspace/issues
 Depends:
     R (>= 4.1.0)
 Imports:
-    shiny
+    graphics,
+    grDevices,
+    shiny,
+    stats
 Suggests:
     knitr,
     pkgdown,
@@ -31,5 +34,5 @@ VignetteBuilder: knitr
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
