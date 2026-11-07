@@ -4,7 +4,7 @@ Title: Multidimensional Scaling with Interactive Visualization
 Version: 0.0.1
 Authors@R:
     person("Koji", "Kosugi", , "kosugitti@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0002-0520-2492"))
+           comment = c(ORCID = "0000-0001-5816-0099"))
 Description: Provides various multidimensional scaling (MDS) algorithms
     including classical MDS (Torgerson), nonmetric MDS (Kruskal), individual
     differences MDS (INDSCAL), ellipse model (Okada-Imaizumi), HFM (Chino),
