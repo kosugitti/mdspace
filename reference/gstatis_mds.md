@@ -14,7 +14,11 @@ gstatis_mds(
   threshold = 1,
   scale = c("none", "norm"),
   rotate = c("std", "varimax", "none"),
-  project = c("row", "column")
+  project = c("row", "column"),
+  missing = c("none", "impute"),
+  impute_ndim = ndim,
+  tol = 1e-04,
+  maxit = 1000
 )
 ```
 
@@ -54,6 +58,13 @@ gstatis_mds(
 
   `"row"` (default, as in Chino's program) or `"column"`: which vectors
   of `H_i` are projected in step 3.
+
+- missing, impute_ndim, tol, maxit:
+
+  Handling of missing values in each source, as in
+  [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md).
+  An object absent at a source (whole row and column missing) is an
+  error.
 
 ## Value
 

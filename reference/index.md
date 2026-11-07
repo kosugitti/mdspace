@@ -10,6 +10,8 @@
   : GSTATIS: STATIS for a set of asymmetric matrices via Hermitian forms
 - [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)
   : Hermitian form model for asymmetric proximities
+- [`missing_pattern()`](https://kosugitti.github.io/mdspace/reference/missing_pattern.md)
+  : Missing-value patterns of asymmetric proximity matrices
 - [`plot(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace.md)
   : Plot the configuration of an mdspace object
 - [`plot(`*`<mdspace_asym>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_asym.md)

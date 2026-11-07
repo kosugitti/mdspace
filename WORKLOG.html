@@ -89,6 +89,8 @@
 <li>照合の結果は全段一致(RV・妥協の固有値・軌跡 582 値・Lp ノルム 2,340 値・距離)。<code>develop/20261107_chino_check.R</code>。未特定は欠測の埋め方だけ(設計メモ 6)</li>
 <li>コミット 9c3d113〜3f47502(push は 9c3d113 以降まだ)</li>
 <li>次: 欠測の扱い(千野版の再現か，mdspace 独自の補完か)を先生と決める→円モデル</li>
+<li>欠測の扱いを実装(先生の決定=案 B の b1・④はデータ不備としてエラー)。<code><a href="reference/missing_pattern.html">missing_pattern()</a></code>，<code><a href="reference/hfm_mds.html">hfm_mds()</a></code>・<code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code> の <code>missing = "impute"</code>(片側は転置・対角と両側は MINERS 法)。テスト 66 件通過。確認用スクリプト 9 節。F ゼミ July(片側だけ)は千野版と固有値が一致</li>
+<li>先生の判断: socioKG は ④(その時点にいない人)が多く GSTATIS の事例には向かない＝合うデータを探す(全時点そろった二相三元の非対称データ)。データ探しは MDS 本の <code>データ候補一覧.md</code> とあわせて</li>
 </ul></div>
 </div>
 

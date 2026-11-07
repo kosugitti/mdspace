@@ -52,7 +52,11 @@ the revised version of GSTATIS (Chino, Grorud, &amp; Yoshino).</p>
 <span>  threshold <span class="op">=</span> <span class="fl">1</span>,</span>
 <span>  scale <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"norm"</span><span class="op">)</span>,</span>
 <span>  rotate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"std"</span>, <span class="st">"varimax"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
-<span>  project <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"column"</span><span class="op">)</span></span>
+<span>  project <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"row"</span>, <span class="st">"column"</span><span class="op">)</span>,</span>
+<span>  missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"impute"</span><span class="op">)</span>,</span>
+<span>  impute_ndim <span class="op">=</span> <span class="va">ndim</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-04</span>,</span>
+<span>  maxit <span class="op">=</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -92,6 +96,12 @@ normalization).</p></dd>
 <dt id="arg-project">project<a class="anchor" aria-label="anchor" href="#arg-project"></a></dt>
 <dd><p><code>"row"</code> (default, as in Chino's program) or <code>"column"</code>:
 which vectors of <code>H_i</code> are projected in step 3.</p></dd>
+
+
+<dt id="arg-missing-impute-ndim-tol-maxit">missing, impute_ndim, tol, maxit<a class="anchor" aria-label="anchor" href="#arg-missing-impute-ndim-tol-maxit"></a></dt>
+<dd><p>Handling of missing values in each
+source, as in <code><a href="hfm_mds.html">hfm_mds()</a></code>. An object absent at a source (whole row and
+column missing) is an error.</p></dd>
 
 </dl></div>
     <div class="section level2">

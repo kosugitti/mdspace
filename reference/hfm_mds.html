@@ -60,7 +60,15 @@ eigenvalue, <code>Re(z_j Conj(z_k))</code> reproduces the symmetric part and
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hfm_mds</span><span class="op">(</span><span class="va">x</span>, ndim <span class="op">=</span> <span class="fl">2</span>, rotate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"std"</span>, <span class="st">"varimax"</span>, <span class="st">"none"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">hfm_mds</span><span class="op">(</span></span>
+<span>  <span class="va">x</span>,</span>
+<span>  ndim <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  rotate <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"std"</span>, <span class="st">"varimax"</span>, <span class="st">"none"</span><span class="op">)</span>,</span>
+<span>  missing <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"none"</span>, <span class="st">"impute"</span><span class="op">)</span>,</span>
+<span>  impute_ndim <span class="op">=</span> <span class="va">ndim</span>,</span>
+<span>  tol <span class="op">=</span> <span class="fl">1e-04</span>,</span>
+<span>  maxit <span class="op">=</span> <span class="fl">1000</span></span>
+<span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -79,6 +87,28 @@ diagonal is used as is.</p></dd>
 <dt id="arg-rotate">rotate<a class="anchor" aria-label="anchor" href="#arg-rotate"></a></dt>
 <dd><p><code>"std"</code>, <code>"varimax"</code>, or <code>"none"</code>.</p></dd>
 
+
+<dt id="arg-missing">missing<a class="anchor" aria-label="anchor" href="#arg-missing"></a></dt>
+<dd><p><code>"none"</code> (default; missing values are an error) or
+<code>"impute"</code>. With <code>"impute"</code>, an off-diagonal cell whose transposed cell
+is observed is filled with that value (so the pair has no skew-symmetric
+part), and the diagonal cells and pairs missing on both sides are
+estimated by the MINERS method: starting from the mean of the observed
+cells in the same row and column, they are replaced by the rank-<code>p</code>
+HFM reconstruction <code>Re(H) + Im(H)</code> until the largest change is below
+<code>tol</code>. An object whose whole row and column are missing is an error.
+See <code><a href="missing_pattern.html">missing_pattern()</a></code>.</p></dd>
+
+
+<dt id="arg-impute-ndim">impute_ndim<a class="anchor" aria-label="anchor" href="#arg-impute-ndim"></a></dt>
+<dd><p>Number of HFM dimensions <code>p</code> used in the MINERS
+reconstruction; defaults to <code>ndim</code>.</p></dd>
+
+
+<dt id="arg-tol-maxit">tol, maxit<a class="anchor" aria-label="anchor" href="#arg-tol-maxit"></a></dt>
+<dd><p>Convergence criterion and maximum number of iterations of
+the MINERS method.</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -87,7 +117,9 @@ diagonal is used as is.</p></dd>
 imaginary parts of each dimension), <code>eigen</code> (all eigenvalues), <code>gof</code>
 (<code>lambda^2 / sum(lambda^2)</code> for each dimension), <code>unexplained</code> (share of
 the sum of squares of <code>H</code> not reproduced by the kept dimensions, i.e.
-1 - cumulative GOF), and <code>hermitian</code> (<code>H</code>). HFM is not a distance model,
+1 - cumulative GOF), <code>hermitian</code> (<code>H</code>), and, with <code>missing = "impute"</code>,
+<code>imputed</code> (data frame of the filled cells with their type and value) and
+<code>impute_niter</code>. HFM is not a distance model,
 so <code>stress</code> is <code>NA</code>.</p>
     </div>
     <div class="section level2">

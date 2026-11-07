@@ -78,3 +78,11 @@
 - コミット 9c3d113〜3f47502(push は 9c3d113 以降まだ)
 - 次: 欠測の扱い(千野版の再現か，mdspace
   独自の補完か)を先生と決める→円モデル
+- 欠測の扱いを実装(先生の決定=案 B の
+  b1・④はデータ不備としてエラー)。[`missing_pattern()`](https://kosugitti.github.io/mdspace/reference/missing_pattern.md)，[`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)・[`gstatis_mds()`](https://kosugitti.github.io/mdspace/reference/gstatis_mds.md)
+  の `missing = "impute"`(片側は転置・対角と両側は MINERS 法)。テスト 66
+  件通過。確認用スクリプト 9 節。F ゼミ
+  July(片側だけ)は千野版と固有値が一致
+- 先生の判断: socioKG は ④(その時点にいない人)が多く GSTATIS
+  の事例には向かない＝合うデータを探す(全時点そろった二相三元の非対称データ)。データ探しは
+  MDS 本の `データ候補一覧.md` とあわせて

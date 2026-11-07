@@ -12,7 +12,15 @@ to `j` (counterclockwise) shows the direction of asymmetry.
 ## Usage
 
 ``` r
-hfm_mds(x, ndim = 2, rotate = c("std", "varimax", "none"))
+hfm_mds(
+  x,
+  ndim = 2,
+  rotate = c("std", "varimax", "none"),
+  missing = c("none", "impute"),
+  impute_ndim = ndim,
+  tol = 1e-04,
+  maxit = 1000
+)
 ```
 
 ## Arguments
@@ -30,6 +38,29 @@ hfm_mds(x, ndim = 2, rotate = c("std", "varimax", "none"))
 
   `"std"`, `"varimax"`, or `"none"`.
 
+- missing:
+
+  `"none"` (default; missing values are an error) or `"impute"`. With
+  `"impute"`, an off-diagonal cell whose transposed cell is observed is
+  filled with that value (so the pair has no skew-symmetric part), and
+  the diagonal cells and pairs missing on both sides are estimated by
+  the MINERS method: starting from the mean of the observed cells in the
+  same row and column, they are replaced by the rank-`p` HFM
+  reconstruction `Re(H) + Im(H)` until the largest change is below
+  `tol`. An object whose whole row and column are missing is an error.
+  See
+  [`missing_pattern()`](https://kosugitti.github.io/mdspace/reference/missing_pattern.md).
+
+- impute_ndim:
+
+  Number of HFM dimensions `p` used in the MINERS reconstruction;
+  defaults to `ndim`.
+
+- tol, maxit:
+
+  Convergence criterion and maximum number of iterations of the MINERS
+  method.
+
 ## Value
 
 An object of class `c("mdspace_hfm", "mdspace")` with `coord` (n x ndim
@@ -37,8 +68,9 @@ complex matrix), `conf` (n x 2\*ndim real matrix: real and imaginary
 parts of each dimension), `eigen` (all eigenvalues), `gof`
 (`lambda^2 / sum(lambda^2)` for each dimension), `unexplained` (share of
 the sum of squares of `H` not reproduced by the kept dimensions, i.e.
-1 - cumulative GOF), and `hermitian` (`H`). HFM is not a distance model,
-so `stress` is `NA`.
+1 - cumulative GOF), `hermitian` (`H`), and, with `missing = "impute"`,
+`imputed` (data frame of the filled cells with their type and value) and
+`impute_niter`. HFM is not a distance model, so `stress` is `NA`.
 
 ## Details
 
