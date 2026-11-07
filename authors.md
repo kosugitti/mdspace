@@ -3,7 +3,7 @@
 ## Authors
 
 - **Koji Kosugi**. Author, maintainer.
-  [](https://orcid.org/0000-0002-0520-2492)
+  [](https://orcid.org/0000-0001-5816-0099)
 
 ## Citation
 

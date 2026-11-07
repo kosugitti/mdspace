@@ -38,9 +38,11 @@
 <h2 id="概要">概要<a class="anchor" aria-label="anchor" href="#%E6%A6%82%E8%A6%81"></a></h2>
 <p>MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。</p>
 <div class="section level3">
-<h3 id="現在の状態2026-04-14更新">現在の状態（2026-04-14更新）<a class="anchor" aria-label="anchor" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E7%8A%B6%E6%85%8B2026-04-14%E6%9B%B4%E6%96%B0"></a></h3>
-<ul><li>SMACOF アルゴリズム（ratio MDS）の開発用コードが <code>develop/2026MMDSchap8.R</code> で動作確認済み</li>
-<li>次: <code>classical_mds()</code> を R/ に実装 → <code>kruskal_mds()</code> のパッケージ関数化</li>
+<h3 id="現在の状態2026-11-07更新">現在の状態（2026-11-07更新）<a class="anchor" aria-label="anchor" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E7%8A%B6%E6%85%8B2026-11-07%E6%9B%B4%E6%96%B0"></a></h3>
+<ul><li>設計の正本は <code>develop/設計メモ_20261107.md</code>(既存 R でできること・骨組み・工程・nASYMS から取り入れること・決定事項)</li>
+<li>決定: 古典的MDS・Kruskal は<strong>先生が自分で書く</strong>(勉強のため・Claude は作らない)，楕円は1関数 <code>ellipse_mds()</code> で引数切り替え，CRAN は非対称系がそろってから検討</li>
+<li>週末の楽しみとして非対称系から順に作る(土台→HFM→円→楕円→二相三元円→スライドベクトル→DYNASCAL→フォンミーゼス→等高線)</li>
+<li>照合の基準: 岡太・今泉の公式 Shiny nASYMS(<a href="https://nasyms.shinyapps.io/nASYMS/" class="external-link uri">https://nasyms.shinyapps.io/nASYMS/</a> ・マニュアルは <code>develop/references/nASYMS/</code>)と書籍 Okada &amp; Imaizumi (2024) の表1.19・1.14</li>
 </ul></div>
 </div>
 <div class="section level2">
@@ -127,24 +129,28 @@
 <th>参考文献</th>
 <th>状態</th>
 </tr></thead><tbody><tr><td>hfm_mds()</td>
-<td>階層的因子モデル（HFM）</td>
-<td>千野 (Chino)</td>
+<td>エルミート形式モデル(Hermitian Form Model, HFM)</td>
+<td>Chino &amp; Shiraiwa (1993)</td>
+<td>実装済み(2026-11-07)</td>
+</tr><tr><td>gstatis_mds()</td>
+<td>GSTATIS(二相三元の HFM)</td>
+<td>Chino, Grorud &amp; Yoshino (1996)</td>
 <td>未実装</td>
 </tr><tr><td>dynascal_mds()</td>
 <td>DYNASCAL</td>
 <td>千野 (Chino)</td>
 <td>未実装</td>
-</tr><tr><td>ellipse1_mds()</td>
-<td>楕円モデル I</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+</tr><tr><td>circle_mds()</td>
+<td>円モデル(radius-distance)</td>
+<td>Okada &amp; Imaizumi (1987)</td>
 <td>未実装</td>
-</tr><tr><td>ellipse2_mds()</td>
-<td>楕円モデル II</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+</tr><tr><td>ellipse_mds()</td>
+<td>楕円モデル I〜III(引数で切り替え)</td>
+<td>Okada (1990)</td>
 <td>未実装</td>
-</tr><tr><td>ellipse3_mds()</td>
-<td>楕円モデル III</td>
-<td>岡太・今泉 (Okada &amp; Imaizumi)</td>
+</tr><tr><td>(未定)</td>
+<td>二相三元の円モデル</td>
+<td>Okada &amp; Imaizumi (1997)</td>
 <td>未実装</td>
 </tr><tr><td>vonmises_mds()</td>
 <td>フォンミーゼスモデル</td>

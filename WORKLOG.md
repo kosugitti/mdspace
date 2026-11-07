@@ -35,3 +35,26 @@
   - print/plot/summary メソッド
   - smacof パッケージとの照合テスト
 - 実装順序: classical_mds() → kruskal_mds() → indscal_mds() → …
+
+## 2026-11-07(土・午前)
+
+- 設計: `develop/設計メモ_20261107.md`。既存 R(smacof・asymmetry 2.0.7
+  など)でできることと自作するものの切り分け，工程(週末1コマずつ・非対称系から)，nASYMS(岡太・今泉の公式
+  Shiny)のマニュアルの読み取り
+- 決定(先生): 古典的MDS・Kruskal
+  は先生が自分で書く／楕円は1関数で引数切り替え／CRAN
+  は非対称系がそろってから検討／GSTATIS
+  を工程に入れる／スライドベクトル・ASYMSCAL は asymmetry を包む
+- 実装:
+  [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)(回転は
+  std・varimax・none)・共通の骨組み・[`as_proximity()`](https://kosugitti.github.io/mdspace/reference/as_proximity.md)・[`asym_decomp()`](https://kosugitti.github.io/mdspace/reference/asym_decomp.md)。テスト
+  24 件が通過。コミット 3f1e659(push はしていない)
+- 2001年の VB 版
+  GSTATIS(`Labo/Study：バックアップ/Chikage/非対称ＭＤＳスペシャル/GSTATIS.bas`)を発見。標準型の回転の向きが逆の疑い(設計メモ
+  6)
+- 確認用スクリプト `develop/20261107.R`(4x4
+  の例・2019年版との一致・回転の比較・studentmigration・socioKG)
+- DESCRIPTION の ORCID を
+  0000-0001-5816-0099(先生の正しい番号)に訂正してコミット
+- 次: 先生が `develop/20261107.R` で確かめる→
+  GSTATIS(`gstatis_mds()`)か円モデル
