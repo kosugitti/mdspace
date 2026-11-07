@@ -32,8 +32,10 @@
 #'   estimated by the MINERS method: starting from the mean of the observed
 #'   cells in the same row and column, they are replaced by the rank-`p`
 #'   HFM reconstruction `Re(H) + Im(H)` until the largest change is below
-#'   `tol`. An object whose whole row and column are missing is an error.
-#'   See [missing_pattern()].
+#'   `tol`. This is the refactoring method of Chino and Harshman (1996), a
+#'   generalization of Thomson's refactoring method, and the MINERS option of
+#'   the 2001 Visual Basic program. An object whose whole row and column are
+#'   missing is an error. See [missing_pattern()].
 #' @param impute_ndim Number of HFM dimensions `p` used in the MINERS
 #'   reconstruction; defaults to `ndim`.
 #' @param tol,maxit Convergence criterion and maximum number of iterations of
@@ -47,7 +49,12 @@
 #'   `imputed` (data frame of the filled cells with their type and value) and
 #'   `impute_niter`. HFM is not a distance model,
 #'   so `stress` is `NA`.
-#' @references Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
+#' @references Chino, N., & Harshman, R. A. (1996). A refactoring method for
+#'   fitting HFM that allows self-similarity estimation and missing values.
+#'   *Proceedings of the 24th Annual Meeting of the Behaviormetric Society of
+#'   Japan*, 206-207.
+#'
+#' Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
 #'   some non-distance models for asymmetric MDS. *Behaviormetrika*, 20(1),
 #'   35-47.
 #' @examples

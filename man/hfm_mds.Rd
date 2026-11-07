@@ -29,8 +29,10 @@ part), and the diagonal cells and pairs missing on both sides are
 estimated by the MINERS method: starting from the mean of the observed
 cells in the same row and column, they are replaced by the rank-\code{p}
 HFM reconstruction \code{Re(H) + Im(H)} until the largest change is below
-\code{tol}. An object whose whole row and column are missing is an error.
-See \code{\link[=missing_pattern]{missing_pattern()}}.}
+\code{tol}. This is the refactoring method of Chino and Harshman (1996), a
+generalization of Thomson's refactoring method, and the MINERS option of
+the 2001 Visual Basic program. An object whose whole row and column are
+missing is an error. See \code{\link[=missing_pattern]{missing_pattern()}}.}
 
 \item{impute_ndim}{Number of HFM dimensions \code{p} used in the MINERS
 reconstruction; defaults to \code{ndim}.}
@@ -77,6 +79,11 @@ fit
 plot(fit, dim = 1)
 }
 \references{
+Chino, N., & Harshman, R. A. (1996). A refactoring method for
+fitting HFM that allows self-similarity estimation and missing values.
+\emph{Proceedings of the 24th Annual Meeting of the Behaviormetric Society of
+Japan}, 206-207.
+
 Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
 some non-distance models for asymmetric MDS. \emph{Behaviormetrika}, 20(1),
 35-47.
