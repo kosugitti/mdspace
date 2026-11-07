@@ -28,9 +28,10 @@
 #' @return An object of class `c("mdspace_hfm", "mdspace")` with
 #'   `coord` (n x ndim complex matrix), `conf` (n x 2*ndim real matrix: real and
 #'   imaginary parts of each dimension), `eigen` (all eigenvalues), `gof`
-#'   (`lambda^2 / sum(lambda^2)` for each dimension), `stress` (share of the
-#'   sum of squares of `H` not reproduced by the kept dimensions), and
-#'   `hermitian` (`H`).
+#'   (`lambda^2 / sum(lambda^2)` for each dimension), `unexplained` (share of
+#'   the sum of squares of `H` not reproduced by the kept dimensions, i.e.
+#'   1 - cumulative GOF), and `hermitian` (`H`). HFM is not a distance model,
+#'   so `stress` is `NA`.
 #' @references Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
 #'   some non-distance models for asymmetric MDS. *Behaviormetrika*, 20(1),
 #'   35-47.
@@ -82,11 +83,13 @@ hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none")) {
   rownames(conf) <- rownames(X)
   colnames(conf) <- paste0(rep(c("Re", "Im"), ndim), rep(keep, each = 2))
 
+  # 適合の指標: 次元ごとの GOF と，残した次元で再現できなかった二乗和の割合
+  # (距離モデルではないので stress は使わない)
   gof <- lam^2 / sum(lam^2)
-  stress <- 1 - sum(gof[keep])
+  unexplained <- 1 - sum(gof[keep])
 
-  out <- .new_mdspace("hfm", conf = conf, stress = stress, data = X,
-                      call = cl, ndim = ndim, coord = coord, eigen = lam, gof = gof,
+  out <- .new_mdspace("hfm", conf = conf, data = X,
+                      call = cl, ndim = ndim, coord = coord, eigen = lam, gof = gof, unexplained = unexplained,
                       hermitian = H)
   return(out)
 }
@@ -95,7 +98,10 @@ hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none")) {
 print.mdspace_hfm <- function(x, digits = 4, ...) {
   NextMethod()
   k <- ncol(x$coord)
-  tab <- rbind(eigenvalue = x$eigen[seq_len(k)], gof = x$gof[seq_len(k)])
+  cat("Unexplained SS (1 - cumulative GOF):",
+      format(round(x$unexplained, digits), nsmall = digits), "\n")
+  tab <- rbind(eigenvalue = x$eigen[seq_len(k)], gof = x$gof[seq_len(k)],
+               cumulative = cumsum(x$gof[seq_len(k)]))
   colnames(tab) <- colnames(x$coord)
   cat("\n")
   print(round(tab, digits))

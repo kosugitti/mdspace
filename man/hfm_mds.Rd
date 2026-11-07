@@ -18,9 +18,10 @@ diagonal is used as is.}
 An object of class \code{c("mdspace_hfm", "mdspace")} with
 \code{coord} (n x ndim complex matrix), \code{conf} (n x 2*ndim real matrix: real and
 imaginary parts of each dimension), \code{eigen} (all eigenvalues), \code{gof}
-(\code{lambda^2 / sum(lambda^2)} for each dimension), \code{stress} (share of the
-sum of squares of \code{H} not reproduced by the kept dimensions), and
-\code{hermitian} (\code{H}).
+(\code{lambda^2 / sum(lambda^2)} for each dimension), \code{unexplained} (share of
+the sum of squares of \code{H} not reproduced by the kept dimensions, i.e.
+1 - cumulative GOF), and \code{hermitian} (\code{H}). HFM is not a distance model,
+so \code{stress} is \code{NA}.
 }
 \description{
 The square matrix \code{X} is split into its symmetric part \code{S} and its

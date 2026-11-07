@@ -18,7 +18,8 @@ test_that("hfm_mds reproduces H with all dimensions", {
   Hhat <- Z %*% diag(sign(fit$eigen)) %*% Conj(t(Z))
   expect_equal(Re(Hhat), unname(asym_decomp(x4)$S), ignore_attr = TRUE)
   expect_equal(Im(Hhat), unname(asym_decomp(x4)$K), ignore_attr = TRUE)
-  expect_equal(fit$stress, 0, tolerance = 1e-12)
+  expect_equal(fit$unexplained, 0, tolerance = 1e-12)
+  expect_true(is.na(fit$stress))
   expect_equal(sum(fit$gof), 1)
 })
 
