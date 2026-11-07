@@ -1,3 +1,25 @@
+# 千野先生の GSTATIS 出力(1999-12-30 のメール)との照合 2026-11-07 ----------------------
+# 出力の原本: Labo/Study：バックアップ/修士論文/Gstatis/GSTATISのoutput.txt
+# CSV にしたもの: develop/references/chino1999_gstatis/(git 管理外・ゼミ生の評定データを含む)
+# 入力の 19 行列は socioKG(S/F/T/N ゼミ)と完全に一致する(グループ1=S・2=F・3=T・4=N)
+# 結果: HFM・主軸回転・GSTATIS の全段(RV・妥協・軌跡・Lp ノルム・距離)が一致。欠測の埋め方だけ未特定
+# 原論文: Chino, Grorud & Yoshino「A revised version of GSTATIS」(行動計量学会大会抄録 pp.409-412)
+
+suppressMessages(devtools::load_all(quiet = TRUE))
+
+# 1. 欠測のない行列(F ゼミ May・N ゼミ April)で HFM を照合する ---------------------------
+inp <- read.csv("develop/references/chino1999_gstatis/chino1999_input.csv")
+evc <- read.csv("develop/references/chino1999_gstatis/chino1999_eigenvalues.csv")
+for (cs in list(c(2, "May"), c(4, "April"))) {
+  g <- as.integer(cs[1]); tm <- cs[2]
+  d <- inp[inp$group == g & inp$time == tm, ]; n <- max(d$row)
+  M <- matrix(NA, n, n); M[cbind(d$row, d$col)] <- d$value
+  f <- hfm_mds(M, ndim = 3, rotate = "none")
+  ce <- evc[evc$group == g & evc$stage == tm, ]
+  max(abs(sort(f$eigen, decreasing = TRUE) - ce$eigenvalue))   # 1e-5 程度になる
+}
+
+dir <- "develop/references/chino1999_gstatis/"
 # 2. 千野の印字した全固有分解から各時点の行列を組み直し，gstatis_mds() の結果を照合する --------
 #    (欠測の埋め方が特定できないので，千野が補完したあとの H を固有分解から復元して使う)
 #    照合: 妥協の固有値・軌跡(千野は対象ごとに最大の長さで割って印字)・Lp ノルム・H と Xi の距離
