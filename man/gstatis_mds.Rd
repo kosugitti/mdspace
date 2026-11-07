@@ -11,7 +11,11 @@ gstatis_mds(
   threshold = 1,
   scale = c("none", "norm"),
   rotate = c("std", "varimax", "none"),
-  project = c("row", "column")
+  project = c("row", "column"),
+  missing = c("none", "impute"),
+  impute_ndim = ndim,
+  tol = 1e-04,
+  maxit = 1000
 )
 }
 \arguments{
@@ -34,6 +38,10 @@ normalization).}
 
 \item{project}{\code{"row"} (default, as in Chino's program) or \code{"column"}:
 which vectors of \code{H_i} are projected in step 3.}
+
+\item{missing, impute_ndim, tol, maxit}{Handling of missing values in each
+source, as in \code{\link[=hfm_mds]{hfm_mds()}}. An object absent at a source (whole row and
+column missing) is an error.}
 }
 \value{
 An object of class \code{c("mdspace_gstatis", "mdspace")} with

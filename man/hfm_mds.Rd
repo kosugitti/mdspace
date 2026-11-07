@@ -4,7 +4,15 @@
 \alias{hfm_mds}
 \title{Hermitian form model for asymmetric proximities}
 \usage{
-hfm_mds(x, ndim = 2, rotate = c("std", "varimax", "none"))
+hfm_mds(
+  x,
+  ndim = 2,
+  rotate = c("std", "varimax", "none"),
+  missing = c("none", "impute"),
+  impute_ndim = ndim,
+  tol = 1e-04,
+  maxit = 1000
+)
 }
 \arguments{
 \item{x}{A square similarity matrix (rows = from, columns = to). The
@@ -13,6 +21,22 @@ diagonal is used as is.}
 \item{ndim}{Number of complex dimensions to keep.}
 
 \item{rotate}{\code{"std"}, \code{"varimax"}, or \code{"none"}.}
+
+\item{missing}{\code{"none"} (default; missing values are an error) or
+\code{"impute"}. With \code{"impute"}, an off-diagonal cell whose transposed cell
+is observed is filled with that value (so the pair has no skew-symmetric
+part), and the diagonal cells and pairs missing on both sides are
+estimated by the MINERS method: starting from the mean of the observed
+cells in the same row and column, they are replaced by the rank-\code{p}
+HFM reconstruction \code{Re(H) + Im(H)} until the largest change is below
+\code{tol}. An object whose whole row and column are missing is an error.
+See \code{\link[=missing_pattern]{missing_pattern()}}.}
+
+\item{impute_ndim}{Number of HFM dimensions \code{p} used in the MINERS
+reconstruction; defaults to \code{ndim}.}
+
+\item{tol, maxit}{Convergence criterion and maximum number of iterations of
+the MINERS method.}
 }
 \value{
 An object of class \code{c("mdspace_hfm", "mdspace")} with
@@ -20,7 +44,9 @@ An object of class \code{c("mdspace_hfm", "mdspace")} with
 imaginary parts of each dimension), \code{eigen} (all eigenvalues), \code{gof}
 (\code{lambda^2 / sum(lambda^2)} for each dimension), \code{unexplained} (share of
 the sum of squares of \code{H} not reproduced by the kept dimensions, i.e.
-1 - cumulative GOF), and \code{hermitian} (\code{H}). HFM is not a distance model,
+1 - cumulative GOF), \code{hermitian} (\code{H}), and, with \code{missing = "impute"},
+\code{imputed} (data frame of the filled cells with their type and value) and
+\code{impute_niter}. HFM is not a distance model,
 so \code{stress} is \code{NA}.
 }
 \description{

@@ -44,6 +44,9 @@
 #'   normalization).
 #' @param project `"row"` (default, as in Chino's program) or `"column"`:
 #'   which vectors of `H_i` are projected in step 3.
+#' @param missing,impute_ndim,tol,maxit Handling of missing values in each
+#'   source, as in [hfm_mds()]. An object absent at a source (whole row and
+#'   column missing) is an error.
 #' @param rotate Rotation of each complex plane; see [hfm_mds()].
 #' @return An object of class `c("mdspace_gstatis", "mdspace")` with
 #'   `conf`, `coord`, `eigen`, `gof`, `unexplained` (as in [hfm_mds()], for the
@@ -77,8 +80,11 @@
 gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
                         scale = c("none", "norm"),
                         rotate = c("std", "varimax", "none"),
-                        project = c("row", "column")) {
+                        project = c("row", "column"),
+                        missing = c("none", "impute"), impute_ndim = ndim,
+                        tol = 1e-4, maxit = 1000) {
   cl <- match.call()
+  missing <- match.arg(missing)
   scale <- match.arg(scale)
   project <- match.arg(project)
   rotate <- match.arg(rotate)
@@ -95,9 +101,6 @@ gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
   if (any(vapply(X, nrow, integer(1)) != n)) {
     stop("All matrices must have the same size.")
   }
-  if (any(vapply(X, anyNA, logical(1)))) {
-    stop("gstatis_mds() does not allow missing values.")
-  }
   labs <- rownames(X[[1]])
   X <- lapply(X, function(m) {
     dimnames(m) <- list(labs, labs)
@@ -106,6 +109,24 @@ gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
   occ <- names(x)
   if (is.null(occ)) occ <- paste0("T", seq_along(X))
   nT <- length(X)
+
+  # 欠測の扱い: 時点ごとに MINERS 法で補完する ----------------------------------------
+  imputed <- NULL
+  if (any(vapply(X, anyNA, logical(1)))) {
+    if (missing == "none") {
+      stop("`x` has missing values; use missing = \"impute\" (see missing_pattern()).")
+    }
+    imputed <- list()
+    for (t in seq_len(nT)) {
+      if (anyNA(X[[t]])) {
+        imp <- .impute_miners(X[[t]], p = impute_ndim, tol = tol, maxit = maxit, label = occ[t])
+        X[[t]] <- imp$data
+        imputed[[occ[t]]] <- cbind(source = occ[t], imp$imputed)
+      }
+    }
+    imputed <- do.call(rbind, imputed)
+    rownames(imputed) <- NULL
+  }
   if (ndim < 1 || ndim > n) {
     stop("`ndim` must be between 1 and n.")
   }
@@ -197,6 +218,9 @@ gstatis_mds <- function(x, ndim = 2, ncomp = 1, threshold = 1,
                       compromise = comp, trajectory = c1$trajectory,
                       lpnorm = c1$lpnorm, occasion = occasion,
                       scale = scale, project = project)
+  if (!is.null(imputed)) {
+    out$imputed <- imputed
+  }
   return(out)
 }
 

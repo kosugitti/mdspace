@@ -25,12 +25,27 @@
 #'   diagonal is used as is.
 #' @param ndim Number of complex dimensions to keep.
 #' @param rotate `"std"`, `"varimax"`, or `"none"`.
+#' @param missing `"none"` (default; missing values are an error) or
+#'   `"impute"`. With `"impute"`, an off-diagonal cell whose transposed cell
+#'   is observed is filled with that value (so the pair has no skew-symmetric
+#'   part), and the diagonal cells and pairs missing on both sides are
+#'   estimated by the MINERS method: starting from the mean of the observed
+#'   cells in the same row and column, they are replaced by the rank-`p`
+#'   HFM reconstruction `Re(H) + Im(H)` until the largest change is below
+#'   `tol`. An object whose whole row and column are missing is an error.
+#'   See [missing_pattern()].
+#' @param impute_ndim Number of HFM dimensions `p` used in the MINERS
+#'   reconstruction; defaults to `ndim`.
+#' @param tol,maxit Convergence criterion and maximum number of iterations of
+#'   the MINERS method.
 #' @return An object of class `c("mdspace_hfm", "mdspace")` with
 #'   `coord` (n x ndim complex matrix), `conf` (n x 2*ndim real matrix: real and
 #'   imaginary parts of each dimension), `eigen` (all eigenvalues), `gof`
 #'   (`lambda^2 / sum(lambda^2)` for each dimension), `unexplained` (share of
 #'   the sum of squares of `H` not reproduced by the kept dimensions, i.e.
-#'   1 - cumulative GOF), and `hermitian` (`H`). HFM is not a distance model,
+#'   1 - cumulative GOF), `hermitian` (`H`), and, with `missing = "impute"`,
+#'   `imputed` (data frame of the filled cells with their type and value) and
+#'   `impute_niter`. HFM is not a distance model,
 #'   so `stress` is `NA`.
 #' @references Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
 #'   some non-distance models for asymmetric MDS. *Behaviormetrika*, 20(1),
@@ -41,16 +56,26 @@
 #' fit
 #' plot(fit, dim = 1)
 #' @export
-hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none")) {
+hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none"),
+                    missing = c("none", "impute"), impute_ndim = ndim,
+                    tol = 1e-4, maxit = 1000) {
   cl <- match.call()
   rotate <- match.arg(rotate)
+  missing <- match.arg(missing)
   X <- as_proximity(x, type = "similarity")
-  if (anyNA(X)) {
-    stop("hfm_mds() does not allow missing values.")
-  }
   n <- nrow(X)
   if (ndim < 1 || ndim > n) {
     stop("`ndim` must be between 1 and n.")
+  }
+
+  # 欠測の扱い -------------------------------------------------------------------
+  imp <- NULL
+  if (anyNA(X)) {
+    if (missing == "none") {
+      stop("`x` has missing values; use missing = \"impute\" (see missing_pattern()).")
+    }
+    imp <- .impute_miners(X, p = impute_ndim, tol = tol, maxit = maxit)
+    X <- imp$data
   }
 
   # エルミート行列 H = S + iK を固有値分解し，各平面の回転を固定する ------------------
@@ -71,6 +96,10 @@ hfm_mds <- function(x, ndim = 2, rotate = c("std", "varimax", "none")) {
   out <- .new_mdspace("hfm", conf = conf, data = X,
                       call = cl, ndim = ndim, coord = coord, eigen = lam, gof = gof, unexplained = unexplained,
                       hermitian = H)
+  if (!is.null(imp)) {
+    out$imputed <- imp$imputed
+    out$impute_niter <- imp$niter
+  }
   return(out)
 }
 
