@@ -346,3 +346,4 @@ f_july <- sockg_raw$Fsemi$T3
 dimnames(f_july) <- list(1:14, 1:14)
 tibble(chino = ch_ev %>% filter(group == 2, stage == "July") %>% pull(eigenvalue),
        mdspace = sort(hfm_mds(f_july, ndim = 3, missing = "impute")$eigen, decreasing = TRUE))
+
