@@ -93,8 +93,9 @@ diagonal is used as is.</p></dd>
 <code>"impute"</code>. With <code>"impute"</code>, an off-diagonal cell whose transposed cell
 is observed is filled with that value (so the pair has no skew-symmetric
 part), and the diagonal cells and pairs missing on both sides are
-estimated by the MINERS method: starting from the mean of the observed
-cells in the same row and column, they are replaced by the rank-<code>p</code>
+estimated by the MINERS method: starting from the mean of the nonzero
+observed cells in the same row and column (the mean of all observed
+cells if they are all zero), they are replaced by the rank-<code>p</code>
 HFM reconstruction <code>Re(H) + Im(H)</code> until the largest change is below
 <code>tol</code>. This is the refactoring method of Chino and Harshman (1996), a
 generalization of Thomson's refactoring method, and the MINERS option of
@@ -104,7 +105,9 @@ missing is an error. See <code><a href="missing_pattern.html">missing_pattern()<
 
 <dt id="arg-impute-ndim">impute_ndim<a class="anchor" aria-label="anchor" href="#arg-impute-ndim"></a></dt>
 <dd><p>Number of HFM dimensions <code>p</code> used in the MINERS
-reconstruction; defaults to <code>ndim</code>.</p></dd>
+reconstruction; defaults to <code>ndim</code>. It must be smaller than the number of
+objects, and should be close to the true rank: a larger <code>p</code> leaves the
+diagonal and two-sided cells poorly determined.</p></dd>
 
 
 <dt id="arg-tol-maxit">tol, maxit<a class="anchor" aria-label="anchor" href="#arg-tol-maxit"></a></dt>
