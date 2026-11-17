@@ -78,9 +78,12 @@ and `converged`.
 ## Details
 
 The initial configuration is "rational" as in Okada and Imaizumi (1987):
-Torgerson's method applied to the symmetrized dissimilarities gives the
-configuration in `ndim_max` dimensions, and the least squares solution
-of `r_k - r_j = a_jk` (`a_jk` the skew-symmetric part of the
+Torgerson's method applied to the symmetrized dissimilarities, with the
+additive constant that makes them Euclidean (Cailliez, 1983, as in
+[`stats::cmdscale()`](https://rdrr.io/r/stats/cmdscale.html) with
+`add = TRUE`; Okada & Imaizumi, 1997, add Torgerson's constant), gives
+the configuration in `ndim_max` dimensions, and the least squares
+solution of `r_k - r_j = a_jk` (`a_jk` the skew-symmetric part of the
 dissimilarities) gives the radii. The solution in `ndim_max` dimensions
 is then reduced one dimension at a time by its principal axes down to
 `ndim`. Because the radius-distance model has local minima, `nrandom`
@@ -113,6 +116,13 @@ asymmetric proximities. *Behaviormetrika*, 14(21), 81-96.
 
 Okada, A., & Imaizumi, T. (2024). *Applied multidimensional scaling of
 asymmetric relationships*. Springer.
+
+Cailliez, F. (1983). The analytical solution of the additive constant
+problem. *Psychometrika*, 48(2), 305-308.
+
+Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+two-mode three-way proximities. *Journal of Classification*, 14,
+195-224.
 
 Kruskal, J. B. (1964b). Nonmetric multidimensional scaling: A numerical
 method. *Psychometrika*, 29(2), 115-129.
