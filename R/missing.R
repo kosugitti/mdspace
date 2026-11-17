@@ -65,7 +65,7 @@ missing_pattern <- function(x) {
 
 # MINERS 法による補完(内部) ---------------------------------------------------------
 # 1. 片側だけの欠けは転置の値で埋めて固定する(その組の歪対称部は 0 とみなす)
-# 2. 対角と両側の欠けは，行と列の観測値の平均を初期値にして，
+# 2. 対角と両側の欠けは，行と列の非零の観測値の平均を初期値にして(Chino & Harshman 1996)，
 #    HFM の上位 p 次元(絶対値の大きい順)で再構成した値に置き換えることを収束まで繰り返す
 #    (再構成した H から X = Re(H) + Im(H) で元の行列の値に戻す)
 .impute_miners <- function(X, p, tol = 1e-4, maxit = 1000, label = NULL) {
@@ -74,6 +74,11 @@ missing_pattern <- function(x) {
     stop(sprintf("Object(s) %s %s have no observed proximities (absent); remove them or the occasion.",
                  paste(types$absent, collapse = ", "),
                  if (is.null(label)) "" else paste0("at ", label)))
+  }
+  n <- nrow(X)
+  if (p >= n) {
+    stop(sprintf("`impute_ndim` (%d) must be smaller than the number of objects (%d); with full rank the reconstruction equals the current matrix and the missing cells never move.",
+                 p, n))
   }
   m <- is.na(X)
   W <- X
@@ -85,11 +90,13 @@ missing_pattern <- function(x) {
   niter <- 0L
   converged <- TRUE
   if (any(iter_cells)) {
-    # 初期値: 行 j と列 k の観測値の平均
+    # 初期値: 行 j と列 k の非零の観測値の平均(すべてゼロなら観測値の平均)
     for (k in which(iter_cells)) {
       j <- row(m)[k]
       l <- col(m)[k]
-      W[k] <- mean(c(X[j, ], X[, l]), na.rm = TRUE)
+      v <- c(X[j, ], X[, l])
+      v <- v[!is.na(v)]
+      W[k] <- if (any(v != 0)) mean(v[v != 0]) else mean(v)
     }
     converged <- FALSE
     for (it in seq_len(maxit)) {
@@ -105,6 +112,10 @@ missing_pattern <- function(x) {
         converged <- TRUE
         break
       }
+    }
+    if (converged && niter == 1L) {
+      warning(sprintf("MINERS imputation stopped at the first iteration%s: the imputed cells barely moved from their initial values; consider a smaller `impute_ndim`.",
+                      if (is.null(label)) "" else paste0(" (", label, ")")))
     }
     if (!converged) {
       warning(sprintf("MINERS imputation did not converge in %d iterations%s.", maxit,

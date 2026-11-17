@@ -70,3 +70,34 @@ test_that("gstatis_mds imputes each source and reports the cells", {
   expect_equal(unique(fit$imputed$source), "T2")
   expect_false(anyNA(fit$data$T2))
 })
+
+test_that("impute_ndim must be smaller than n", {
+  X <- make_lowrank(6)
+  X[3, 3] <- NA
+  expect_error(hfm_mds(X, ndim = 6, missing = "impute"), "impute_ndim")
+  expect_error(hfm_mds(X, ndim = 2, impute_ndim = 6, missing = "impute"), "impute_ndim")
+})
+
+test_that("initial values are the mean of nonzero observed cells", {
+  Y <- matrix(c(NA, 5, 0, 0, 1,
+                4, NA, 0, 0, 2,
+                0, 0, NA, 6, 3,
+                0, 1, 7, NA, 0,
+                2, 1, 2, 0, NA), 5, byrow = TRUE,
+              dimnames = list(letters[1:5], letters[1:5]))
+  # maxit = 0 なら反復せず初期値のまま返る: 初期値を直接確かめる
+  imp <- suppressWarnings(mdspace:::.impute_miners(Y, p = 1, maxit = 0))
+  expect_equal(unname(diag(imp$data)), c(3, 2.6, 4.5, 14 / 3, 11 / 6))
+  # 行と列がすべてゼロなら観測値の平均(= 0)に戻る
+  Z <- Y
+  Z[1, -1] <- 0; Z[-1, 1] <- 0
+  imp2 <- suppressWarnings(mdspace:::.impute_miners(Z, p = 1, maxit = 0))
+  expect_equal(unname(imp2$data[1, 1]), 0)
+})
+
+test_that("stopping at the first iteration warns", {
+  X <- make_lowrank(6)
+  X[3, 3] <- NA
+  # 階数 5(= n - 1) なら再構成がほぼ今の行列のまま
+  expect_warning(mdspace:::.impute_miners(X, p = 5, tol = 1e-2), "first iteration")
+})

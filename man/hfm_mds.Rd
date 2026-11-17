@@ -26,8 +26,9 @@ diagonal is used as is.}
 \code{"impute"}. With \code{"impute"}, an off-diagonal cell whose transposed cell
 is observed is filled with that value (so the pair has no skew-symmetric
 part), and the diagonal cells and pairs missing on both sides are
-estimated by the MINERS method: starting from the mean of the observed
-cells in the same row and column, they are replaced by the rank-\code{p}
+estimated by the MINERS method: starting from the mean of the nonzero
+observed cells in the same row and column (the mean of all observed
+cells if they are all zero), they are replaced by the rank-\code{p}
 HFM reconstruction \code{Re(H) + Im(H)} until the largest change is below
 \code{tol}. This is the refactoring method of Chino and Harshman (1996), a
 generalization of Thomson's refactoring method, and the MINERS option of
@@ -35,7 +36,9 @@ the 2001 Visual Basic program. An object whose whole row and column are
 missing is an error. See \code{\link[=missing_pattern]{missing_pattern()}}.}
 
 \item{impute_ndim}{Number of HFM dimensions \code{p} used in the MINERS
-reconstruction; defaults to \code{ndim}.}
+reconstruction; defaults to \code{ndim}. It must be smaller than the number of
+objects, and should be close to the true rank: a larger \code{p} leaves the
+diagonal and two-sided cells poorly determined.}
 
 \item{tol, maxit}{Convergence criterion and maximum number of iterations of
 the MINERS method.}
