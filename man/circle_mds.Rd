@@ -12,12 +12,14 @@ circle_mds(
   nrandom = 10,
   maxit = 1000,
   reltol = 1e-10,
-  seed = 1
+  seed = 1,
+  kappa = 10
 )
 }
 \arguments{
-\item{x}{A square matrix of asymmetric proximities. The diagonal is
-ignored; other missing cells are left out of the fit.}
+\item{x}{A square matrix of asymmetric proximities, or a list of such
+matrices (one per source) for the two-mode three-way model. The diagonal
+is ignored; other missing cells are left out of the fit.}
 
 \item{ndim}{Number of dimensions.}
 
@@ -35,6 +37,12 @@ start (\code{0} uses the rational start only).}
 \item{seed}{Random seed for the random starts. The state of the random
 number generator is restored afterwards. \code{NULL} uses (and advances) the
 current state of the generator.}
+
+\item{kappa}{Two-mode three-way model only: the upper bound of the ratio
+of the longest to the shortest semiaxis of the ellipses of a source
+(\verb{max_t u_it / min_t u_it}). Without it the ellipses can collapse to line
+segments while the radii diverge. A warning is given when a solution
+reaches the bound.}
 }
 \value{
 An object of class \code{c("mdspace_circle", "mdspace")} with \code{conf}
@@ -82,6 +90,26 @@ The solution is normalized so that the configuration is centered with the
 sum of squared coordinates equal to \code{n}, and the smallest radius is 0 (the
 radii are determined only up to an additive constant), as in the nASYMS
 program.
+
+\strong{Two-mode three-way model.} When \code{x} is a list of \code{N} matrices (sources),
+the model of Okada and Imaizumi (1997) is fitted: a common configuration
+of points and circles, a symmetry weight \code{w_i} and asymmetry weights \code{u_it}
+for each source. In source \code{i} the circle of object \code{j} becomes an ellipse
+with semiaxes \verb{u_it r_j}, and
+\verb{m_jki = w_i d_jk - v_jki (r_j - r_k)} with
+\verb{v_jki = w_i d_jk / sqrt(sum_t ((x_jt - x_kt) / u_it)^2)}.
+\verb{S = sqrt(mean_i S_i^2)}, where \code{S_i} is stress formula 2 within source
+\code{i}. The asymmetry weights are fixed to have geometric mean 1 over all
+sources and dimensions (they and the radii are otherwise determined only
+up to reciprocal scaling), the aspect ratio of each source is bounded by
+\code{kappa}, and the problem is solved by L-BFGS-B. \code{w_i} does not affect \code{S}
+and is set afterwards so that \code{sum_jk (m_jki - mbar_i)^2 = n}, as in the
+original paper and nASYMS. The initial configuration is the Torgerson
+solution (with the additive constant) of the mean of the symmetrized
+dissimilarities; when reducing from \code{ndim_max}, the dimensions with the
+smallest contribution are dropped. The result additionally has
+\code{weights} (data frame with \code{w} and \code{u1}, \code{u2}, ...), \code{aspect},
+\code{stress_source} and \code{at_bound}.
 
 The minimization uses the analytic gradient of \code{S} with the disparities
 held fixed, which is the gradient of \code{S} as a function of the coordinates

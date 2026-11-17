@@ -38,13 +38,34 @@
 #' radii are determined only up to an additive constant), as in the nASYMS
 #' program.
 #'
+#' **Two-mode three-way model.** When `x` is a list of `N` matrices (sources),
+#' the model of Okada and Imaizumi (1997) is fitted: a common configuration
+#' of points and circles, a symmetry weight `w_i` and asymmetry weights `u_it`
+#' for each source. In source `i` the circle of object `j` becomes an ellipse
+#' with semiaxes `u_it r_j`, and
+#' `m_jki = w_i d_jk - v_jki (r_j - r_k)` with
+#' `v_jki = w_i d_jk / sqrt(sum_t ((x_jt - x_kt) / u_it)^2)`.
+#' `S = sqrt(mean_i S_i^2)`, where `S_i` is stress formula 2 within source
+#' `i`. The asymmetry weights are fixed to have geometric mean 1 over all
+#' sources and dimensions (they and the radii are otherwise determined only
+#' up to reciprocal scaling), the aspect ratio of each source is bounded by
+#' `kappa`, and the problem is solved by L-BFGS-B. `w_i` does not affect `S`
+#' and is set afterwards so that `sum_jk (m_jki - mbar_i)^2 = n`, as in the
+#' original paper and nASYMS. The initial configuration is the Torgerson
+#' solution (with the additive constant) of the mean of the symmetrized
+#' dissimilarities; when reducing from `ndim_max`, the dimensions with the
+#' smallest contribution are dropped. The result additionally has
+#' `weights` (data frame with `w` and `u1`, `u2`, ...), `aspect`,
+#' `stress_source` and `at_bound`.
+#'
 #' The minimization uses the analytic gradient of `S` with the disparities
 #' held fixed, which is the gradient of `S` as a function of the coordinates
 #' and radii (Kruskal, 1964b), and [stats::optim()] (BFGS) instead of the
 #' steepest descent of the original program.
 #'
-#' @param x A square matrix of asymmetric proximities. The diagonal is
-#'   ignored; other missing cells are left out of the fit.
+#' @param x A square matrix of asymmetric proximities, or a list of such
+#'   matrices (one per source) for the two-mode three-way model. The diagonal
+#'   is ignored; other missing cells are left out of the fit.
 #' @param ndim Number of dimensions.
 #' @param type `"similarity"` (default) or `"dissimilarity"`. If `x` has a
 #'   `type` attribute set by [as_proximity()], that is used.
@@ -53,6 +74,11 @@
 #' @param nrandom Number of random starts tried in addition to the rational
 #'   start (`0` uses the rational start only).
 #' @param maxit,reltol Passed to [stats::optim()].
+#' @param kappa Two-mode three-way model only: the upper bound of the ratio
+#'   of the longest to the shortest semiaxis of the ellipses of a source
+#'   (`max_t u_it / min_t u_it`). Without it the ellipses can collapse to line
+#'   segments while the radii diverge. A warning is given when a solution
+#'   reaches the bound.
 #' @param seed Random seed for the random starts. The state of the random
 #'   number generator is restored afterwards. `NULL` uses (and advances) the
 #'   current state of the generator.
@@ -87,8 +113,13 @@
 #' @export
 circle_mds <- function(x, ndim = 2, type = c("similarity", "dissimilarity"),
                        ndim_max = ndim, nrandom = 10, maxit = 1000,
-                       reltol = 1e-10, seed = 1) {
+                       reltol = 1e-10, seed = 1, kappa = 10) {
   cl <- match.call()
+  # 行列のリストなら二相三元(Okada & Imaizumi, 1997) ------------------------------------
+  if (is.list(x) && !is.data.frame(x)) {
+    type <- match.arg(type)
+    return(.circle3(x, ndim, type, ndim_max, nrandom, maxit, seed, kappa, cl))
+  }
   if (!is.null(attr(x, "type")) && missing(type)) {
     type <- attr(x, "type")
   }
@@ -306,6 +337,16 @@ print.mdspace_circle <- function(x, digits = 4, ...) {
                 length(x$starts), length(x$starts) - 1,
                 if (x$best_start == 1) "rational" else paste("random", x$best_start - 1),
                 min(x$starts), max(x$starts)))
+  }
+  if (isTRUE(x$threeway)) {
+    cat("Two-mode three-way model (Okada & Imaizumi, 1997); S by source:\n")
+    print(round(x$stress_source, digits))
+    cat("Weights (w: symmetry, u: asymmetry) and aspect ratio:\n")
+    wt <- x$weights
+    wt$aspect <- x$aspect
+    num <- vapply(wt, is.numeric, logical(1))
+    wt[num] <- lapply(wt[num], round, digits)
+    print(wt, row.names = FALSE)
   }
   if (length(x$path) > 1) {
     cat("S by dimensionality (rational start):\n")
