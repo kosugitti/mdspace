@@ -100,7 +100,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 | dynascal_mds() | DYNASCAL | 千野 (Chino) | 未実装 |
 | circle_mds() | 円モデル(radius-distance) | Okada & Imaizumi (1987) | 実装済み(2026-11-17・nASYMS と照合) |
 | ellipse_mds() | 楕円モデル I〜III(引数で切り替え) | Okada (1990) | 未実装 |
-| (未定) | 二相三元の円モデル | Okada & Imaizumi (1997) | 未実装 |
+| circle_mds(list) | 二相三元の円モデル(行列のリストを渡す) | Okada & Imaizumi (1997) | 実装済み(2026-11-17・nASYMS と照合・縦横比の上限 kappa) |
 | vonmises_mds() | フォンミーゼスモデル | 荘島 (Shojima) | 未実装 |
 | contour_mds() | 等高線マップモデル | Abelson (1954-55); 小杉・藤原 (2004) | 未実装 |
 

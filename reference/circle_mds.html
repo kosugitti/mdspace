@@ -77,7 +77,8 @@ disparities obtained by monotone regression (primary approach to ties).
 <span>  nrandom <span class="op">=</span> <span class="fl">10</span>,</span>
 <span>  maxit <span class="op">=</span> <span class="fl">1000</span>,</span>
 <span>  reltol <span class="op">=</span> <span class="fl">1e-10</span>,</span>
-<span>  seed <span class="op">=</span> <span class="fl">1</span></span>
+<span>  seed <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  kappa <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,8 +87,9 @@ disparities obtained by monotone regression (primary approach to ties).
 
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
-<dd><p>A square matrix of asymmetric proximities. The diagonal is
-ignored; other missing cells are left out of the fit.</p></dd>
+<dd><p>A square matrix of asymmetric proximities, or a list of such
+matrices (one per source) for the two-mode three-way model. The diagonal
+is ignored; other missing cells are left out of the fit.</p></dd>
 
 
 <dt id="arg-ndim">ndim<a class="anchor" aria-label="anchor" href="#arg-ndim"></a></dt>
@@ -117,6 +119,14 @@ start (<code>0</code> uses the rational start only).</p></dd>
 <dd><p>Random seed for the random starts. The state of the random
 number generator is restored afterwards. <code>NULL</code> uses (and advances) the
 current state of the generator.</p></dd>
+
+
+<dt id="arg-kappa">kappa<a class="anchor" aria-label="anchor" href="#arg-kappa"></a></dt>
+<dd><p>Two-mode three-way model only: the upper bound of the ratio
+of the longest to the shortest semiaxis of the ellipses of a source
+(<code>max_t u_it / min_t u_it</code>). Without it the ellipses can collapse to line
+segments while the radii diverge. A warning is given when a solution
+reaches the bound.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -152,6 +162,25 @@ should then be interpreted with care. See
 sum of squared coordinates equal to <code>n</code>, and the smallest radius is 0 (the
 radii are determined only up to an additive constant), as in the nASYMS
 program.</p>
+<p><strong>Two-mode three-way model.</strong> When <code>x</code> is a list of <code>N</code> matrices (sources),
+the model of Okada and Imaizumi (1997) is fitted: a common configuration
+of points and circles, a symmetry weight <code>w_i</code> and asymmetry weights <code>u_it</code>
+for each source. In source <code>i</code> the circle of object <code>j</code> becomes an ellipse
+with semiaxes <code>u_it r_j</code>, and
+<code>m_jki = w_i d_jk - v_jki (r_j - r_k)</code> with
+<code>v_jki = w_i d_jk / sqrt(sum_t ((x_jt - x_kt) / u_it)^2)</code>.
+<code>S = sqrt(mean_i S_i^2)</code>, where <code>S_i</code> is stress formula 2 within source
+<code>i</code>. The asymmetry weights are fixed to have geometric mean 1 over all
+sources and dimensions (they and the radii are otherwise determined only
+up to reciprocal scaling), the aspect ratio of each source is bounded by
+<code>kappa</code>, and the problem is solved by L-BFGS-B. <code>w_i</code> does not affect <code>S</code>
+and is set afterwards so that <code>sum_jk (m_jki - mbar_i)^2 = n</code>, as in the
+original paper and nASYMS. The initial configuration is the Torgerson
+solution (with the additive constant) of the mean of the symmetrized
+dissimilarities; when reducing from <code>ndim_max</code>, the dimensions with the
+smallest contribution are dropped. The result additionally has
+<code>weights</code> (data frame with <code>w</code> and <code>u1</code>, <code>u2</code>, ...), <code>aspect</code>,
+<code>stress_source</code> and <code>at_bound</code>.</p>
 <p>The minimization uses the analytic gradient of <code>S</code> with the disparities
 held fixed, which is the gradient of <code>S</code> as a function of the coordinates
 and radii (Kruskal, 1964b), and <code><a href="https://rdrr.io/r/stats/optim.html" class="external-link">stats::optim()</a></code> (BFGS) instead of the
