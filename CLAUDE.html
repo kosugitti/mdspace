@@ -38,14 +38,14 @@
 <h2 id="概要">概要<a class="anchor" aria-label="anchor" href="#%E6%A6%82%E8%A6%81"></a></h2>
 <p>MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。</p>
 <div class="section level3">
-<h3 id="現在の状態2026-11-07更新">現在の状態（2026-11-07更新）<a class="anchor" aria-label="anchor" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E7%8A%B6%E6%85%8B2026-11-07%E6%9B%B4%E6%96%B0"></a></h3>
-<ul><li>設計の正本は <code>develop/設計メモ_20261107.md</code>(既存 R でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)</li>
-<li>決定: 古典的MDS・Kruskal は<strong>先生が自分で書く</strong>(勉強のため・Claude は作らない)，楕円は1関数 <code>ellipse_mds()</code> で引数切り替え，CRAN は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は asymmetry を包む</li>
-<li>
-<strong>実装済み</strong>: <code><a href="reference/hfm_mds.html">hfm_mds()</a></code>(回転 std/varimax/none・適合は Unexplained SS)，<code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code>(改訂版 GSTATIS・千野版 FORTRAN の出力と全段一致)，<code><a href="reference/as_proximity.html">as_proximity()</a></code>・<code><a href="reference/asym_decomp.html">asym_decomp()</a></code>・<code><a href="reference/missing_pattern.html">missing_pattern()</a></code>，欠測は <code>missing = "impute"</code>(片側は転置・対角と両側は MINERS 法＝Chino &amp; Harshman 1996・その時点にいない人はエラー)。テスト 66 件</li>
-<li>照合: 千野版の出力は <code>Labo/Study：バックアップ/修士論文/Gstatis/GSTATISのoutput.txt</code>(1999)。CSV は <code>develop/references/chino1999_gstatis/</code>(git 管理外・ゼミ生のデータ)，照合スクリプトは <code>develop/20261107_chino_check.R</code>。先生の目視用は <code>develop/20261107.R</code>
+<h3 id="現在の状態2026-11-17更新">現在の状態（2026-11-17更新）<a class="anchor" aria-label="anchor" href="#%E7%8F%BE%E5%9C%A8%E3%81%AE%E7%8A%B6%E6%85%8B2026-11-17%E6%9B%B4%E6%96%B0"></a></h3>
+<ul><li>設計の正本は <code>develop/設計メモ_20261107.md</code>(既存 R でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは <code>develop/設計メモ_二相三元円モデル_20261117.md</code>
 </li>
-<li>次: 千野先生の他のモデル(DYNASCAL・ASYMSCAL・GIPSCAL・HCM・複素差分系)の論文を集めて翻訳→実装の順を決める。GSTATIS の事例データ探し(socioKG は欠席者が多く不向き)。週末の楽しみとして非対称系を順に(円→楕円→二相三元円→DYNASCAL→フォンミーゼス→等高線)</li>
+<li>決定: 古典的MDS・Kruskal は<strong>先生が自分で書く</strong>(勉強のため・Claude は作らない)，楕円は1関数 <code>ellipse_mds()</code> で引数切り替え，<strong>二相三元の円モデルは <code><a href="reference/circle_mds.html">circle_mds()</a></code> に統合</strong>(行列のリストを渡す)，CRAN は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は asymmetry を包む</li>
+<li>
+<strong>実装済み</strong>: <code><a href="reference/hfm_mds.html">hfm_mds()</a></code>，<code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code>，<code><a href="reference/as_proximity.html">as_proximity()</a></code>・<code><a href="reference/asym_decomp.html">asym_decomp()</a></code>・<code><a href="reference/missing_pattern.html">missing_pattern()</a></code>，欠測 <code>missing = "impute"</code>(MINERS 法・初期値は非零の平均・<code>impute_ndim &lt; n</code>)，<strong><code><a href="reference/circle_mds.html">circle_mds()</a></code></strong>(一相二元＝Okada &amp; Imaizumi 1987・二相三元＝1997・ストレス式2を解析的勾配で BFGS/L-BFGS-B・初期値は加算定数つき Torgerson＋乱数10本・二相三元は縦横比の上限 <code>kappa = 10</code>)。nASYMS と照合済み(S は全次元で nASYMS 以下＝nASYMS は収束判定がゆるく途中で止まる)。パラメタリカバリも済み。テスト 130 件</li>
+<li>照合: 千野版は <code>develop/20261107_chino_check.R</code>。円モデルは <code>tests/testthat/fixtures/</code>(書籍表1.19・1.14 と nASYMS の実出力・README に出所)</li>
+<li>次: 楕円モデル(書籍 Okada &amp; Imaizumi 2024 を購入済み・到着待ち＝楕円 I〜III を確かめる。届くまでは nASYMS の楕円モデルの出力を取って先行もできる)。二相三元の plot でソースの楕円を描く・欠測ソースのテスト。千野先生の他のモデル(DYNASCAL ほか)の文献集め。GSTATIS の事例データ探し</li>
 <li>照合の基準: 岡太・今泉の公式 Shiny nASYMS(<a href="https://nasyms.shinyapps.io/nASYMS/" class="external-link uri">https://nasyms.shinyapps.io/nASYMS/</a> ・マニュアルは <code>develop/references/nASYMS/</code>)と書籍 Okada &amp; Imaizumi (2024) の表1.19・1.14</li>
 </ul></div>
 </div>
