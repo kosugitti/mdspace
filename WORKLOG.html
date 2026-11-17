@@ -174,6 +174,19 @@
 <li>回復: n = 10・20 は良好(座標の RMSE の中央値 0.001〜0.05，半径の相関 0.99 以上)。<strong>n = 5 は S = 0 になるのに座標がずれる</strong>(RMSE 0.07〜0.13・最大 0.8)＝局所解ではなく，セルが20個しかなく非計量では布置が一意に決まらない(識別の問題)。n = 10・p = 3 でも1回(RMSE 0.19・S = 0)</li>
 <li>所要時間: 1回(11本)あたり n=5 で 0.2 秒，n=20・p=10 で 7 秒</li>
 </ul></div>
+<div class="section level3">
+<h3 id="続きコミット-a479d05-のあと">続き(コミット a479d05 のあと)<a class="anchor" aria-label="anchor" href="#%E7%B6%9A%E3%81%8D%E3%82%B3%E3%83%9F%E3%83%83%E3%83%88-a479d05-%E3%81%AE%E3%81%82%E3%81%A8"></a></h3>
+<ul><li>書籍 Okada &amp; Imaizumi (2024) は研究室になかった→先生が購入済み。O&amp;I (1997) は Journal of Classification 14, 195-224＝SpringerLink(大学の契約)か ILL で入手</li>
+<li>circle_mds のヘルプに「対象が少ないと解が一意に決まらない」注意(シミュレーションの結果)を追記。対角以外の欠測(片側・両側)のテストを追加。全件通過</li>
+<li>
+<code>develop/20261117_circle_two_solutions.R</code>＋図 <code>develop/sim_results/20261117_circle_two_solutions.png</code>: 2次元の S = 0.3716(合理的初期値・nASYMS の谷)と 0.3647(11本の最良)を回転をそろえて比較。<strong>違いは Classical と Managers の上下が入れ替わる所だけ</strong>(Classical の D2 −0.86→−0.40，Managers −0.34→−0.72)。他の8職業の位置はほぼ同じ。半径は最良の解で全体に 0.02〜0.09 小さく，大きさの順は Managers と Proprietors が入れ替わるだけ</li>
+<li>次: 書籍が届いたら表1.19の解(S と布置)がどちらの谷かを確認→楕円モデル。O&amp;I (1997) が届いたら二相三元の円モデル(nASYMS マニュアル 2.3 節に表1.14の例あり＝テスト用データの準備は先にできる)</li>
+<li>
+<strong>O&amp;I (1997) 入手</strong>(先生が SpringerLink から)。<code>develop/references/Okada_Imaizumi_1997_JClass14_two_mode_three_way.pdf</code>(git 管理外)へ移し，Claude_in は空に。テキスト層あり(ただし式は崩れている＝式は画像で読み直すこと)
+<ul><li>ざっと読んだ要点: 共通の布置(点＋円)に，ソース i ごとの対称重み w_i(布置全体を伸縮・d_jki = w_i d_jk)と非対称重み u_it(次元ごとに半径を伸縮→ソース i では円が楕円になる)。m_jki = d_jki − v_jki r_j + v_kji r_k(v は楕円の向きによる係数・式2.4〜2.5)。S はソースごとのストレス式2 S_i をまとめたもの(式3.1・形は要確認)。最急降下法で r→X→正規化(w を導出)→U→正規化の順に更新(3.1節)。例は 1955〜1985 年の8職業の世代間移動</li>
+<li>次: 式2.4・2.5・3.1 と勾配を画像で読む→nASYMS マニュアル 2.3 節の表1.14でテスト用データ→実装</li>
+</ul></li>
+</ul></div>
 </div>
 </div>
 

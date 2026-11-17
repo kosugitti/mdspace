@@ -140,6 +140,12 @@ dimension at a time by its principal axes down to <code>ndim</code>. Because the
 radius-distance model has local minima, <code>nrandom</code> random starts (10 by
 default) are also tried in <code>ndim</code> dimensions and the solution with the
 smallest <code>S</code> is returned (Okada &amp; Imaizumi, 2024, Section 4.1.1).</p>
+<p>With few objects the solution may not be unique: a simulation with
+<code>n = 5</code> (20 off-diagonal cells) reached <code>S = 0</code> even with error while the
+coordinates differed from the true ones by up to 0.8 (normalized scale), and
+one case with <code>n = 10</code> in three dimensions did the same. The configuration
+should then be interpreted with care. See
+<code>develop/20261117_circle_recovery.R</code> in the source repository.</p>
 <p>The solution is normalized so that the configuration is centered with the
 sum of squared coordinates equal to <code>n</code>, and the smallest radius is 0 (the
 radii are determined only up to an additive constant), as in the nASYMS

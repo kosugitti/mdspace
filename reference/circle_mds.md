@@ -88,6 +88,13 @@ random starts (10 by default) are also tried in `ndim` dimensions and
 the solution with the smallest `S` is returned (Okada & Imaizumi, 2024,
 Section 4.1.1).
 
+With few objects the solution may not be unique: a simulation with
+`n = 5` (20 off-diagonal cells) reached `S = 0` even with error while
+the coordinates differed from the true ones by up to 0.8 (normalized
+scale), and one case with `n = 10` in three dimensions did the same. The
+configuration should then be interpreted with care. See
+`develop/20261117_circle_recovery.R` in the source repository.
+
 The solution is normalized so that the configuration is centered with
 the sum of squared coordinates equal to `n`, and the smallest radius is
 0 (the radii are determined only up to an additive constant), as in the
