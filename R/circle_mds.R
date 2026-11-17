@@ -15,8 +15,10 @@
 #' `S` is minimized over the coordinates and radii.
 #'
 #' The initial configuration is "rational" as in Okada and Imaizumi (1987):
-#' Torgerson's method applied to the symmetrized dissimilarities gives the
-#' configuration in `ndim_max` dimensions, and the least squares solution of
+#' Torgerson's method applied to the symmetrized dissimilarities, with the
+#' additive constant that makes them Euclidean (Cailliez, 1983, as in
+#' [stats::cmdscale()] with `add = TRUE`; Okada & Imaizumi, 1997, add
+#' Torgerson's constant), gives the configuration in `ndim_max` dimensions, and the least squares solution of
 #' `r_k - r_j = a_jk` (`a_jk` the skew-symmetric part of the dissimilarities)
 #' gives the radii. The solution in `ndim_max` dimensions is then reduced one
 #' dimension at a time by its principal axes down to `ndim`. Because the
@@ -66,6 +68,12 @@
 #'
 #' Okada, A., & Imaizumi, T. (2024). *Applied multidimensional scaling of
 #'   asymmetric relationships*. Springer.
+#'
+#' Cailliez, F. (1983). The analytical solution of the additive constant
+#'   problem. *Psychometrika*, 48(2), 305-308.
+#'
+#' Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+#'   two-mode three-way proximities. *Journal of Classification*, 14, 195-224.
 #'
 #' Kruskal, J. B. (1964b). Nonmetric multidimensional scaling: A numerical
 #'   method. *Psychometrika*, 29(2), 115-129.
@@ -162,7 +170,7 @@ circle_mds <- function(x, ndim = 2, type = c("similarity", "dissimilarity"),
 # 初期布置と初期半径(内部) ---------------------------------------------------------
 # 類似度は最大値から引いて非類似度にし，対称部に Torgerson 法(stats::cmdscale)，
 # 歪対称部 a_jk = r_k - r_j の最小二乗解(和 0)を半径の初期値にする
-.circle_init <- function(X, p, type) {
+.circle_init <- function(X, p, type, additive = TRUE) {
   # 加える定数で Torgerson 法の結果が変わらないよう，非対角の最小を 0 にそろえる
   delta <- if (type == "similarity") -X else X
   diag(delta) <- NA
@@ -174,7 +182,14 @@ circle_mds <- function(x, ndim = 2, type = c("similarity", "dissimilarity"),
   delta[is.na(delta)] <- mean(delta, na.rm = TRUE)
   sym <- (delta + t(delta)) / 2
   skew <- (delta - t(delta)) / 2
-  conf <- suppressWarnings(stats::cmdscale(sym, k = p))
+  # 加算定数(Okada & Imaizumi 1997 の初期値は Torgerson 1952 の加算定数を足す)。
+  # ここでは stats::cmdscale(add = TRUE) の Cailliez (1983) の定数＝非対角に足すと
+  # ユークリッド距離になる最小の定数を使う
+  if (additive) {
+    conf <- suppressWarnings(stats::cmdscale(sym, k = p, add = TRUE)$points)
+  } else {
+    conf <- suppressWarnings(stats::cmdscale(sym, k = p))
+  }
   conf <- matrix(conf, nrow = nrow(X))
   # 正の固有値が p 個に足りないときは，残りの次元を固有ベクトルの向きに小さく与える
   # (0 のままだとその次元の勾配が常に 0 になり，動かなくなる)

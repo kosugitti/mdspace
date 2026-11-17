@@ -60,8 +60,10 @@ disparities obtained by monotone regression (primary approach to ties).
 }
 \details{
 The initial configuration is "rational" as in Okada and Imaizumi (1987):
-Torgerson's method applied to the symmetrized dissimilarities gives the
-configuration in \code{ndim_max} dimensions, and the least squares solution of
+Torgerson's method applied to the symmetrized dissimilarities, with the
+additive constant that makes them Euclidean (Cailliez, 1983, as in
+\code{\link[stats:cmdscale]{stats::cmdscale()}} with \code{add = TRUE}; Okada & Imaizumi, 1997, add
+Torgerson's constant), gives the configuration in \code{ndim_max} dimensions, and the least squares solution of
 \code{r_k - r_j = a_jk} (\code{a_jk} the skew-symmetric part of the dissimilarities)
 gives the radii. The solution in \code{ndim_max} dimensions is then reduced one
 dimension at a time by its principal axes down to \code{ndim}. Because the
@@ -100,6 +102,12 @@ scaling of asymmetric proximities. \emph{Behaviormetrika}, 14(21), 81-96.
 
 Okada, A., & Imaizumi, T. (2024). \emph{Applied multidimensional scaling of
 asymmetric relationships}. Springer.
+
+Cailliez, F. (1983). The analytical solution of the additive constant
+problem. \emph{Psychometrika}, 48(2), 305-308.
+
+Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+two-mode three-way proximities. \emph{Journal of Classification}, 14, 195-224.
 
 Kruskal, J. B. (1964b). Nonmetric multidimensional scaling: A numerical
 method. \emph{Psychometrika}, 29(2), 115-129.
