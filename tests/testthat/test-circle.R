@@ -106,3 +106,19 @@ test_that("dimensions beyond the positive eigenvalues still move", {
   # 乱数の初期値を足せば誤差のない真の解(S = 0)に着く
   expect_lt(circle_mds(S, ndim = p)$stress, 1e-6)
 })
+
+test_that("off-diagonal missing cells are left out of the fit", {
+  # 誤差のない 10 対象 2 次元に欠測を入れても真の解(S = 0)に着く
+  set.seed(3)
+  n <- 10
+  X <- matrix(rnorm(n * 2), n, 2)
+  r <- runif(n, 0, 0.5)
+  S <- -(as.matrix(dist(X)) - outer(r, r, "-"))
+  diag(S) <- NA
+  S[1, 2] <- NA          # 片側
+  S[3, 4] <- S[4, 3] <- NA  # 両側
+  fit <- circle_mds(S, ndim = 2)
+  expect_lt(fit$stress, 1e-6)
+  expect_true(is.na(fit$mjk[1, 2]) && is.na(fit$disparity[3, 4]))
+  expect_false(is.na(fit$mjk[2, 1]))
+})
