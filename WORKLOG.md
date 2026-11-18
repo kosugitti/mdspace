@@ -151,3 +151,24 @@
   - テスト `tests/testthat/test-circle3.R`(26件): nASYMS の S と w の再現・勾配・nASYMS 以下の S・真の楕円の回復・入力エラー。全体で全件通過
   - 次: 楕円の plot(ソースを指定して楕円を描く)，ソースが1つだけ欠測を含む場合のテスト，表1.14の解の解釈を書籍(到着待ち)と比べる
 - 【セッションの終わり・2026-11-17】コミット 7c47b5b〜23be03d(main へ push 済み)。次回: 楕円モデル(書籍到着待ち・nASYMS の楕円の出力取りは先行可)，二相三元の楕円の plot，欠測ソースのテスト。読むべき論文リストに D28(O&I 1997)を追加。Okada 1988・1990 は入手できず(書籍で代える)
+
+## 2026-11-18
+
+### フォンミーゼスモデル(AMISESCAL・荘島)に着手
+- 資料: 荘島先生のサイト(https://sh0j1ma.stars.ne.jp/ams/index.htm ・ソフト「エイシメトリカ」は Windows 専用・ソース非公開)から 2011 発表スライドと紹介スライド，先生が Claude_in に入れた 2012 抄録・スライド(GfKl/JCS)と Sugino (2013) の応用例を `develop/references/shojima_amisescal/` へ。式はスライドの画像から読み取った
+- 設計メモ `develop/設計メモ_フォンミーゼスモデル_20261118.md`(モデル・2011/2012 のストレス・未確定点・試作の結果・識別の足場)
+- optim 版の試作 `develop/20261118_vonmises_try.R`(関数は `develop/vonmises_functions.R`): pi_ij = c_i exp{kappa_i (cos(theta − mu_i) − 1)} に書き直し(c_i = 山の高さ)，解析的勾配は数値微分と一致。**omega(c)自由だと千野データで退化**(kappa→0・c→1 で点を遠ざけ一律に縮める)，**2012 の U は kappa→∞ で発散**＝スライドの式のままでは使えない
+- **Stan 版(本命)** `develop/vonmises_mds.stan`・`develop/20261118_vonmises_stan.R`: g ~ normal(xi, sigma)，mu は unit_vector，識別は点1を原点＋残りを `cholesky_factor_cov[N-1, 2]`(出典 Stan Reference Manual "Cholesky factors of covariance matrices"。先生が階層的多次元展開法のとき清水さんに教わった方法。BayesRTMB にも CF_cov 型と rtmb_mdu(method = "MDS") があるが識別の書き方はマニュアルに無い)。optimize 10本の最良を初期値に MCMC。シミュレーションで布置がそのまま真値と一致，千野データは Rhat 1.01，事前分布(c ~ beta(2,4))で omega 自由でも退化しない
+- 先生の判断: **パッケージは base R の MAP(案1)**，テキスト用に RTMB のコードもあってよい
+- **`R/vonmises_mds.R` を実装**(未テスト扱い・testthat はまだ): Stan と同じ対数事後密度(ヤコビアンなし)を base R で，コレスキー型の縛り(`.vm_unpack`/`.vm_pack`)，解析的勾配，合理的初期値＋乱数10本，`hessian = TRUE` で mu・kappa・c の近似 SE，omega = "free"/"fixed"，print/summary/plot。devtools::document で NAMESPACE と man 2件を生成。既存テストは全件通過
+- 先生の提案で**足場(点1を原点)は計算の足場に格下げ**: 座標の事前分布を重心からのずれ x_i − x̄ ~ N(0, s_x²) に置き(R・Stan とも)，推定後に重心へ移して主軸に回す。MCMC は回転の縛りの体積要素として `target += log(Lx[1, 1])` を追加。足場を変えても R は目的関数が一致，Stan は事後平均の差がモンテカルロ誤差の範囲(`develop/20261118_vonmises_anchor_check.R`)
+- R 版と Stan の事後モードは目的関数が一致し，差は局所解の違いだけ(`develop/20261118_vonmises_map_check.R`。千野データで omega 固定は Stan，自由は R が良い山)
+- 書籍 Okada & Imaizumi (2024) が届いた。目次では3章がアルゴリズム・4章が事例＝**先生が 11/19 に大学で3・4章をスキャン**(nASYMS マニュアルが初期布置で引く 5.4.2・5.4.3・5.4.6 が5章なら 5.4 節も)
+- 未コミット。`develop/vonmises_mds`(cmdstan のコンパイル済み実行ファイル)は追跡しないほうがよい(.gitignore は未変更)
+
+### 次
+- 書籍3・4章(＋5.4)のスキャンが届いたら: 楕円 I〜III の定義・次元の向きの一意性(3.1.2 p.92)→ `ellipse_mds()` の設計メモ，円モデルのアルゴリズムの答え合わせ，4章から照合の基準
+- vonmises_mds: testthat(勾配・足場の不変性・誤差なしのリカバリ・類似度の反転・欠測)，初期値の本数の既定(局所解が多い)，例とヴィネット
+- Stan 版: シミュレーションの発散(6%)の手当て，1〜7 評定の ordered_logistic(非計量)版，3〜4人の例をスライドの図と比べる
+- RTMB 版(テキスト用)を develop/ に。清水さんの章・BayesRTMB のソースで識別の書き方を確かめてそろえる
+- 未確定: 荘島 2012 の「退化を防ぐ関数」の中身(事前分布で代替できているので急がない)

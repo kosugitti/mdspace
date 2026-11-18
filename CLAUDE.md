@@ -4,12 +4,12 @@
 MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。
 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。
 
-### 現在の状態（2026-11-17更新）
-- 設計の正本は `develop/設計メモ_20261107.md`(既存 R でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは `develop/設計メモ_二相三元円モデル_20261117.md`
-- 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude は作らない)，楕円は1関数 `ellipse_mds()` で引数切り替え，**二相三元の円モデルは `circle_mds()` に統合**(行列のリストを渡す)，CRAN は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は asymmetry を包む
-- **実装済み**: `hfm_mds()`，`gstatis_mds()`，`as_proximity()`・`asym_decomp()`・`missing_pattern()`，欠測 `missing = "impute"`(MINERS 法・初期値は非零の平均・`impute_ndim < n`)，**`circle_mds()`**(一相二元＝Okada & Imaizumi 1987・二相三元＝1997・ストレス式2を解析的勾配で BFGS/L-BFGS-B・初期値は加算定数つき Torgerson＋乱数10本・二相三元は縦横比の上限 `kappa = 10`)。nASYMS と照合済み(S は全次元で nASYMS 以下＝nASYMS は収束判定がゆるく途中で止まる)。パラメタリカバリも済み。テスト 130 件
-- 照合: 千野版は `develop/20261107_chino_check.R`。円モデルは `tests/testthat/fixtures/`(書籍表1.19・1.14 と nASYMS の実出力・README に出所)
-- 次: 楕円モデル(書籍 Okada & Imaizumi 2024 を購入済み・到着待ち＝楕円 I〜III を確かめる。届くまでは nASYMS の楕円モデルの出力を取って先行もできる)。二相三元の plot でソースの楕円を描く・欠測ソースのテスト。千野先生の他のモデル(DYNASCAL ほか)の文献集め。GSTATIS の事例データ探し
+### 現在の状態（2026-11-18更新）
+- 設計の正本は `develop/設計メモ_20261107.md`(既存 R でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは `develop/設計メモ_二相三元円モデル_20261117.md`，フォンミーゼスモデルは `develop/設計メモ_フォンミーゼスモデル_20261118.md`
+- 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude は作らない)，楕円は1関数 `ellipse_mds()` で引数切り替え，**二相三元の円モデルは `circle_mds()` に統合**(行列のリストを渡す)，CRAN は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は asymmetry を包む。**フォンミーゼスモデルはベイズ(Stan)版が本命，パッケージには Stan を入れず base R の事後モード(MAP)で入れる**。テキスト用に RTMB 版のコードも develop/ に置く
+- **実装済み**: `hfm_mds()`，`gstatis_mds()`，`as_proximity()`・`asym_decomp()`・`missing_pattern()`，欠測 `missing = "impute"`(MINERS 法)，`circle_mds()`(一相二元＝Okada & Imaizumi 1987・二相三元＝1997・nASYMS と照合済み)。**`vonmises_mds()`(荘島 2011/2012 の AMISESCAL・2次元)を実装したがテスト未作成**: Stan 版と同じ対数事後密度・座標の事前分布は重心からのずれ・識別はコレスキー型の足場(点1を原点・点2を第1軸・点3を上半面)で推定後に重心へ移し主軸に回す・omega = "free"/"fixed"・hessian で近似 SE
+- 照合: 千野版は `develop/20261107_chino_check.R`。円モデルは `tests/testthat/fixtures/`(書籍表1.19・1.14 と nASYMS の実出力)。フォンミーゼスは Stan 版(`develop/vonmises_mds.stan`)と目的関数が一致(`develop/20261118_vonmises_map_check.R`)。荘島先生のソフトは Windows 専用で照合できない
+- 次: 書籍 Okada & Imaizumi (2024) が届いた＝先生が3・4章(＋5.4)をスキャン→楕円モデルの設計。`vonmises_mds()` の testthat。Stan 版の発散の手当てと ordered_logistic 版。RTMB 版。二相三元の plot でソースの楕円を描く・欠測ソースのテスト
 - 照合の基準: 岡太・今泉の公式 Shiny nASYMS(https://nasyms.shinyapps.io/nASYMS/ ・マニュアルは `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024) の表1.19・1.14
 
 ## コーディング規約
@@ -72,7 +72,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 | circle_mds() | 円モデル(radius-distance) | Okada & Imaizumi (1987) | 実装済み(2026-11-17・nASYMS と照合) |
 | ellipse_mds() | 楕円モデル I〜III(引数で切り替え) | Okada (1990) | 未実装 |
 | circle_mds(list) | 二相三元の円モデル(行列のリストを渡す) | Okada & Imaizumi (1997) | 実装済み(2026-11-17・nASYMS と照合・縦横比の上限 kappa) |
-| vonmises_mds() | フォンミーゼスモデル | 荘島 (Shojima) | 未実装 |
+| vonmises_mds() | フォンミーゼスモデル(AMISESCAL) | 荘島 (2011, 2012) | 実装済み・テスト未作成(2026-11-18・base R の MAP。Stan 版は develop/) |
 | contour_mds() | 等高線マップモデル | Abelson (1954-55); 小杉・藤原 (2004) | 未実装 |
 
 ### Shiny連携（外部パッケージ経由）
