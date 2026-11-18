@@ -30,10 +30,14 @@ for GUI-based analysis and visualization.
   : Plot a GSTATIS solution
 - [`plot(`*`<mdspace_hfm>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_hfm.md)
   : Plot one complex plane of an HFM solution
+- [`plot(`*`<mdspace_vonmises>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_vonmises.md)
+  : Plot a von Mises model solution
 - [`print(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.mdspace.md)
   : Print an mdspace object
 - [`run_app()`](https://kosugitti.github.io/mdspace/reference/run_app.md)
   : mdspace Shiny アプリケーションを起動する
 - [`summary(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace.md)
   : Summarize an mdspace object
+- [`vonmises_mds()`](https://kosugitti.github.io/mdspace/reference/vonmises_mds.md)
+  : Asymmetric MDS by the von Mises model (AMISESCAL)
 
