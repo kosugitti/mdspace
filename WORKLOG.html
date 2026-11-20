@@ -263,6 +263,19 @@
 <ul><li>先生が Okada &amp; Imaizumi (2024) の第3〜5章をスキャン(見開き57枚・約114頁・テキスト層なし)。<code>develop/references/Okada_Imaizumi_2024_book_ch3-5_scan.pdf</code>(git 管理外)へ移し，Claude_in から外した。3章=一相二元(円・楕円・スライドベクトル・ASYMSCAL)と二相三元(円・楕円・ドリフトベクトル・INDSCAL 型・より一般のモデル)，4章=応用例(職業の類似・国の印象 2013/2014 など)，5章=ブランドスイッチ行列の再尺度化・退化・局所解・初期布置</li>
 <li>次: 3.1.2 の楕円モデルと5章の初期布置を読んで ellipse_mds() を設計</li>
 </ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-1920-ellipse_mds-の実装">2026-11-19〜20 ellipse_mds() の実装<a class="anchor" aria-label="anchor" href="#id_2026-11-1920-ellipse_mds-%E3%81%AE%E5%AE%9F%E8%A3%85"></a></h2>
+<ul><li>書籍 3.1.2・4章・5.4 を読み設計(<code>develop/設計メモ_楕円モデル_20261119.md</code>)。I〜III の分類は千野・岡太 (1996) §3.5 で確認(I = c(j,k,t)，II = c(j,t) 楕円，III = c(j) 円)</li>
+<li>先生の決定: I〜III をオプションで出す，次元は分散の大きい順，向きの確かめと nASYMS 照合をする</li>
+<li>照合: 書籍表4.4 の解で S = 0.3240 を再現(<code>develop/20261119_ellipse_table44_check.R</code>)。表4.6 の向きの確かめは傾向は合うが値はこちらが低い。nASYMS の楕円の出力は内部で矛盾(表示 0.358・計算し直すと 0.558)＝書籍を基準にする</li>
+<li>退化: 縛らないと細長く大きな楕円へ流れ S は 0.310 前後(本 0.324)。表4.4 の解から最小化し直しても同じ向きへ(0.3198)＝本の解は極小でない。縦横比 kappa・大きさ axis_max の上限を入れても解は上限に張りつき S はほとんど変わらない(<code>develop/20261119_ellipse_degeneration.R</code>・設計メモ9節)</li>
+<li>先生の決定: 変わらないなら原典どおり既定は縛らず，警告を出す(縦横比 10 倍・大きさ 3 を目安)。上限は任意の引数。罰則項でやるならベイズの形(尤度＋事前分布)を導出してから別に組む</li>
+<li>
+<code>R/ellipse_mds.R</code>・<code>tests/testthat/test-ellipse.R</code>(全体 176 件通過)。d39f861 で push</li>
+<li>Model I: 制約の出典 Okada &amp; Imaizumi (1984) は横山先生から「無い」と返事＝実装しない(指定するとエラー)</li>
+<li>Claude_in の Weeks &amp; Bentler (1982) Psychometrika 47 を <code>develop/references/Weeks_Bentler_1982_Psychometrika47_restricted_asymmetric.pdf</code> へ(h = b d + k + c_i − c_j＝円モデル IIIB の先行形)</li>
+<li>次: 楕円モデルのベイズ版の導出，vonmises の testthat，Stan 版の発散と ordered_logistic 版，RTMB 版，二相三元の plot。Weeks &amp; Bentler を circle_mds() の参考文献に入れるかは未定</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
