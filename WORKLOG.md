@@ -187,3 +187,8 @@
 - Model I: 制約の出典 Okada & Imaizumi (1984) は横山先生から「無い」と返事＝実装しない(指定するとエラー)
 - Claude_in の Weeks & Bentler (1982) Psychometrika 47 を `develop/references/Weeks_Bentler_1982_Psychometrika47_restricted_asymmetric.pdf` へ(h = b d + k + c_i − c_j＝円モデル IIIB の先行形)
 - 次: 楕円モデルのベイズ版の導出，vonmises の testthat，Stan 版の発散と ordered_logistic 版，RTMB 版，二相三元の plot。Weeks & Bentler を circle_mds() の参考文献に入れるかは未定
+
+## 2026-11-20 vonmises_mds() のテスト
+- `tests/testthat/test-vonmises.R`(49 件・全体 225 件通過): 勾配(free/fixed・欠測あり)，回転・鏡映・平行移動で対数事後密度が不変，pack/unpack，誤差なしデータからの推定し直し(距離の相関 > 0.99・向きの誤差 < 10°)，正規化と返り値の整合，類似度の反転，欠測，hessian の SE，乱数の状態，入力の誤り，print/summary/plot。Stan との照合は cmdstan が要るので develop/ のスクリプトのまま
+- Model I は一般形で推定できないので放置(先生)。他の出典として岡太・今泉 (1988)「非対称多次元尺度法のプログラム(NAMS V1.1f)の使用法」立教大学社会学部紀要 29 を見つけた(大学図書館にある)が，当面は見ない
+- 次: 楕円モデルのベイズ版の導出(11/21 の予定)
