@@ -147,7 +147,7 @@
 <li>照合(当初はマニュアルの画面の数値だけ。下の「nASYMS を実行」で実出力に差し替え): 5〜1次元の S が 0.1777/0.2009/0.2742/0.3716/0.4988</li>
 <li>気づき: 乱数の初期値20本では 0.3647 と nASYMS より良い局所解が出た(書籍 4.1.1 が複数の初期値を使う理由)。書籍の表の S と比べたい</li>
 <li>テスト <code>tests/testthat/test-circle.R</code>(19件)。全体で全件通過</li>
-<li>次: 書籍が届いたら(または棚にあれば)表の S と解を照合，楕円モデル(<code>ellipse_mds()</code>)へ。未コミット</li>
+<li>次: 書籍が届いたら(または棚にあれば)表の S と解を照合，楕円モデル(<code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code>)へ。未コミット</li>
 </ul></div>
 <div class="section level3">
 <h3 id="nasyms-を実際に実行して照合先生の指示でブラウザ操作">nASYMS を実際に実行して照合(先生の指示でブラウザ操作)<a class="anchor" aria-label="anchor" href="#nasyms-%E3%82%92%E5%AE%9F%E9%9A%9B%E3%81%AB%E5%AE%9F%E8%A1%8C%E3%81%97%E3%81%A6%E7%85%A7%E5%90%88%E5%85%88%E7%94%9F%E3%81%AE%E6%8C%87%E7%A4%BA%E3%81%A7%E3%83%96%E3%83%A9%E3%82%A6%E3%82%B6%E6%93%8D%E4%BD%9C"></a></h3>
@@ -251,13 +251,18 @@
 </ul></div>
 <div class="section level3">
 <h3 id="次-1">次<a class="anchor" aria-label="anchor" href="#%E6%AC%A1-1"></a></h3>
-<ul><li>書籍3・4章(＋5.4)のスキャンが届いたら: 楕円 I〜III の定義・次元の向きの一意性(3.1.2 p.92)→ <code>ellipse_mds()</code> の設計メモ，円モデルのアルゴリズムの答え合わせ，4章から照合の基準</li>
+<ul><li>書籍3・4章(＋5.4)のスキャンが届いたら: 楕円 I〜III の定義・次元の向きの一意性(3.1.2 p.92)→ <code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code> の設計メモ，円モデルのアルゴリズムの答え合わせ，4章から照合の基準</li>
 <li>vonmises_mds: testthat(勾配・足場の不変性・誤差なしのリカバリ・類似度の反転・欠測)，初期値の本数の既定(局所解が多い)，例とヴィネット</li>
 <li>Stan 版: シミュレーションの発散(6%)の手当て，1〜7 評定の ordered_logistic(非計量)版，3〜4人の例をスライドの図と比べる</li>
 <li>RTMB 版(テキスト用)を develop/ に。清水さんの章・BayesRTMB のソースで識別の書き方を確かめてそろえる</li>
 <li>未確定: 荘島 2012 の「退化を防ぐ関数」の中身(事前分布で代替できているので急がない)</li>
 </ul></div>
 </div>
+<div class="section level2">
+<h2 id="id_2026-11-19-書籍のスキャン受領">2026-11-19 書籍のスキャン受領<a class="anchor" aria-label="anchor" href="#id_2026-11-19-%E6%9B%B8%E7%B1%8D%E3%81%AE%E3%82%B9%E3%82%AD%E3%83%A3%E3%83%B3%E5%8F%97%E9%A0%98"></a></h2>
+<ul><li>先生が Okada &amp; Imaizumi (2024) の第3〜5章をスキャン(見開き57枚・約114頁・テキスト層なし)。<code>develop/references/Okada_Imaizumi_2024_book_ch3-5_scan.pdf</code>(git 管理外)へ移し，Claude_in から外した。3章=一相二元(円・楕円・スライドベクトル・ASYMSCAL)と二相三元(円・楕円・ドリフトベクトル・INDSCAL 型・より一般のモデル)，4章=応用例(職業の類似・国の印象 2013/2014 など)，5章=ブランドスイッチ行列の再尺度化・退化・局所解・初期布置</li>
+<li>次: 3.1.2 の楕円モデルと5章の初期布置を読んで ellipse_mds() を設計</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

@@ -12,7 +12,8 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
   `develop/設計メモ_二相三元円モデル_20261117.md`，フォンミーゼスモデルは
   `develop/設計メモ_フォンミーゼスモデル_20261118.md`
 - 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude
-  は作らない)，楕円は1関数 `ellipse_mds()`
+  は作らない)，楕円は1関数
+  [`ellipse_mds()`](https://kosugitti.github.io/mdspace/reference/ellipse_mds.md)
   で引数切り替え，**二相三元の円モデルは
   [`circle_mds()`](https://kosugitti.github.io/mdspace/reference/circle_mds.md)
   に統合**(行列のリストを渡す)，CRAN

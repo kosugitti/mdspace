@@ -14,6 +14,9 @@ for GUI-based analysis and visualization.
   : Decompose a square matrix into symmetric and skew-symmetric parts
 - [`circle_mds()`](https://kosugitti.github.io/mdspace/reference/circle_mds.md)
   : Nonmetric asymmetric MDS by the radius-distance (circle) model
+- [`ellipse_mds()`](https://kosugitti.github.io/mdspace/reference/ellipse_mds.md)
+  : Nonmetric asymmetric MDS by the ellipse-distance (Model II) and
+  radius-distance (Model III) models
 - [`gstatis_mds()`](https://kosugitti.github.io/mdspace/reference/gstatis_mds.md)
   : GSTATIS: STATIS for a set of asymmetric matrices via Hermitian forms
 - [`hfm_mds()`](https://kosugitti.github.io/mdspace/reference/hfm_mds.md)
@@ -26,6 +29,8 @@ for GUI-based analysis and visualization.
   : Plot the skew-symmetric part as a heat map
 - [`plot(`*`<mdspace_circle>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_circle.md)
   : Plot a radius-distance (circle) model solution
+- [`plot(`*`<mdspace_ellipse>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_ellipse.md)
+  : Plot an ellipse-distance or radius-distance model solution
 - [`plot(`*`<mdspace_gstatis>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_gstatis.md)
   : Plot a GSTATIS solution
 - [`plot(`*`<mdspace_hfm>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_hfm.md)
