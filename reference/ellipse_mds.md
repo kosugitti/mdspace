@@ -217,12 +217,12 @@ fit
 #> Call: ellipse_mds(x = x, ndim = 2, nrandom = 2)
 #> Objects: 5  Dimensions: 2 
 #> Stress: 0.0000 
-#> Iterations: 39 
+#> Iterations: 8 
 #> Model II (ellipse-distance), alpha = -1, beta = 1
-#> Starts: 3 (rational + 2 random); best = random 1, S range 0.0000 to 0.0000
+#> Starts: 3 (rational + 2 random); best = rational, S range 0.0000 to 0.0000
 #> S after rotating the semiaxis configuration (solution S = 0.0000):
 #>  dims angle counterclockwise clockwise
-#>   1-2    10           0.0579    0.0432
-#>   1-2    15           0.0781    0.0553
-#>   1-2    20           0.0888    0.0511
+#>   1-2    10           0.0046    0.0110
+#>   1-2    15           0.0526    0.0484
+#>   1-2    20           0.0612    0.0576
 ```
