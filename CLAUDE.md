@@ -5,7 +5,7 @@
 MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。
 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。
 
-### 現在の状態（2026-11-20更新）
+### 現在の状態（2026-11-21更新）
 
 - 設計の正本は `develop/設計メモ_20261107.md`(既存 R
   でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは
@@ -47,11 +47,18 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
   の実出力)。フォンミーゼスは Stan
   版(`develop/vonmises_mds.stan`)と目的関数が一致(`develop/20261118_vonmises_map_check.R`)。荘島先生のソフトは
   Windows 専用で照合できない
-- 次: **楕円モデルのベイズ版**(先生の判断:
-  罰則項でなく，順序ロジット等の尤度と形のずれ e_jt
-  への事前分布を置いた形を導出してから＝設計メモ9節の続き)。Stan
-  版の発散の手当てと ordered_logistic 版。RTMB 版。二相三元の plot
-  でソースの楕円を描く・欠測ソースのテスト
+- **楕円モデルのベイズ版(順位尤度)を develop/
+  で設計・試行**(`develop/ellipse_rank.stan`。設計と経緯の正本は TeX
+  ノート
+  `~/Dropbox/02_研究/mdspace/research_notes/20261121_OIモデルの確率モデル化/`):
+  順序プロビット(閾値
+  K-1・タイは一次)，楕円＝大きさ＋形の非中心化の階層の事前分布，平方和 N
+  で正規化し sigma 推定，μ
+  の符号は縛らない。職業データでは円モデルが最良(周辺尤度)
+- 次: **他のデータで円・楕円モデルを当てはめて傾向をつかむ→R
+  での最適化アルゴリズム(閾値の形・非中心化の事後確率最大値・Pathfinder
+  と突き合わせ)**。Stan 版の発散の手当てと ordered_logistic 版。RTMB
+  版。二相三元の plot でソースの楕円を描く・欠測ソースのテスト
 - 照合の基準: 岡太・今泉の公式 Shiny
   nASYMS(<https://nasyms.shinyapps.io/nASYMS/> ・マニュアルは
   `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024)
@@ -168,8 +175,9 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
   Springer. — Springer有料
 - **楕円モデル一般化**: Okada, A. (1990). A generalization of asymmetric
   multidimensional scaling. In Schader & Gaul (Eds.), *Knowledge, Data
-  and Computer-Assisted Decisions*, NATO ASI Series vol.61, Springer. —
-  Springer有料
+  and Computer-Assisted Decisions*, NATO ASI Series vol.61, pp.127-138,
+  Springer. —
+  **スキャン所持**(岡太先生から拝借・`develop/references/Okada_1990_generalization_scan.pdf`)
 - **書籍（包括的）**: Okada, A. & Imaizumi, T. (2024). *Applied
   Multidimensional Scaling of Asymmetric Relationships*. Springer,
   Behaviormetrics vol.19, 193pp. — **所持**

@@ -12,6 +12,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Multidimensional Scaling with Interactive Visualization">
 <meta name="description" content="Provides various multidimensional scaling (MDS) algorithms including classical MDS (Torgerson), nonmetric MDS (Kruskal), individual differences MDS (INDSCAL), ellipse model (Okada-Imaizumi), HFM (Chino), and von Mises model (Shojima). Includes an interactive Shiny application for GUI-based analysis and visualization.">
 <meta property="og:description" content="Provides various multidimensional scaling (MDS) algorithms including classical MDS (Torgerson), nonmetric MDS (Kruskal), individual differences MDS (INDSCAL), ellipse model (Okada-Imaizumi), HFM (Chino), and von Mises model (Shojima). Includes an interactive Shiny application for GUI-based analysis and visualization.">
+<meta property="og:image" content="https://kosugitti.github.io/mdspace/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -45,8 +46,80 @@
   </div>
 </nav><div class="container template-home">
 <div class="row">
-  <main id="main" class="col-md-9">
-Provides various multidimensional scaling (MDS) algorithms including classical MDS (Torgerson), nonmetric MDS (Kruskal), individual differences MDS (INDSCAL), ellipse model (Okada-Imaizumi), HFM (Chino), and von Mises model (Shojima). Includes an interactive Shiny application for GUI-based analysis and visualization.
+  <main id="main" class="col-md-9"><div class="section level1">
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="mdspace-">mdspace <a class="anchor" aria-label="anchor" href="#mdspace-"></a>
+</h1>
+</div>
+<p>Multidimensional scaling (MDS) in R, with a focus on visualizing asymmetric proximities. The package is under development.</p>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+</h2>
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># install.packages("remotes")</span></span>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"kosugitti/mdspace"</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="models">Models<a class="anchor" aria-label="anchor" href="#models"></a>
+</h2>
+<table class="table">
+<colgroup>
+<col width="33%">
+<col width="33%">
+<col width="33%">
+</colgroup>
+<thead><tr>
+<th>Function</th>
+<th>Model</th>
+<th>Reference</th>
+</tr></thead>
+<tbody>
+<tr>
+<td><code><a href="reference/circle_mds.html">circle_mds()</a></code></td>
+<td>Circle model (radius-distance model); one-mode two-way and two-mode three-way</td>
+<td>Okada &amp; Imaizumi (1987, 1997)</td>
+</tr>
+<tr>
+<td><code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code></td>
+<td>Ellipse model</td>
+<td>Okada (1990)</td>
+</tr>
+<tr>
+<td><code><a href="reference/vonmises_mds.html">vonmises_mds()</a></code></td>
+<td>Von Mises model (AMISESCAL)</td>
+<td>Shojima (2011, 2012)</td>
+</tr>
+<tr>
+<td><code><a href="reference/hfm_mds.html">hfm_mds()</a></code></td>
+<td>Hermitian form model (HFM)</td>
+<td>Chino &amp; Shiraiwa (1993)</td>
+</tr>
+<tr>
+<td><code><a href="reference/gstatis_mds.html">gstatis_mds()</a></code></td>
+<td>GSTATIS</td>
+<td>Chino, Grorud &amp; Yoshino (1996)</td>
+</tr>
+</tbody>
+</table>
+<p>Helpers: <code><a href="reference/as_proximity.html">as_proximity()</a></code>, <code><a href="reference/asym_decomp.html">asym_decomp()</a></code>, <code><a href="reference/missing_pattern.html">missing_pattern()</a></code>.</p>
+</div>
+<div class="section level2">
+<h2 id="example">Example<a class="anchor" aria-label="anchor" href="#example"></a>
+</h2>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/kosugitti/mdspace" class="external-link">mdspace</a></span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># x: a square matrix of asymmetric similarities</span></span>
+<span><span class="va">fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/circle_mds.html">circle_mds</a></span><span class="op">(</span><span class="va">x</span>, ndim <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="va">fit</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">fit</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
+<h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
+</h2>
+<p>MIT</p>
+</div>
+</div>
   </main><aside class="col-md-3"><div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">

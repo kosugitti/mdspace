@@ -533,3 +533,62 @@
   V1.1f)の使用法」立教大学社会学部紀要 29
   を見つけた(大学図書館にある)が，当面は見ない
 - 次: 楕円モデルのベイズ版の導出(11/21 の予定)
+
+## 2026-11-21 楕円モデルのベイズ版(順位尤度)の設計と試行
+
+- 先生と一歩ずつ設計(記録は
+  `02_研究/mdspace/research_notes/20261121_OIモデルの確率モデル化/` の
+  TeX ノート・本文はプレーンなモデル，試して外したものは付録 A)
+- 記法: データはローマ字，推定量はギリシア文字(d_jk 非類似度・tau
+  座標・phi 半軸・delta・rho・mu・zeta 潜在・sigma・gamma 閾値)。半軸に
+  lambda は使わない(固有値とぶつかる)
+- 決定: データは非負の非類似度を順序尺度で扱う→順位尤度(Hoff 2007)。zeta
+  ~ N(mu, sigma^2) を積分した順序プロビット(閾値 K-1
+  個・タイは一次の扱い)。zeta を持つ形で最適化すると stress
+  の分子になり布置が潰れる＝最適化は閾値の形で
+- 楕円は log phi_jp = 大きさ nu_j(同じ面積の円の半径の対数) + 形
+  psi_jp(和
+  0・面積を保つ引き伸ばし)。どちらも非中心化の階層の事前分布＝対称 ⊂ 円
+  ⊂ 楕円の入れ子を sigma_nu・sigma_psi で読む
+- 識別: 平方和 N に正規化して sigma
+  を推定，鏡映は軸ごとの基準の対象を「他の平均 +
+  exp(v)」で正に組み込む(ヤコビアン
+  +v)。回転は楕円が止める(コレスキー型は使わない)。円に近いと回転が戻るが
+  MCMC の要約の問題なので対応しない(theta の書き直しは採らず)
+- 試して外したもの: 対数のリンク(最小のセルの mu が 0
+  へ吸い寄せられ全遷移が発散)，mu \> 0 を母数の空間で(事後分布の 98%
+  が外・全発散)，中心化の事前分布(最適化で sigma_nu → 0 に潰れる)。mu \>
+  0 は P(mu \< 0) の診断として残す
+- 職業データ: MCMC・最適化・Pathfinder・ADVI の布置は相関
+  0.96〜0.98，sigma_psi
+  の事後分布は「大きさで説明」「形で説明」の二山。下位モデルの比較は LOO
+  が崩れる(p_loo ≈ セル数)のでブリッジサンプリング: 円が最良，楕円
+  -1.8，等面積の楕円 -2.8(Sales・Clerical が細長くつぶれ発散
+  22%＝全体の非対称は大きさが担う量)，対称 -26.4
+- Model I: 横山先生「文献なし」。一般形で推定できない＝放置。先生が
+  11/21 の理事会で岡太先生に Okada (1990)(楕円モデルの原典)を依頼。1984
+  は立教大学社会学部の Research Reports(紀要ではない)。NAMS
+  の使用法は「応用社会学研究」29, 103-174(1988)＝週明けに ILL
+- 書誌: myBiber.bib に 20 件追記・既存 7 件を修正(Kruskal の著者名・DOI
+  等)。Psychometrika の PDF は
+  `Labo/MyLibrary/Psychometrika`(巻号フォルダ・disk2〜4 に本体)から
+  `~/Dropbox/PDFs/` へ
+- 未コミット(意図的): develop/\*\_fit.rds(約 10MB)と Stan の実行ファイル
+- 次: 他のデータで円・楕円モデルを当てはめて傾向をつかむ→R
+  での最適化アルゴリズム
+
+## 2026-11-23 Okada (1990) の全文を入手
+
+- 先生が 11/21 の理事会で岡太先生に頼んだ Okada (1990) “A Generalization
+  of Asymmetric Multidimensional Scaling”(Schader & Gaul (Eds.),
+  Knowledge, Data and Computer-Assisted Decisions, NATO ASI Series F 61,
+  pp.127-138,
+  Springer)を，先生が借りてスキャン(見開き7枚・テキスト層なし)。`develop/references/Okada_1990_generalization_scan.pdf`(git
+  管理外)へ置いた。本は先生が岡太先生へ返す
+- Claude_in に残っていた 11/19 のスキャン(`20261119130105898.pdf`)は
+  `develop/references/Okada_Imaizumi_2024_book_ch3-5_scan.pdf`
+  と同一(cmp で一致)だったので Claude_in から消した
+- CLAUDE.md の主要文献と設計メモ_楕円モデル 8節に所在を書いた
+- 次: 本文で I〜III の区別(Model I
+  の縛り方が載っているか)と2頁目の「類似度なら m
+  と単調増加」の向きを確かめる
