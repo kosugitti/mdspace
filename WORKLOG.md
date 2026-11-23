@@ -205,3 +205,9 @@
 - 書誌: myBiber.bib に 20 件追記・既存 7 件を修正(Kruskal の著者名・DOI 等)。Psychometrika の PDF は `Labo/MyLibrary/Psychometrika`(巻号フォルダ・disk2〜4 に本体)から `~/Dropbox/PDFs/` へ
 - 未コミット(意図的): develop/*_fit.rds(約 10MB)と Stan の実行ファイル
 - 次: 他のデータで円・楕円モデルを当てはめて傾向をつかむ→R での最適化アルゴリズム
+
+## 2026-11-23 Okada (1990) の全文を入手
+- 先生が 11/21 の理事会で岡太先生に頼んだ Okada (1990) "A Generalization of Asymmetric Multidimensional Scaling"(Schader & Gaul (Eds.), Knowledge, Data and Computer-Assisted Decisions, NATO ASI Series F 61, pp.127-138, Springer)を，先生が借りてスキャン(見開き7枚・テキスト層なし)。`develop/references/Okada_1990_generalization_scan.pdf`(git 管理外)へ置いた。本は先生が岡太先生へ返す
+- Claude_in に残っていた 11/19 のスキャン(`20261119130105898.pdf`)は `develop/references/Okada_Imaizumi_2024_book_ch3-5_scan.pdf` と同一(cmp で一致)だったので Claude_in から消した
+- CLAUDE.md の主要文献と設計メモ_楕円モデル 8節に所在を書いた
+- 次: 本文で I〜III の区別(Model I の縛り方が載っているか)と2頁目の「類似度なら m と単調増加」の向きを確かめる

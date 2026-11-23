@@ -103,24 +103,28 @@ transformed parameters{
 }
 
 model{
-    // 事前分布
-    to_array_1d(yr) ~ normal(0, 1);
+    // 事前分布(周辺尤度を計算するので，~ ではなく target += *_lpdf で正規化定数を残す。
+    // 2026-11-22: ~ は -0.5*log(2*pi) や log(gam_sd) を落とし，次元を 1 つ増やすと約 18 が引かれずに残って
+    // 周辺尤度が次元とともに増え続けた)
+    target += normal_lpdf(to_array_1d(yr) | 0, 1);
     for(p in 1:P){
-        tau_s[anchor[p], p] ~ normal(0, 1);  // 基準の対象も同じ事前分布
+        target += normal_lpdf(tau_s[anchor[p], p] | 0, 1);  // 基準の対象も同じ事前分布
     }
     target += sum(v);                        // tau_s[anchor] = 平均 + exp(v) のヤコビアン
-    c_raw ~ normal(0, 1);
+    target += normal_lpdf(c_raw | 0, 1);
     for(j in 1:N){
-        et[j] ~ normal(0, 1);
+        // 和が 0 のベクトルは P-1 次元の部分空間の上にあり，Stan の変換は等長(ヤコビアン 1)。P 成分に normal_lpdf を
+        // かけると正規化定数が P 個ぶん付くので，余分な 1 個ぶん 0.5*log(2*pi) を戻す(2026-11-22)
+        target += normal_lpdf(et[j] | 0, 1) + 0.5 * log(2 * pi());
     }
-    m_c ~ normal(0, 1);
-    s_c ~ normal(0, 1);
-    s_e ~ normal(0, 1);
-    sig ~ normal(0, 1);
-    gam ~ normal(0, 5);
+    target += normal_lpdf(m_c | 0, 1);
+    target += normal_lpdf(s_c | 0, 1) + log(2);   // 半正規
+    target += normal_lpdf(s_e | 0, 1) + log(2);
+    target += normal_lpdf(sig | 0, 1) + log(2);
+    target += normal_lpdf(gam | 0, 5) + lgamma(K);  // 順序づけた K-1 個: (K-1)! を掛けて正規化
 
     // 尤度: zeta ~ N(mu, sig^2) を積分した順序プロビット
-    y ~ ordered_probit(mu / sig, gam);
+    target += ordered_probit_lpmf(y | mu / sig, gam);
 }
 
 generated quantities{

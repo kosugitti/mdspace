@@ -109,7 +109,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 
 - **円モデル（radius-distance model）初出**: Okada, A. & Imaizumi, T. (1987). Nonmetric multidimensional scaling of asymmetric proximities. *Behaviormetrika*, 14(21), 81-96. DOI: 10.2333/bhmk.14.21_81 — **PDF所持**
 - **楕円モデル（ellipse-distance model）初出**: Okada, A. (1988). Asymmetric multidimensional scaling of car switching data. In Gaul & Schader (Eds.), *Data, Expert Knowledge and Decisions*, pp.279-290. Springer. — Springer有料
-- **楕円モデル一般化**: Okada, A. (1990). A generalization of asymmetric multidimensional scaling. In Schader & Gaul (Eds.), *Knowledge, Data and Computer-Assisted Decisions*, NATO ASI Series vol.61, Springer. — Springer有料
+- **楕円モデル一般化**: Okada, A. (1990). A generalization of asymmetric multidimensional scaling. In Schader & Gaul (Eds.), *Knowledge, Data and Computer-Assisted Decisions*, NATO ASI Series vol.61, pp.127-138, Springer. — **スキャン所持**(岡太先生から拝借・`develop/references/Okada_1990_generalization_scan.pdf`)
 - **書籍（包括的）**: Okada, A. & Imaizumi, T. (2024). *Applied Multidimensional Scaling of Asymmetric Relationships*. Springer, Behaviormetrics vol.19, 193pp. — **所持**
 
 #### モデルの数式（判明分）
