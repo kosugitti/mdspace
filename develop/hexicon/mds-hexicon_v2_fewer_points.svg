@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <marker id="arrow" markerWidth="40" markerHeight="40" refX="50" refY="17" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0 0 L32 17 L0 34 Z" fill="#FF9F43"/>
+    </marker>
+  </defs>
+  <rect width="1024" height="1024" fill="#1B2A49"/>
+  <g fill="none" stroke="#39C6C8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <!-- M: 5 点 -->
+    <path d="M128 700 L128 324 L232 515 L336 324 L336 700"/>
+    <!-- D: 6 点 -->
+    <path d="M432 700 L432 324 L548 324 L656 432 L656 592 L548 700 Z"/>
+    <!-- S: 6 点 -->
+    <path d="M896 388 L808 324 L712 400 L896 624 L800 700 L712 636"/>
+  </g>
+  <!-- 橙の矢印 2 本 -->
+  <g fill="none" stroke="#FF9F43" stroke-width="16" stroke-linecap="round" marker-end="url(#arrow)">
+    <path d="M128 324 L232 515"/>
+    <path d="M712 400 L896 624"/>
+  </g>
+  <g fill="#FFFFFF">
+    <circle cx="128" cy="700" r="20"/><circle cx="128" cy="324" r="20"/>
+    <circle cx="232" cy="515" r="20"/><circle cx="336" cy="324" r="20"/><circle cx="336" cy="700" r="20"/>
+    <circle cx="432" cy="700" r="20"/><circle cx="432" cy="324" r="20"/><circle cx="548" cy="324" r="20"/>
+    <circle cx="656" cy="432" r="20"/><circle cx="656" cy="592" r="20"/><circle cx="548" cy="700" r="20"/>
+    <circle cx="896" cy="388" r="20"/><circle cx="808" cy="324" r="20"/><circle cx="712" cy="400" r="20"/>
+    <circle cx="896" cy="624" r="20"/><circle cx="800" cy="700" r="20"/><circle cx="712" cy="636" r="20"/>
+  </g>
+</svg>

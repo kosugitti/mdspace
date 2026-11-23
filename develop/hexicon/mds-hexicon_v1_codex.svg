@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <defs>
+    <marker id="arrow" markerWidth="18" markerHeight="18" refX="13" refY="9" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M2 2 L15 9 L2 16 Z" fill="#FF9F43"/>
+    </marker>
+  </defs>
+  <rect width="1024" height="1024" fill="#1B2A49"/>
+  <g fill="none" stroke="#39C6C8" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <!-- M -->
+    <path d="M138 700 L138 324 L242 515 L346 324 L346 700"/>
+    <!-- D -->
+    <path d="M432 700 L432 324 L531 324 L603 354 L648 407 L666 512 L648 617 L603 670 L531 700 Z"/>
+    <!-- S -->
+    <path d="M882 365 L830 324 L760 324 L704 365 L704 438 L752 482 L834 520 L882 566 L882 637 L830 700 L754 700 L704 659"/>
+  </g>
+  <!-- Exactly two orange arrow connections -->
+  <g fill="none" stroke="#FF9F43" stroke-width="16" stroke-linecap="round" marker-end="url(#arrow)">
+    <path d="M138 324 L242 515"/>
+    <path d="M704 438 L752 482"/>
+  </g>
+  <g fill="#FFFFFF">
+    <!-- M: 4 vertices + 2 shoulders -->
+    <circle cx="138" cy="700" r="18"/><circle cx="138" cy="324" r="18"/>
+    <circle cx="242" cy="515" r="18"/><circle cx="346" cy="324" r="18"/><circle cx="346" cy="700" r="18"/>
+    <!-- D: 8 points -->
+    <circle cx="432" cy="700" r="18"/><circle cx="432" cy="324" r="18"/><circle cx="531" cy="324" r="18"/>
+    <circle cx="603" cy="354" r="18"/><circle cx="648" cy="407" r="18"/><circle cx="666" cy="512" r="18"/>
+    <circle cx="648" cy="617" r="18"/><circle cx="603" cy="670" r="18"/><circle cx="531" cy="700" r="18"/>
+    <!-- S: 7 key turns -->
+    <circle cx="882" cy="365" r="18"/><circle cx="830" cy="324" r="18"/><circle cx="760" cy="324" r="18"/>
+    <circle cx="704" cy="365" r="18"/><circle cx="704" cy="438" r="18"/><circle cx="752" cy="482" r="18"/>
+    <circle cx="834" cy="520" r="18"/><circle cx="882" cy="566" r="18"/><circle cx="882" cy="637" r="18"/>
+    <circle cx="830" cy="700" r="18"/><circle cx="754" cy="700" r="18"/><circle cx="704" cy="659" r="18"/>
+  </g>
+</svg>
