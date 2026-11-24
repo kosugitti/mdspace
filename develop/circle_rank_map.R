@@ -283,10 +283,11 @@
 
 # 本体 --------------------------------------------------------------------------------------------
 # x: 非類似度(type = "dissimilarity")か類似度の正方行列。nrandom: 乱数の布置から始める本数(Torgerson 解に加えて)
+# sigma = "map"(既定): 同時の最大値のまま。sigma は小さめに出る(N=12 で MCMC の約 0.8 倍，N=50 で約 0.95 倍)
 # sigma = "laplace": sigma を周辺事後分布(ラプラス近似)の山で置き直し，その sigma で他の母数を最大化し直す
-# sigma = "map": 同時の最大値のまま(sigma は小さめに出る)
+#   (sigma は MCMC に近づくが半径が膨らむ・20261124_circle_rank_laplace_check.R)
 circle_rank_map <- function(x, ndim = 2, type = c("dissimilarity", "similarity"), nrandom = 10,
-                            sigma = c("laplace", "map"), maxit = 5000, reltol = 1e-10, seed = 1) {
+                            sigma = c("map", "laplace"), maxit = 5000, reltol = 1e-10, seed = 1) {
   type <- match.arg(type)
   sigma <- match.arg(sigma)
   x <- as.matrix(x)
