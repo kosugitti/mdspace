@@ -302,6 +302,25 @@
 <li>Claude_in に残っていた 11/19 のスキャン(<code>20261119130105898.pdf</code>)は <code>develop/references/Okada_Imaizumi_2024_book_ch3-5_scan.pdf</code> と同一(cmp で一致)だったので Claude_in から消した</li>
 <li>CLAUDE.md の主要文献と設計メモ_楕円モデル 8節に所在を書いた</li>
 <li>次: 本文で I〜III の区別(Model I の縛り方が載っているか)と2頁目の「類似度なら m と単調増加」の向きを確かめる</li>
+<li>(同日 夕方) 岡太先生の了承を得て，先生が本(NATO ASI Series F 61)を岡太先生宅のポストへ返却した。スキャンは手元に残る</li>
+</ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-2325-円モデルの順位尤度版-半径の差推定法の突き合わせbase-r-の-mapsigma-の偏り">2026-11-23〜25 円モデルの順位尤度版: 半径の差・推定法の突き合わせ・base R の MAP・sigma の偏り<a class="anchor" aria-label="anchor" href="#id_2026-11-2325-%E5%86%86%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE%E9%A0%86%E4%BD%8D%E5%B0%A4%E5%BA%A6%E7%89%88-%E5%8D%8A%E5%BE%84%E3%81%AE%E5%B7%AE%E6%8E%A8%E5%AE%9A%E6%B3%95%E3%81%AE%E7%AA%81%E3%81%8D%E5%90%88%E3%82%8F%E3%81%9Bbase-r-%E3%81%AE-mapsigma-%E3%81%AE%E5%81%8F%E3%82%8A"></a></h2>
+<ul><li>半径を OI と同じく差だけの母数に(<code>sum_to_zero_vector a_raw</code>・a = s_a a_raw・報告は r = a - min(a))。半径の水準と布置の尾根の相関 -0.72〜-0.80 が 0.04〜0.35 に。回復と次元選びは不変(afcafcb)</li>
+<li>発散の出どころ: 最小の閾値 g[1] の下の裾(タイのないデータでは段階 = セル)と，3 次元で使わない軸の Lx[P,P] → 0。adapt_delta 0.99 で 0 件・推定は不変＝Stan だけの問題として放置(先生)</li>
+<li>MAP・Pathfinder・ADVI と MCMC: MAP は布置の相関 0.97〜1.00・半径 0.999 以上で 100 倍以上速い。Pathfinder は劣り，ADVI は sigma を 2〜5 倍に。MAP の s_a は無意味(a だけを見る)。1 次元は |x_j - x_k| の角で L-BFGS が止まる(未対応)</li>
+<li>乱数の初期布置では約半数が局所解。2 次元は Torgerson 解からで 5 データとも最良，3 次元は高さのほぼ同じ山が複数</li>
+<li>sigma の MAP は MCMC の 0.5〜0.8 倍: 平均と最頻値の差でも閾値の数でもなく，同時の最大値と周辺事後分布の違い(Neyman–Scott・REML と同じ仕組み)。ラプラス近似で山が MCMC と一致</li>
+<li>develop/*.rds を全部削除(629ef25・スクリプトから作り直せる)。Stan の実行ファイル 6 つも削除(.stan は残る)</li>
+<li>
+<code>develop/circle_rank_map.R</code>: <code>circle_rank_map()</code>(base R のみ)。Stan と同じ対数事後密度を解析的な勾配つき BFGS で最大化(Torgerson 解＋乱数の布置 10 本)。Stan と lp は 5e-6・勾配は 4e-7 で一致，同じ山なら距離 3e-4・半径 7e-5 の差，10 中 4 例は乱数の初期値でより高い山を見つけた(<code>20261124_circle_rank_map_check.R</code>)</li>
+<li>sigma のラプラスの置き直し(<code>sigma = "laplace"</code>): sigma は 10 中 9 例で MCMC の平均と 0.02 以内。ただしその sigma で最大化し直すと半径が膨らむ(<code>20261124_circle_rank_laplace_check.R</code>)。近似の事後平均(INLA 型)にしても半径は 10 中 8 例で MAP のほうが MCMC に近い(<code>20261124_circle_rank_inla_check.R</code>)</li>
+<li>先生の決定: sigma だけラプラスはいびつ＝全部を同時の MAP でそろえる(A)。既定は <code>sigma = "map"</code>(651c4ee)，laplace は任意に残す</li>
+<li>N を増やすと MAP/MCMC の sigma の比は 1 へ: N=12 で 0.78，20 で 0.87，30 で 0.91，50 で 0.93〜0.95。おおよそ 1 − 母数/セル。閾値の数(10 段階か粗くしないか)はほとんど効かない。半径は全 N で相関 1.00(<code>20261124_circle_rank_sigma_n.R</code>)。不安定なのは小さい N で sigma を決める情報が足りないこと</li>
+<li>
+<code>.cr_log_diff_pnorm</code> の NA の添え字を直した(直線探索で NaN になると止まっていた)</li>
+<li>未コミット: この WORKLOG(11/23 の先生の 1 行を含む)</li>
+<li>次: 1 次元の扱い，print/plot/summary，楕円版の R の MAP，実データでの当てはめ直し，TeX ノートに 11/23〜25 の結果(半径の差・sigma の偏りと N)を書き足す。scaffold・recovery の台本は古い母数のままで動かない</li>
 </ul></div>
 </div>
 
