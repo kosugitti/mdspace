@@ -236,5 +236,6 @@
 - テスト `tests/testthat/test-methods.R`(全クラスに3メソッドがあること・各メソッドの出力と返り値・source の軸の範囲と誤りの指定・1次元と3次元)。全体 314 件通過
 - 先生の決定(同日): 二相三元の `plot(fit)` の既定は共通の円のまま，`which = "weights"` も入れる
 - `plot.mdspace_circle(which = "weights")` を追加: ソースを非対称重み u の平面の点として描き対角線を引く(対角線の上は円のまま・離れるほど細長い楕円＝INDSCAL の重み空間，`ellipse_mds()` の `which = "semiaxis"` と同じ読み方)。二相三元の2次元以上だけ(1次元・一相二元はエラー)。テストを追加
-- push はしていない(先生の確認後)
+- コミット c23081f・97cdd6d を先生の確認後に main へ push 済み
+- 先生に未確認: `summary.mdspace_asym` の対象ごとの行和(K の行和と |K| の行和)は Claude の判断で入れた＝不要なら外す
 - 次: 1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト
