@@ -161,3 +161,23 @@ test_that("plot of the two-mode three-way circle model works in 1 and 3 dimensio
   fit3 <- suppressWarnings(circle_mds(nations, ndim = 3, nrandom = 0))
   expect_invisible(with_null_device(plot(fit3, dims = c(1, 3), source = 1)))
 })
+
+test_that("plot of the asymmetry weights of the two-mode three-way circle model", {
+  fit <- suppressWarnings(circle_mds(nations, ndim = 2, nrandom = 1, seed = 1))
+  usr <- with_null_device({
+    plot(fit, which = "weights")
+    graphics::par("usr")
+  })
+  # 全ソースの重みが枠に収まり，原点が入る
+  U <- as.matrix(fit$weights[, c("u1", "u2")])
+  expect_true(max(U) <= min(usr[c(2, 4)]))
+  expect_true(usr[1] <= 0 && usr[3] <= 0)
+  expect_invisible(with_null_device(plot(fit, which = "weights", labels = FALSE)))
+  fit3 <- suppressWarnings(circle_mds(nations, ndim = 3, nrandom = 0))
+  expect_invisible(with_null_device(plot(fit3, which = "weights", dims = c(1, 3))))
+  # 1 次元と一相二元では描けない
+  fit1 <- suppressWarnings(circle_mds(nations, ndim = 1, nrandom = 0))
+  expect_error(with_null_device(plot(fit1, which = "weights")), "two or more dimensions")
+  one <- circle_mds(nations[[1]], ndim = 2, nrandom = 0)
+  expect_error(with_null_device(plot(one, which = "weights")), "two-mode three-way")
+})

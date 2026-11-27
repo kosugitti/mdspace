@@ -398,11 +398,20 @@ summary.mdspace_circle <- function(object, ...) {
 #' function once per source). In one dimension the ellipse of a source is
 #' the circle of radius `u_i1 r_j`.
 #'
+#' `which = "weights"` (two-mode three-way model, two or more dimensions)
+#' draws the sources as points in the plane of their asymmetry weights
+#' `u_it`, with the diagonal. A source on the diagonal keeps the circles; the
+#' farther from the diagonal, the more elongated its ellipses are along the
+#' dimension with the larger weight. This is the counterpart of the weight
+#' space of INDSCAL and of `which = "semiaxis"` in [plot.mdspace_ellipse()].
+#'
 #' @param x An object of class `mdspace_circle`.
 #' @param dims Two dimensions to plot.
-#' @param labels Logical; draw object labels.
+#' @param labels Logical; draw object (or source) labels.
 #' @param source Two-mode three-way model only: `NULL` (common circles), the
-#'   index or name of a source, or `"all"`.
+#'   index or name of a source, or `"all"`. Used with `which = "conf"`.
+#' @param which `"conf"` (default) or `"weights"` (two-mode three-way model
+#'   only).
 #' @param ... Passed to [graphics::plot()].
 #' @return `x`, invisibly.
 #' @references Okada, A., & Imaizumi, T. (1987). Nonmetric multidimensional
@@ -411,10 +420,15 @@ summary.mdspace_circle <- function(object, ...) {
 #' Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
 #'   two-mode three-way proximities. *Journal of Classification*, 14, 195-224.
 #' @export
-plot.mdspace_circle <- function(x, dims = c(1, 2), labels = TRUE, source = NULL, ...) {
+plot.mdspace_circle <- function(x, dims = c(1, 2), labels = TRUE, source = NULL,
+                                which = c("conf", "weights"), ...) {
+  which <- match.arg(which)
   conf <- x$conf
   r <- x$radius
   threeway <- isTRUE(x$threeway)
+  if (which == "weights" && !threeway) {
+    stop("`which = \"weights\"` is for the two-mode three-way model (a list of matrices).")
+  }
   if (!is.null(source) && !threeway) {
     stop("`source` is for the two-mode three-way model (a list of matrices).")
   }
@@ -422,6 +436,23 @@ plot.mdspace_circle <- function(x, dims = c(1, 2), labels = TRUE, source = NULL,
   if (threeway) {
     U <- as.matrix(x$weights[, paste0("u", seq_len(ncol(conf))), drop = FALSE])
     rownames(U) <- x$weights$source
+  }
+  # 重みの布置: ソースを u の平面の点として描く(対角線の上は円のまま) -------------------
+  if (which == "weights") {
+    if (ncol(conf) < 2) {
+      stop("`which = \"weights\"` needs a solution in two or more dimensions.")
+    }
+    uv <- U[, dims, drop = FALSE]
+    lim <- c(0, max(uv) * 1.1)
+    graphics::plot(uv, xlim = lim, ylim = lim, asp = 1, pch = 16,
+                   xlab = paste("Asymmetry weight on dimension", dims[1]),
+                   ylab = paste("Asymmetry weight on dimension", dims[2]),
+                   main = "Asymmetry weights of sources", ...)
+    graphics::abline(0, 1, col = "grey60", lty = 2)
+    if (labels) {
+      graphics::text(uv, labels = rownames(U), pos = 3, cex = 0.8)
+    }
+    return(invisible(x))
   }
   if (ncol(conf) == 1) {
     conf <- cbind(conf, 0)

@@ -233,7 +233,8 @@
 - `print.summary.mdspace` は共通の1本のまま，モデルごとの表を `extra`(名前つきリスト)で受けて順に出す形に(`.print_rounded()`・データフレームは数値の列だけ丸める)。円(一相二元)・楕円・フォンミーゼスの出力は変わらない
 - 新設: `summary.mdspace_hfm`(固有値・GOF・説明されない割合)，`summary.mdspace_gstatis`(RV 固有値・ソースの重み・第1妥協の固有値と GOF・各ソースと妥協の距離)，`summary.mdspace_asym` と `print.summary.mdspace_asym`(平方和と割合・対象ごとの K の行和と |K| の行和)。`summary.mdspace_circle` は二相三元のとき重み・縦横比・ソース別 S の表を足す。固有値の表は `.gof_table()`(HFM と GSTATIS で共用)
 - `plot.mdspace_circle()` に `source` を追加: `NULL`(既定・共通の円＝今までと同じ)，番号か名前(そのソースの楕円・半軸 u_it r_j)，`"all"`(全ソースを色分けして重ね描き・凡例)。二相三元の軸の範囲は全ソースの楕円が入る大きさに固定(ソースを替えても枠が動かない＝`par(mfrow)` で並べて比べられる。関数の中では par を触らない)。1次元は u_i1 r_j の円，3次元以上は dims の2つの u。一相二元に source を渡すとエラー
-- テスト `tests/testthat/test-methods.R`(全クラスに3メソッドがあること・各メソッドの出力と返り値・source の軸の範囲と誤りの指定・1次元と3次元)。全体 308 件通過
-- 先生の判断待ち: (a) 二相三元の `plot(fit)` の既定を共通の円のままにするか `"all"` にするか(今は共通の円)，(b) `which = "weights"`(ソースを u の平面に点で描く図・INDSCAL の重み空間にあたる)を入れるか(未実装)
+- テスト `tests/testthat/test-methods.R`(全クラスに3メソッドがあること・各メソッドの出力と返り値・source の軸の範囲と誤りの指定・1次元と3次元)。全体 314 件通過
+- 先生の決定(同日): 二相三元の `plot(fit)` の既定は共通の円のまま，`which = "weights"` も入れる
+- `plot.mdspace_circle(which = "weights")` を追加: ソースを非対称重み u の平面の点として描き対角線を引く(対角線の上は円のまま・離れるほど細長い楕円＝INDSCAL の重み空間，`ellipse_mds()` の `which = "semiaxis"` と同じ読み方)。二相三元の2次元以上だけ(1次元・一相二元はエラー)。テストを追加
 - push はしていない(先生の確認後)
-- 次: 上の2点の判断，1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト
+- 次: 1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト

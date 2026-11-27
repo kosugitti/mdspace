@@ -4,17 +4,27 @@
 \alias{plot.mdspace_circle}
 \title{Plot a radius-distance (circle) model solution}
 \usage{
-\method{plot}{mdspace_circle}(x, dims = c(1, 2), labels = TRUE, source = NULL, ...)
+\method{plot}{mdspace_circle}(
+  x,
+  dims = c(1, 2),
+  labels = TRUE,
+  source = NULL,
+  which = c("conf", "weights"),
+  ...
+)
 }
 \arguments{
 \item{x}{An object of class \code{mdspace_circle}.}
 
 \item{dims}{Two dimensions to plot.}
 
-\item{labels}{Logical; draw object labels.}
+\item{labels}{Logical; draw object (or source) labels.}
 
 \item{source}{Two-mode three-way model only: \code{NULL} (common circles), the
-index or name of a source, or \code{"all"}.}
+index or name of a source, or \code{"all"}. Used with \code{which = "conf"}.}
+
+\item{which}{\code{"conf"} (default) or \code{"weights"} (two-mode three-way model
+only).}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -35,6 +45,13 @@ are the same for every choice of \code{source}, so that plots of different
 sources can be compared side by side (set \code{par(mfrow = )} and call the
 function once per source). In one dimension the ellipse of a source is
 the circle of radius \verb{u_i1 r_j}.
+
+\code{which = "weights"} (two-mode three-way model, two or more dimensions)
+draws the sources as points in the plane of their asymmetry weights
+\code{u_it}, with the diagonal. A source on the diagonal keeps the circles; the
+farther from the diagonal, the more elongated its ellipses are along the
+dimension with the larger weight. This is the counterpart of the weight
+space of INDSCAL and of \code{which = "semiaxis"} in \code{\link[=plot.mdspace_ellipse]{plot.mdspace_ellipse()}}.
 }
 \references{
 Okada, A., & Imaizumi, T. (1987). Nonmetric multidimensional

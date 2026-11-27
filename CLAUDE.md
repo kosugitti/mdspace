@@ -11,8 +11,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 - 照合: 千野版は `develop/20261107_chino_check.R`。円モデルは `tests/testthat/fixtures/`(書籍表1.19・1.14 と nASYMS の実出力)。フォンミーゼスは Stan 版(`develop/vonmises_mds.stan`)と目的関数が一致(`develop/20261118_vonmises_map_check.R`)。荘島先生のソフトは Windows 専用で照合できない
 - **楕円モデルのベイズ版(順位尤度)を develop/ で設計・試行**(`develop/ellipse_rank.stan`。設計と経緯の正本は TeX ノート `~/Dropbox/02_研究/mdspace/research_notes/20261121_OIモデルの確率モデル化/`): 順序プロビット(閾値 K-1・タイは一次)，楕円＝大きさ＋形の非中心化の階層の事前分布，平方和 N で正規化し sigma 推定，μ の符号は縛らない。職業データでは円モデルが最良(周辺尤度)
 - **円モデルの順位尤度版を base R の MAP で解く `circle_rank_map()` を develop/ に試作**(`develop/circle_rank_map.R`・Stan は `develop/circle_rank.stan`): 半径は差だけの母数(報告は最小を 0)，解析的な勾配の BFGS・Torgerson 解＋乱数の布置。布置・半径は MCMC とほぼ同じ。**sigma は同時の MAP で小さめに出る**(N=12 で MCMC の約 0.8 倍，N=50 で約 0.95 倍＝母数あたりの情報の不足)。ラプラスで sigma だけ置き直すのはいびつで半径も膨らむ＝**既定は全部 MAP**(先生 11/25)
-- **S3 メソッドは全クラスに print・summary・plot がそろった**(テストは `tests/testthat/test-methods.R`): summary のモデルごとの表は `extra`(名前つきリスト)に入れ，共通の `print.summary.mdspace` が順に出す＝新しいモデルを足すときもこの形に合わせる。`mdspace_asym` だけは `mdspace` を継承しないので自前の `summary.mdspace_asym`。**二相三元の円モデルの plot は `source` でソースの楕円を描く**(`NULL` 共通の円・番号か名前・`"all"` 重ね描き。軸の範囲は全ソースで固定)
-- 先生の判断待ち: 二相三元の `plot(fit)` の既定(今は共通の円・`"all"` にする案)，`which = "weights"`(ソースを u の平面に描く図)を入れるか
+- **S3 メソッドは全クラスに print・summary・plot がそろった**(テストは `tests/testthat/test-methods.R`): summary のモデルごとの表は `extra`(名前つきリスト)に入れ，共通の `print.summary.mdspace` が順に出す＝新しいモデルを足すときもこの形に合わせる。`mdspace_asym` だけは `mdspace` を継承しないので自前の `summary.mdspace_asym`。**二相三元の円モデルの plot は `source` でソースの楕円を描く**(`NULL` 共通の円・番号か名前・`"all"` 重ね描き。軸の範囲は全ソースで固定。既定は共通の円のまま＝先生 11/27)，`which = "weights"` でソースを非対称重み u の平面に描く
 - 次: 1 次元の扱い(距離の角で BFGS が止まる)・楕円版の R の MAP・実データで当てはめ直し・TeX ノートへの追記。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版。欠測ソースのテスト
 - 照合の基準: 岡太・今泉の公式 Shiny nASYMS(https://nasyms.shinyapps.io/nASYMS/ ・マニュアルは `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024) の表1.19・1.14
 
