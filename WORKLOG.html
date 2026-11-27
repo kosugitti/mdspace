@@ -322,6 +322,21 @@
 <li>未コミット: この WORKLOG(11/23 の先生の 1 行を含む)</li>
 <li>次: 1 次元の扱い，print/plot/summary，楕円版の R の MAP，実データでの当てはめ直し，TeX ノートに 11/23〜25 の結果(半径の差・sigma の偏りと N)を書き足す。scaffold・recovery の台本は古い母数のままで動かない</li>
 </ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-27-s3-メソッドの整備と二相三元の円モデルの-plot">2026-11-27 S3 メソッドの整備と二相三元の円モデルの plot<a class="anchor" aria-label="anchor" href="#id_2026-11-27-s3-%E3%83%A1%E3%82%BD%E3%83%83%E3%83%89%E3%81%AE%E6%95%B4%E5%82%99%E3%81%A8%E4%BA%8C%E7%9B%B8%E4%B8%89%E5%85%83%E3%81%AE%E5%86%86%E3%83%A2%E3%83%87%E3%83%AB%E3%81%AE-plot"></a></h2>
+<ul><li>洗い出し: print・plot は全クラスにあった。抜けていたのは HFM・GSTATIS の summary(共通版を継承するだけで固有値・GOF・重みが出ない)，<code>mdspace_asym</code> の summary(<code>summary.default</code> が走る)，二相三元の円モデルの summary(重みが出ない)，HFM・GSTATIS・asym・共通クラスのメソッドのテスト。<code><a href="reference/as_proximity.html">as_proximity()</a></code>(属性つき行列)・<code><a href="reference/missing_pattern.html">missing_pattern()</a></code>(data.frame)はクラスを持たないので対象外</li>
+<li>
+<code>print.summary.mdspace</code> は共通の1本のまま，モデルごとの表を <code>extra</code>(名前つきリスト)で受けて順に出す形に(<code>.print_rounded()</code>・データフレームは数値の列だけ丸める)。円(一相二元)・楕円・フォンミーゼスの出力は変わらない</li>
+<li>新設: <code>summary.mdspace_hfm</code>(固有値・GOF・説明されない割合)，<code>summary.mdspace_gstatis</code>(RV 固有値・ソースの重み・第1妥協の固有値と GOF・各ソースと妥協の距離)，<code>summary.mdspace_asym</code> と <code>print.summary.mdspace_asym</code>(平方和と割合・対象ごとの K の行和と |K| の行和)。<code>summary.mdspace_circle</code> は二相三元のとき重み・縦横比・ソース別 S の表を足す。固有値の表は <code>.gof_table()</code>(HFM と GSTATIS で共用)</li>
+<li>
+<code><a href="reference/plot.mdspace_circle.html">plot.mdspace_circle()</a></code> に <code>source</code> を追加: <code>NULL</code>(既定・共通の円＝今までと同じ)，番号か名前(そのソースの楕円・半軸 u_it r_j)，<code>"all"</code>(全ソースを色分けして重ね描き・凡例)。二相三元の軸の範囲は全ソースの楕円が入る大きさに固定(ソースを替えても枠が動かない＝<code>par(mfrow)</code> で並べて比べられる。関数の中では par を触らない)。1次元は u_i1 r_j の円，3次元以上は dims の2つの u。一相二元に source を渡すとエラー</li>
+<li>テスト <code>tests/testthat/test-methods.R</code>(全クラスに3メソッドがあること・各メソッドの出力と返り値・source の軸の範囲と誤りの指定・1次元と3次元)。全体 314 件通過</li>
+<li>先生の決定(同日): 二相三元の <code>plot(fit)</code> の既定は共通の円のまま，<code>which = "weights"</code> も入れる</li>
+<li>
+<code>plot.mdspace_circle(which = "weights")</code> を追加: ソースを非対称重み u の平面の点として描き対角線を引く(対角線の上は円のまま・離れるほど細長い楕円＝INDSCAL の重み空間，<code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code> の <code>which = "semiaxis"</code> と同じ読み方)。二相三元の2次元以上だけ(1次元・一相二元はエラー)。テストを追加</li>
+<li>push はしていない(先生の確認後)</li>
+<li>次: 1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

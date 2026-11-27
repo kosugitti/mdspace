@@ -5,7 +5,7 @@
 MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。
 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。
 
-### 現在の状態（2026-11-25更新）
+### 現在の状態（2026-11-27更新）
 
 - 設計の正本は `develop/設計メモ_20261107.md`(既存 R
   でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは
@@ -62,10 +62,19 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
   とほぼ同じ。**sigma は同時の MAP で小さめに出る**(N=12 で MCMC の約
   0.8 倍，N=50 で約 0.95 倍＝母数あたりの情報の不足)。ラプラスで sigma
   だけ置き直すのはいびつで半径も膨らむ＝**既定は全部 MAP**(先生 11/25)
-- 次: 1 次元の扱い(距離の角で BFGS が止まる)・S3 メソッド・楕円版の R の
+- **S3 メソッドは全クラスに print・summary・plot がそろった**(テストは
+  `tests/testthat/test-methods.R`): summary のモデルごとの表は
+  `extra`(名前つきリスト)に入れ，共通の `print.summary.mdspace`
+  が順に出す＝新しいモデルを足すときもこの形に合わせる。`mdspace_asym`
+  だけは `mdspace` を継承しないので自前の
+  `summary.mdspace_asym`。**二相三元の円モデルの plot は `source`
+  でソースの楕円を描く**(`NULL` 共通の円・番号か名前・`"all"`
+  重ね描き。軸の範囲は全ソースで固定。既定は共通の円のまま＝先生
+  11/27)，`which = "weights"` でソースを非対称重み u の平面に描く
+- 次: 1 次元の扱い(距離の角で BFGS が止まる)・楕円版の R の
   MAP・実データで当てはめ直し・TeX ノートへの追記。Stan 版の発散は
   adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB
-  版。二相三元の plot でソースの楕円を描く・欠測ソースのテスト
+  版。欠測ソースのテスト
 - 照合の基準: 岡太・今泉の公式 Shiny
   nASYMS(<https://nasyms.shinyapps.io/nASYMS/> ・マニュアルは
   `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024)

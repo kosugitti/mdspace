@@ -33,9 +33,19 @@
   : Plot a von Mises model solution
 - [`print(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.mdspace.md)
   : Print an mdspace object
+- [`print(`*`<summary.mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.summary.mdspace.md)
+  : Print the summary of an mdspace object
 - [`run_app()`](https://kosugitti.github.io/mdspace/reference/run_app.md)
   : mdspace Shiny アプリケーションを起動する
 - [`summary(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace.md)
   : Summarize an mdspace object
+- [`summary(`*`<mdspace_asym>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace_asym.md)
+  : Summarize a symmetric / skew-symmetric decomposition
+- [`summary(`*`<mdspace_circle>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace_circle.md)
+  : Summarize a radius-distance (circle) model solution
+- [`summary(`*`<mdspace_gstatis>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace_gstatis.md)
+  : Summarize a GSTATIS solution
+- [`summary(`*`<mdspace_hfm>`*`)`](https://kosugitti.github.io/mdspace/reference/summary.mdspace_hfm.md)
+  : Summarize an HFM solution
 - [`vonmises_mds()`](https://kosugitti.github.io/mdspace/reference/vonmises_mds.md)
   : Asymmetric MDS by the von Mises model (AMISESCAL)
