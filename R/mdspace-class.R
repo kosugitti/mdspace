@@ -67,6 +67,15 @@ summary.mdspace <- function(object, ...) {
   return(out)
 }
 
+#' Print the summary of an mdspace object
+#'
+#' Prints the model, the stress (when defined), the configuration, and then
+#' the model-specific tables stored in `x$extra` (a named list), if any.
+#'
+#' @param x An object of class `summary.mdspace`.
+#' @param digits Number of digits to print.
+#' @param ... Not used.
+#' @return `x`, invisibly.
 #' @export
 print.summary.mdspace <- function(x, digits = 4, ...) {
   cat("mdspace:", x$model, "\n")
@@ -75,7 +84,24 @@ print.summary.mdspace <- function(x, digits = 4, ...) {
   }
   cat("\nConfiguration:\n")
   print(round(x$conf, digits))
+  # モデルごとの表(名前つきリスト)を順に出す
+  for (nm in names(x$extra)) {
+    cat("\n", nm, ":\n", sep = "")
+    .print_rounded(x$extra[[nm]], digits)
+  }
   return(invisible(x))
+}
+
+# 数値を丸めて表示する(データフレームは数値の列だけ丸める・内部) ----------------------
+.print_rounded <- function(tab, digits) {
+  if (is.data.frame(tab)) {
+    num <- vapply(tab, is.numeric, logical(1))
+    tab[num] <- lapply(tab[num], round, digits)
+    print(tab, row.names = FALSE)
+  } else {
+    print(round(tab, digits))
+  }
+  return(invisible(NULL))
 }
 
 # 共通の plot: 布置の散布図 ------------------------------------------------------

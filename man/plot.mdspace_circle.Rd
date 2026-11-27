@@ -4,7 +4,7 @@
 \alias{plot.mdspace_circle}
 \title{Plot a radius-distance (circle) model solution}
 \usage{
-\method{plot}{mdspace_circle}(x, dims = c(1, 2), labels = TRUE, ...)
+\method{plot}{mdspace_circle}(x, dims = c(1, 2), labels = TRUE, source = NULL, ...)
 }
 \arguments{
 \item{x}{An object of class \code{mdspace_circle}.}
@@ -12,6 +12,9 @@
 \item{dims}{Two dimensions to plot.}
 
 \item{labels}{Logical; draw object labels.}
+
+\item{source}{Two-mode three-way model only: \code{NULL} (common circles), the
+index or name of a source, or \code{"all"}.}
 
 \item{...}{Passed to \code{\link[graphics:plot]{graphics::plot()}}.}
 }
@@ -22,4 +25,21 @@
 Each object is drawn as a point with a circle of its radius. A larger
 circle means that the object is reached more easily from the others than
 it reaches them (for similarities).
+}
+\details{
+For the two-mode three-way model, \code{source} chooses what is drawn around
+the points: the common circles of radius \code{r_j} (\code{NULL}), the ellipses of
+one source with semiaxes \verb{u_it r_j} (an index or a name), or the ellipses
+of all sources overlaid in different colours (\code{"all"}). The axis limits
+are the same for every choice of \code{source}, so that plots of different
+sources can be compared side by side (set \code{par(mfrow = )} and call the
+function once per source). In one dimension the ellipse of a source is
+the circle of radius \verb{u_i1 r_j}.
+}
+\references{
+Okada, A., & Imaizumi, T. (1987). Nonmetric multidimensional
+scaling of asymmetric proximities. \emph{Behaviormetrika}, 14(21), 81-96.
+
+Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+two-mode three-way proximities. \emph{Journal of Classification}, 14, 195-224.
 }

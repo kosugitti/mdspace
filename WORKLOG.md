@@ -227,3 +227,13 @@
 - `.cr_log_diff_pnorm` の NA の添え字を直した(直線探索で NaN になると止まっていた)
 - 未コミット: この WORKLOG(11/23 の先生の 1 行を含む)
 - 次: 1 次元の扱い，print/plot/summary，楕円版の R の MAP，実データでの当てはめ直し，TeX ノートに 11/23〜25 の結果(半径の差・sigma の偏りと N)を書き足す。scaffold・recovery の台本は古い母数のままで動かない
+
+## 2026-11-27 S3 メソッドの整備と二相三元の円モデルの plot
+- 洗い出し: print・plot は全クラスにあった。抜けていたのは HFM・GSTATIS の summary(共通版を継承するだけで固有値・GOF・重みが出ない)，`mdspace_asym` の summary(`summary.default` が走る)，二相三元の円モデルの summary(重みが出ない)，HFM・GSTATIS・asym・共通クラスのメソッドのテスト。`as_proximity()`(属性つき行列)・`missing_pattern()`(data.frame)はクラスを持たないので対象外
+- `print.summary.mdspace` は共通の1本のまま，モデルごとの表を `extra`(名前つきリスト)で受けて順に出す形に(`.print_rounded()`・データフレームは数値の列だけ丸める)。円(一相二元)・楕円・フォンミーゼスの出力は変わらない
+- 新設: `summary.mdspace_hfm`(固有値・GOF・説明されない割合)，`summary.mdspace_gstatis`(RV 固有値・ソースの重み・第1妥協の固有値と GOF・各ソースと妥協の距離)，`summary.mdspace_asym` と `print.summary.mdspace_asym`(平方和と割合・対象ごとの K の行和と |K| の行和)。`summary.mdspace_circle` は二相三元のとき重み・縦横比・ソース別 S の表を足す。固有値の表は `.gof_table()`(HFM と GSTATIS で共用)
+- `plot.mdspace_circle()` に `source` を追加: `NULL`(既定・共通の円＝今までと同じ)，番号か名前(そのソースの楕円・半軸 u_it r_j)，`"all"`(全ソースを色分けして重ね描き・凡例)。二相三元の軸の範囲は全ソースの楕円が入る大きさに固定(ソースを替えても枠が動かない＝`par(mfrow)` で並べて比べられる。関数の中では par を触らない)。1次元は u_i1 r_j の円，3次元以上は dims の2つの u。一相二元に source を渡すとエラー
+- テスト `tests/testthat/test-methods.R`(全クラスに3メソッドがあること・各メソッドの出力と返り値・source の軸の範囲と誤りの指定・1次元と3次元)。全体 308 件通過
+- 先生の判断待ち: (a) 二相三元の `plot(fit)` の既定を共通の円のままにするか `"all"` にするか(今は共通の円)，(b) `which = "weights"`(ソースを u の平面に点で描く図・INDSCAL の重み空間にあたる)を入れるか(未実装)
+- push はしていない(先生の確認後)
+- 次: 上の2点の判断，1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト

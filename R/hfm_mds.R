@@ -130,6 +130,40 @@ print.mdspace_hfm <- function(x, digits = 4, ...) {
   return(invisible(x))
 }
 
+# 固有値・GOF・累積の表(内部・HFM と GSTATIS で共用) ------------------------------------
+.gof_table <- function(eigen, gof, names) {
+  k <- length(names)
+  tab <- rbind(eigenvalue = eigen[seq_len(k)], gof = gof[seq_len(k)],
+               cumulative = cumsum(gof[seq_len(k)]))
+  colnames(tab) <- names
+  return(tab)
+}
+
+#' Summarize an HFM solution
+#'
+#' The configuration (real and imaginary parts of each complex dimension)
+#' with the eigenvalues, the goodness of fit of the retained dimensions, and
+#' the share of the sum of squares left unexplained. `stress` is `NA`
+#' because the HFM is not a distance model.
+#'
+#' @param object An object of class `mdspace_hfm`.
+#' @param ... Not used.
+#' @return An object of class `summary.mdspace`; the model-specific tables
+#'   are in `extra`.
+#' @references Chino, N., & Shiraiwa, K. (1993). Geometrical structures of
+#'   some non-distance models for asymmetric MDS. *Behaviormetrika*, 20(1),
+#'   35-47.
+#' @export
+summary.mdspace_hfm <- function(object, ...) {
+  out <- NextMethod()
+  out$extra <- list(
+    "Eigenvalues and goodness of fit" =
+      .gof_table(object$eigen, object$gof, colnames(object$coord)),
+    "Unexplained SS (1 - cumulative GOF)" = c(unexplained = object$unexplained)
+  )
+  return(out)
+}
+
 #' Plot one complex plane of an HFM solution
 #'
 #' Each object is drawn as an arrow from the origin. For a positive

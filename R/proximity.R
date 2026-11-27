@@ -81,6 +81,45 @@ print.mdspace_asym <- function(x, digits = 4, ...) {
   return(invisible(x))
 }
 
+#' Summarize a symmetric / skew-symmetric decomposition
+#'
+#' The sums of squares with their shares, and for each object the row sum of
+#' the skew-symmetric part `K` (positive when the object's row exceeds its
+#' column on the whole) with the row sum of `|K|`.
+#'
+#' @param object An object of class `mdspace_asym`.
+#' @param ... Not used.
+#' @return An object of class `summary.mdspace_asym` with elements `ss` (sums
+#'   of squares and shares), `asymmetry`, and `objects` (row sums of `K` and
+#'   of `|K|`).
+#' @references Gower, J. C. (1977). The analysis of asymmetry and
+#'   orthogonality. In J. R. Barra et al. (Eds.), *Recent developments in
+#'   statistics* (pp. 109-123). North-Holland.
+#' @export
+summary.mdspace_asym <- function(object, ...) {
+  K <- object$K
+  diag(K) <- NA
+  out <- list(
+    ss = rbind(ss = object$ss, share = object$ss / object$ss["total"]),
+    asymmetry = object$asymmetry,
+    objects = cbind(skew_sum = rowSums(K, na.rm = TRUE),
+                    abs_skew_sum = rowSums(abs(K), na.rm = TRUE))
+  )
+  class(out) <- "summary.mdspace_asym"
+  return(out)
+}
+
+#' @export
+print.summary.mdspace_asym <- function(x, digits = 4, ...) {
+  cat("Symmetric / skew-symmetric decomposition\n")
+  cat("\nSums of squares:\n")
+  print(signif(x$ss, digits))
+  cat("\nShare of asymmetry:", format(round(x$asymmetry, digits), nsmall = digits), "\n")
+  cat("\nRow sums of the skew-symmetric part by object:\n")
+  print(signif(x$objects, digits))
+  return(invisible(x))
+}
+
 #' Plot the skew-symmetric part as a heat map
 #'
 #' Positive cells (row > column) are red and negative cells are blue.

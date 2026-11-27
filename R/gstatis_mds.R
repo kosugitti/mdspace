@@ -244,6 +244,43 @@ print.mdspace_gstatis <- function(x, digits = 4, ...) {
   return(invisible(x))
 }
 
+#' Summarize a GSTATIS solution
+#'
+#' The configuration of the first compromise with the eigenvalues of the RV
+#' matrix (inter-structure), the weights of the sources in each compromise,
+#' the eigenvalues and goodness of fit of the first compromise, and the
+#' distance of each source from each compromise. `stress` is `NA` because
+#' GSTATIS is not a distance model.
+#'
+#' @param object An object of class `mdspace_gstatis`.
+#' @param ... Not used.
+#' @return An object of class `summary.mdspace`; the model-specific tables
+#'   are in `extra`.
+#' @references Chino, N., Grorud, A., & Yoshino, R. (1996). A complex analysis
+#'   for two-mode three-way asymmetric relational data. *Abstracts of the talks
+#'   at the 5th Conference of the International Federation of Classification
+#'   Societies*, Vol. 2, 83-86.
+#' @export
+summary.mdspace_gstatis <- function(object, ...) {
+  out <- NextMethod()
+  ev <- object$rv_eigen$values
+  occ <- names(object$occasion)
+  w <- object$weights
+  dimnames(w) <- list(occ, names(object$compromise))
+  dist <- vapply(object$compromise, function(cp) cp$distance, numeric(length(occ)))
+  dist <- matrix(dist, nrow = length(occ), dimnames = list(occ, names(object$compromise)))
+  out$extra <- list(
+    "RV eigenvalues (interstructure)" = rbind(eigenvalue = ev, share = ev / sum(ev)),
+    "Weights of the sources (GRV eigenvectors)" = w,
+    "First compromise: eigenvalues and goodness of fit" =
+      .gof_table(object$eigen, object$gof, colnames(object$coord)),
+    "First compromise: unexplained SS (1 - cumulative GOF)" =
+      c(unexplained = object$unexplained),
+    "Distance of each source from the compromise" = dist
+  )
+  return(out)
+}
+
 #' Plot a GSTATIS solution
 #'
 #' `type = "interstructure"` plots the sources on the first two eigenvectors

@@ -355,10 +355,31 @@ print.mdspace_circle <- function(x, digits = 4, ...) {
   return(invisible(x))
 }
 
+#' Summarize a radius-distance (circle) model solution
+#'
+#' The configuration with the radii. For the two-mode three-way model the
+#' weights of the sources (`w`: symmetry, `u`: asymmetry), the aspect ratio
+#' of their ellipses and `S` by source are added.
+#'
+#' @param object An object of class `mdspace_circle`.
+#' @param ... Not used.
+#' @return An object of class `summary.mdspace`; for the two-mode three-way
+#'   model the tables of the sources are in `extra`.
+#' @references Okada, A., & Imaizumi, T. (1987). Nonmetric multidimensional
+#'   scaling of asymmetric proximities. *Behaviormetrika*, 14(21), 81-96.
+#'
+#' Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+#'   two-mode three-way proximities. *Journal of Classification*, 14, 195-224.
 #' @export
 summary.mdspace_circle <- function(object, ...) {
   out <- NextMethod()
   out$conf <- cbind(object$conf, radius = object$radius)
+  if (isTRUE(object$threeway)) {
+    wt <- object$weights
+    wt$aspect <- unname(object$aspect)
+    wt$S <- unname(object$stress_source)
+    out$extra <- list("Sources (w: symmetry, u: asymmetry, aspect ratio, S)" = wt)
+  }
   return(out)
 }
 
@@ -368,32 +389,99 @@ summary.mdspace_circle <- function(object, ...) {
 #' circle means that the object is reached more easily from the others than
 #' it reaches them (for similarities).
 #'
+#' For the two-mode three-way model, `source` chooses what is drawn around
+#' the points: the common circles of radius `r_j` (`NULL`), the ellipses of
+#' one source with semiaxes `u_it r_j` (an index or a name), or the ellipses
+#' of all sources overlaid in different colours (`"all"`). The axis limits
+#' are the same for every choice of `source`, so that plots of different
+#' sources can be compared side by side (set `par(mfrow = )` and call the
+#' function once per source). In one dimension the ellipse of a source is
+#' the circle of radius `u_i1 r_j`.
+#'
 #' @param x An object of class `mdspace_circle`.
 #' @param dims Two dimensions to plot.
 #' @param labels Logical; draw object labels.
+#' @param source Two-mode three-way model only: `NULL` (common circles), the
+#'   index or name of a source, or `"all"`.
 #' @param ... Passed to [graphics::plot()].
 #' @return `x`, invisibly.
+#' @references Okada, A., & Imaizumi, T. (1987). Nonmetric multidimensional
+#'   scaling of asymmetric proximities. *Behaviormetrika*, 14(21), 81-96.
+#'
+#' Okada, A., & Imaizumi, T. (1997). Asymmetric multidimensional scaling of
+#'   two-mode three-way proximities. *Journal of Classification*, 14, 195-224.
 #' @export
-plot.mdspace_circle <- function(x, dims = c(1, 2), labels = TRUE, ...) {
+plot.mdspace_circle <- function(x, dims = c(1, 2), labels = TRUE, source = NULL, ...) {
   conf <- x$conf
+  r <- x$radius
+  threeway <- isTRUE(x$threeway)
+  if (!is.null(source) && !threeway) {
+    stop("`source` is for the two-mode three-way model (a list of matrices).")
+  }
+  U <- NULL
+  if (threeway) {
+    U <- as.matrix(x$weights[, paste0("u", seq_len(ncol(conf))), drop = FALSE])
+    rownames(U) <- x$weights$source
+  }
   if (ncol(conf) == 1) {
     conf <- cbind(conf, 0)
+    if (threeway) U <- cbind(U, U)
     dims <- c(1, 2)
   }
   xy <- conf[, dims, drop = FALSE]
-  r <- x$radius
-  lim <- range(c(xy - r, xy + r)) * 1.05
+  # どのソースを描くか(行番号にそろえる)
+  idx <- integer(0)
+  if (!is.null(source)) {
+    if (length(source) != 1) {
+      stop("`source` must be a single index, a single name, or \"all\".")
+    }
+    if (identical(source, "all")) {
+      idx <- seq_len(nrow(U))
+    } else if (is.character(source)) {
+      idx <- match(source, rownames(U))
+    } else {
+      idx <- if (source %in% seq_len(nrow(U))) as.integer(source) else NA_integer_
+    }
+    if (anyNA(idx)) {
+      stop("`source` does not match any source: ", source)
+    }
+  }
+  # 軸の範囲: 二相三元は全ソースの楕円が入る大きさに固定する(ソースを替えても枠が動かない)
+  if (threeway) {
+    A <- outer(r, apply(U[, dims, drop = FALSE], 2, function(u) max(u, 1)))
+  } else {
+    A <- matrix(r, nrow(xy), 2)
+  }
+  lim <- range(c(xy - A, xy + A)) * 1.05
+  main <- "Radius-distance model"
+  if (length(idx) == 1) {
+    main <- paste0(main, ": ", rownames(U)[idx])
+  }
   graphics::plot(xy, asp = 1, xlim = lim, ylim = lim, pch = 16,
                  xlab = paste("Dimension", dims[1]),
                  ylab = paste("Dimension", dims[2]),
-                 main = "Radius-distance model", ...)
+                 main = main, ...)
   graphics::abline(h = 0, v = 0, col = "grey80", lty = 3)
   th <- seq(0, 2 * pi, length.out = 181)
-  for (i in seq_len(nrow(xy))) {
-    if (r[i] > 0) {
-      graphics::lines(xy[i, 1] + r[i] * cos(th), xy[i, 2] + r[i] * sin(th),
-                      col = "grey40")
+  # 半軸の倍率と色: 共通の円は倍率 1，ソースを選んだらその u
+  if (length(idx) == 0) {
+    scale <- matrix(1, 1, 2)
+    cols <- "grey40"
+  } else {
+    scale <- U[idx, dims, drop = FALSE]
+    cols <- if (length(idx) == 1) "grey40" else grDevices::hcl.colors(length(idx), "Dark 3")
+  }
+  for (s in seq_len(nrow(scale))) {
+    for (i in seq_len(nrow(xy))) {
+      if (r[i] > 0) {
+        graphics::lines(xy[i, 1] + scale[s, 1] * r[i] * cos(th),
+                        xy[i, 2] + scale[s, 2] * r[i] * sin(th), col = cols[s])
+      }
     }
+  }
+  if (length(idx) > 1) {
+    graphics::legend("topright", legend = rownames(U)[idx], col = cols, lty = 1,
+                     bty = "n", cex = 0.8)
   }
   if (labels) {
     graphics::text(xy, labels = x$labels, pos = 3, cex = 0.8)
