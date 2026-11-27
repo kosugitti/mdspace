@@ -334,7 +334,8 @@
 <li>先生の決定(同日): 二相三元の <code>plot(fit)</code> の既定は共通の円のまま，<code>which = "weights"</code> も入れる</li>
 <li>
 <code>plot.mdspace_circle(which = "weights")</code> を追加: ソースを非対称重み u の平面の点として描き対角線を引く(対角線の上は円のまま・離れるほど細長い楕円＝INDSCAL の重み空間，<code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code> の <code>which = "semiaxis"</code> と同じ読み方)。二相三元の2次元以上だけ(1次元・一相二元はエラー)。テストを追加</li>
-<li>push はしていない(先生の確認後)</li>
+<li>コミット c23081f・97cdd6d を先生の確認後に main へ push 済み</li>
+<li>先生に未確認: <code>summary.mdspace_asym</code> の対象ごとの行和(K の行和と |K| の行和)は Claude の判断で入れた＝不要なら外す</li>
 <li>次: 1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト</li>
 </ul></div>
 </div>

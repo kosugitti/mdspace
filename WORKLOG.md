@@ -673,6 +673,8 @@
   の重み空間，[`ellipse_mds()`](https://kosugitti.github.io/mdspace/reference/ellipse_mds.md)
   の `which = "semiaxis"`
   と同じ読み方)。二相三元の2次元以上だけ(1次元・一相二元はエラー)。テストを追加
-- push はしていない(先生の確認後)
+- コミット c23081f・97cdd6d を先生の確認後に main へ push 済み
+- 先生に未確認: `summary.mdspace_asym` の対象ごとの行和(K の行和と \|K\|
+  の行和)は Claude の判断で入れた＝不要なら外す
 - 次: 1 次元の扱い(circle_rank_map)，楕円版の R の
   MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト
