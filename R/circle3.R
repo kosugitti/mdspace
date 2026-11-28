@@ -245,6 +245,7 @@
     dimnames(m) <- list(lab, lab)
     m
   })
+  .stop_if_absent(Xs, sources = src)
   fit <- .circle3_fit(Xs, ndim, type, ndim_max, nrandom, maxit, seed, kappa)
   if (fit$at_bound) {
     warning(sprintf("The aspect ratio of the ellipses reached the bound `kappa` = %g in some source(s); the data may favour collapsed ellipses.", kappa))

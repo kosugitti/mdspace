@@ -63,6 +63,36 @@ missing_pattern <- function(x) {
   ))
 }
 
+# どの行列にも観測のない対象・観測のないソースを止める(内部) --------------------------------
+# 円・楕円・フォンミーゼスのモデルは欠測セルを当てはめから外すだけなので，一度も観測のない対象の
+# 座標はデータから決まらない(初期値のまま返ってしまう)。二相三元では，あるソースにいないだけなら
+# 他のソースから決まるので構わない
+.stop_if_absent <- function(Xs, sources = NULL) {
+  if (!is.list(Xs)) Xs <- list(Xs)
+  n <- nrow(Xs[[1]])
+  lab <- rownames(Xs[[1]])
+  if (is.null(lab)) lab <- as.character(seq_len(n))
+  nobs <- lapply(Xs, function(X) {
+    m <- !is.na(X)
+    diag(m) <- FALSE
+    m
+  })
+  if (!is.null(sources)) {
+    empty <- which(vapply(nobs, sum, numeric(1)) == 0)
+    if (length(empty) > 0) {
+      stop(sprintf("Source(s) %s have no observed proximities; remove them.",
+                   paste(sources[empty], collapse = ", ")))
+    }
+  }
+  per_obj <- Reduce(`+`, lapply(nobs, function(m) rowSums(m) + colSums(m)))
+  absent <- which(per_obj == 0)
+  if (length(absent) > 0) {
+    stop(sprintf("Object(s) %s have no observed proximities in any matrix; their positions cannot be estimated. Remove them.",
+                 paste(lab[absent], collapse = ", ")))
+  }
+  invisible(NULL)
+}
+
 # MINERS 法による補完(内部) ---------------------------------------------------------
 # 1. 片側だけの欠けは転置の値で埋めて固定する(その組の歪対称部は 0 とみなす)
 # 2. 対角と両側の欠けは，行と列の非零の観測値の平均を初期値にして(Chino & Harshman 1996)，

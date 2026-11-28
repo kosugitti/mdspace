@@ -101,3 +101,84 @@ test_that("stopping at the first iteration warns", {
   # 階数 5(= n - 1) なら再構成がほぼ今の行列のまま
   expect_warning(mdspace:::.impute_miners(X, p = 5, tol = 1e-2), "first iteration")
 })
+
+# 円・楕円・フォンミーゼスのモデルの欠測(セルを当てはめから外す) ---------------------------
+
+# 真の楕円モデル(二相三元)から作った，誤差のない類似度のソース3つ
+make_twomode <- function(n = 15, seed = 5) {
+  set.seed(seed)
+  X <- matrix(rnorm(n * 2), n, 2)
+  r <- runif(n, 0, 0.6)
+  U <- rbind(c(1.5, 0.75), c(0.8, 1.6), c(1, 1))
+  Xs <- lapply(1:3, function(i) {
+    M <- matrix(NA_real_, n, n)
+    for (j in 1:n) for (k in 1:n) if (j != k) {
+      dx <- X[j, ] - X[k, ]
+      d <- sqrt(sum(dx^2))
+      v <- d / sqrt(sum((dx / U[i, ])^2))
+      M[j, k] <- d - v * (r[j] - r[k])
+    }
+    dimnames(M) <- list(LETTERS[1:n], LETTERS[1:n])
+    -M
+  })
+  names(Xs) <- c("T1", "T2", "T3")
+  list(Xs = Xs, r = r)
+}
+
+test_that("two-mode circle model: missing cells are left out and the solution is still recovered", {
+  g <- make_twomode()
+  Xs <- g$Xs
+  Xs$T1["A", "B"] <- NA                       # 片側
+  Xs$T2["C", "D"] <- Xs$T2["D", "C"] <- NA    # 両側
+  Xs$T3["E", "I"] <- NA
+  fit <- circle_mds(Xs, ndim = 2, nrandom = 3)
+  expect_lt(fit$stress, 1e-4)
+  expect_gt(cor(fit$radius, g$r), 0.99)
+  expect_equal(unname(fit$aspect), c(2, 2, 1), tolerance = 0.02)
+  expect_false(anyNA(fit$conf))
+})
+
+test_that("two-mode circle model: an object absent at one source is placed from the others", {
+  g <- make_twomode()
+  Xs <- g$Xs
+  Xs$T2["G", ] <- NA
+  Xs$T2[, "G"] <- NA
+  expect_equal(missing_pattern(Xs)$absent_objects, c("", "G", ""))
+  fit <- circle_mds(Xs, ndim = 2, nrandom = 3)
+  expect_lt(fit$stress, 1e-4)
+  expect_gt(cor(fit$radius, g$r), 0.99)
+  expect_true(all(is.finite(fit$stress_source)))
+  # 誤差のないデータなので，欠けのない解と点間距離が一致する
+  full <- circle_mds(g$Xs, ndim = 2, nrandom = 3)
+  expect_gt(cor(c(dist(fit$conf)), c(dist(full$conf))), 0.999)
+})
+
+test_that("two-mode circle model: an object absent at every source, or an empty source, is an error", {
+  g <- make_twomode()
+  Xs <- lapply(g$Xs, function(m) {
+    m["G", ] <- NA
+    m[, "G"] <- NA
+    m
+  })
+  expect_error(circle_mds(Xs, ndim = 2, nrandom = 0), "G have no observed proximities in any matrix")
+  Ys <- g$Xs
+  Ys$T3[] <- NA
+  expect_error(circle_mds(Ys, ndim = 2, nrandom = 0), "Source\\(s\\) T3 have no observed")
+})
+
+test_that("one-mode models stop on an object with no observed proximities", {
+  set.seed(1)
+  n <- 10
+  z <- matrix(rnorm(n * 2), n, 2)
+  D <- as.matrix(dist(z)) + matrix(runif(n * n, 0, 0.2), n, n)
+  dimnames(D) <- list(LETTERS[1:n], LETTERS[1:n])
+  D["D", ] <- NA
+  D[, "D"] <- NA
+  expect_error(circle_mds(D, ndim = 2, type = "dissimilarity"), "D have no observed proximities")
+  expect_error(ellipse_mds(D, ndim = 2, type = "dissimilarity"), "D have no observed proximities")
+  expect_error(vonmises_mds(D, type = "dissimilarity"), "D have no observed proximities")
+  # 片側だけでも観測があれば止めない(行か列のどちらかで決まる)
+  E <- as.matrix(dist(z)) + matrix(runif(n * n, 0, 0.2), n, n)
+  E[4, ] <- NA
+  expect_no_error(suppressWarnings(circle_mds(E, ndim = 2, type = "dissimilarity")))
+})

@@ -126,6 +126,7 @@ circle_mds <- function(x, ndim = 2, type = c("similarity", "dissimilarity"),
   type <- match.arg(type)
   X <- as_proximity(x, type = type)
   n <- nrow(X)
+  .stop_if_absent(X)
   if (ndim < 1 || ndim >= n) {
     stop("`ndim` must be between 1 and n - 1.")
   }

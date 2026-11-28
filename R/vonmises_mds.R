@@ -125,6 +125,7 @@ vonmises_mds <- function(x, type = c("dissimilarity", "similarity"),
   G <- unclass(X0)
   attr(G, "type") <- NULL
   diag(G) <- NA
+  .stop_if_absent(G)
   if (type == "similarity") {
     G <- max(G, na.rm = TRUE) + min(G, na.rm = TRUE) - G
   }
