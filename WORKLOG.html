@@ -360,6 +360,14 @@
 <li>わかったこと: 論文の表1の高さ(−2.85〜−3.48)は手元の <code>CL広島S4.csv</code>(調査対象者 C と同じ評定)からは式(1)でも 6 次の多項式近似でも再現できない(論文は 3 県の INDSCAL 共通空間で座標が違う)。曲面の近似 <code>regression.cpp</code> は中央にそろえた評定からさらに 3 を引いているが，その版でも合わない。ずれ(評定 − 高さ)は「ほかの対象から来る力の和」の符号を変えたもの</li>
 <li>次: 実データ(第7章の観光地・2013 年データ)で試す，PREFMAP との当てはまりの比べ方</li>
 </ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-28続き2-等高線マップの確率モデル化--研究プロジェクト-a7-へ">2026-11-28(続き2) 等高線マップの確率モデル化 → 研究プロジェクト A7 へ<a class="anchor" aria-label="anchor" href="#id_2026-11-28%E7%B6%9A%E3%81%8D2-%E7%AD%89%E9%AB%98%E7%B7%9A%E3%83%9E%E3%83%83%E3%83%97%E3%81%AE%E7%A2%BA%E7%8E%87%E3%83%A2%E3%83%87%E3%83%AB%E5%8C%96--%E7%A0%94%E7%A9%B6%E3%83%97%E3%83%AD%E3%82%B8%E3%82%A7%E3%82%AF%E3%83%88-a7-%E3%81%B8"></a></h2>
+<ul><li>Moran の I・SAR(<code>develop/contour_spatial.R</code>)を野球データ(2004 年論文の 29 人)で試し，2004 年論文の表1・図6・7 が広島の評定を −2 にして計算されていたことを再現で確認(コミット c0c7b0e)</li>
+<li>先生の方針でガウス過程版を本体に(<code>contour_gp.stan</code>)。文献調査 4 方面(サブエージェント)。Abelson の原典の書名に “attitude” が抜けていたのを <code><a href="reference/contour_mds.html">contour_mds()</a></code> のヘルプ・CLAUDE.md で直した(c18544f)</li>
+<li>先生の判断で研究プロジェクト A7「等高線マップモデルの確率モデル化」に格上げ(登録は秘書セッション)。設計メモ・文献メモ・試作のコード 4 本を <code>~/Dropbox/02_研究/等高線マップモデル/</code>(メモは直下，コードは <code>code/</code>)へ移し，mdspace の develop/ からは消した。移した台本は新しいフォルダから同じ結果が出ることを確かめた</li>
+<li>mdspace に残すもの: <code>R/contour_mds.R</code>・<code>tests/testthat/test-contour.R</code>・ヘルプ。以後の確率モデルの作業は A7 のフォルダで行う</li>
+<li>(同日夜)A7 側で座標の同時推定(先生の形・相互の影響が誤差の共分散に入る)と仮想データでの回復まで進んだ。記録は <code>~/Dropbox/02_研究/等高線マップモデル/WORKLOG.md</code>。mdspace 側の変更はない</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

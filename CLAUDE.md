@@ -88,12 +88,14 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
   の一つの出発点より高い山に届く＝楕円の形は山が多く出発点を増やすことが要る。ほぼ同じ高さで布置の違う山もある(`develop/20261128_ellipse_rank_map_check.R`)
 - **等高線マップモデル
   [`contour_mds()`](https://kosugitti.github.io/mdspace/reference/contour_mds.md)
-  を実装・テスト済み**(11/28・設計は
-  `develop/設計メモ_等高線マップモデル_20261128.md`): V(P) = Σ
+  を実装・テスト済み**(11/28): V(P) = Σ
   v_j/(1+d²)，布置はそのまま(`normalize = TRUE` で平均二乗距離 1)，IDW
   は入れない。ずれ(評定 − 高さ)を返し，plot
-  は等高線図と誘因価曲面。論文の表1は手元のファイルからは再現できない(INDSCAL
-  共通空間の座標が無い)
+  は等高線図と誘因価曲面。**確率モデル化(ガウス過程・Moran の
+  I・SAR)は研究プロジェクト A7
+  に格上げ**(11/28・先生)＝設計メモ・文献メモ・試作のコードは
+  `~/Dropbox/02_研究/等高線マップモデル/` へ移した。mdspace
+  に残るのはパッケージ関数とテストだけ
 - 次: 楕円版の MAP の sigma の偏り(MCMC
   と比べる＝秘書セッションへ申し出る)・出発点の数・実データで当てはめ直し。Stan
   版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB
@@ -240,8 +242,8 @@ MAXSCAL（Takane, 1981）ベースのアルゴリズム（ASYMMAXSCAL-OI）
 #### 文献
 
 - **原著**: Abelson, R.P. (1954-55). A technique and a model for
-  multi-dimensional scaling. *Public Opinion Quarterly, Winter*,
-  405-418.
+  multi-dimensional attitude scaling. *Public Opinion Quarterly*, 18(4),
+  405-418. <doi:10.1086/266533>
 - **応用論文**: 小杉考司・藤原武弘 (2004).
   等高線マッピングによる態度布置モデル. *行動計量学*, 31(1), 17-24. —
   **PDF所持**（`~/Dropbox/Labo/MyLibrary/MyArticles/2004等高線.pdf`）

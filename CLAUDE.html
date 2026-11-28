@@ -59,7 +59,7 @@
 <li>
 <strong>楕円版の順位尤度の MAP <code>ellipse_rank_map()</code> を develop/ に試作</strong>(<code>develop/ellipse_rank_map.R</code>): <code>ellipse_rank_std.stan</code> と同じ対数事後密度を解析的な勾配の BFGS で。<code>model</code> で楕円・円・等面積・対称。Stan と lp 1e-6 で一致，楕円・等面積では6例中5例で Stan の一つの出発点より高い山に届く＝楕円の形は山が多く出発点を増やすことが要る。ほぼ同じ高さで布置の違う山もある(<code>develop/20261128_ellipse_rank_map_check.R</code>)</li>
 <li>
-<strong>等高線マップモデル <code><a href="reference/contour_mds.html">contour_mds()</a></code> を実装・テスト済み</strong>(11/28・設計は <code>develop/設計メモ_等高線マップモデル_20261128.md</code>): V(P) = Σ v_j/(1+d²)，布置はそのまま(<code>normalize = TRUE</code> で平均二乗距離 1)，IDW は入れない。ずれ(評定 − 高さ)を返し，plot は等高線図と誘因価曲面。論文の表1は手元のファイルからは再現できない(INDSCAL 共通空間の座標が無い)</li>
+<strong>等高線マップモデル <code><a href="reference/contour_mds.html">contour_mds()</a></code> を実装・テスト済み</strong>(11/28): V(P) = Σ v_j/(1+d²)，布置はそのまま(<code>normalize = TRUE</code> で平均二乗距離 1)，IDW は入れない。ずれ(評定 − 高さ)を返し，plot は等高線図と誘因価曲面。<strong>確率モデル化(ガウス過程・Moran の I・SAR)は研究プロジェクト A7 に格上げ</strong>(11/28・先生)＝設計メモ・文献メモ・試作のコードは <code>~/Dropbox/02_研究/等高線マップモデル/</code> へ移した。mdspace に残るのはパッケージ関数とテストだけ</li>
 <li>次: 楕円版の MAP の sigma の偏り(MCMC と比べる＝秘書セッションへ申し出る)・出発点の数・実データで当てはめ直し。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版</li>
 <li>照合の基準: 岡太・今泉の公式 Shiny nASYMS(<a href="https://nasyms.shinyapps.io/nASYMS/" class="external-link uri">https://nasyms.shinyapps.io/nASYMS/</a> ・マニュアルは <code>develop/references/nASYMS/</code>)と書籍 Okada &amp; Imaizumi (2024) の表1.19・1.14</li>
 </ul></div>
@@ -246,7 +246,8 @@
 <div class="section level4">
 <h4 id="文献">文献<a class="anchor" aria-label="anchor" href="#%E6%96%87%E7%8C%AE"></a></h4>
 <ul><li>
-<strong>原著</strong>: Abelson, R.P. (1954-55). A technique and a model for multi-dimensional scaling. <em>Public Opinion Quarterly, Winter</em>, 405-418.</li>
+<strong>原著</strong>: Abelson, R.P. (1954-55). A technique and a model for multi-dimensional attitude scaling. <em>Public Opinion Quarterly</em>, 18(4), 405-418. <a href="doi:10.1086/266533" class="uri">doi:10.1086/266533</a>
+</li>
 <li>
 <strong>応用論文</strong>: 小杉考司・藤原武弘 (2004). 等高線マッピングによる態度布置モデル. <em>行動計量学</em>, 31(1), 17-24. — <strong>PDF所持</strong>（<code>~/Dropbox/Labo/MyLibrary/MyArticles/2004等高線.pdf</code>）</li>
 </ul></div>
