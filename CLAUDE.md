@@ -137,7 +137,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 
 #### 文献
 
-- **原著**: Abelson, R.P. (1954-55). A technique and a model for multi-dimensional scaling. *Public Opinion Quarterly, Winter*, 405-418.
+- **原著**: Abelson, R.P. (1954-55). A technique and a model for multi-dimensional attitude scaling. *Public Opinion Quarterly*, 18(4), 405-418. doi:10.1086/266533
 - **応用論文**: 小杉考司・藤原武弘 (2004). 等高線マッピングによる態度布置モデル. *行動計量学*, 31(1), 17-24. — **PDF所持**（`~/Dropbox/Labo/MyLibrary/MyArticles/2004等高線.pdf`）
 
 #### モデルの数式

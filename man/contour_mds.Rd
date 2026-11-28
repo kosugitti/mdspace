@@ -73,7 +73,8 @@ plot(fit, type = "persp")
 }
 \references{
 Abelson, R. P. (1954-55). A technique and a model for multi-dimensional
-scaling. \emph{Public Opinion Quarterly}, \emph{18}(4), 405-418.
+attitude scaling. \emph{Public Opinion Quarterly}, \emph{18}(4), 405-418.
+\doi{10.1086/266533}
 
 Kosugi, K., & Fujihara, T. (2004). A technique for mapping attitude by a
 contour map model. \emph{Behaviormetrika (Kodo Keiryogaku)}, \emph{31}(1), 17-24.

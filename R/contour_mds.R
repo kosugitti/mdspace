@@ -49,7 +49,8 @@
 #'   `stress` and `niter` are `NA` because nothing is estimated.
 #' @references
 #' Abelson, R. P. (1954-55). A technique and a model for multi-dimensional
-#' scaling. *Public Opinion Quarterly*, *18*(4), 405-418.
+#' attitude scaling. *Public Opinion Quarterly*, *18*(4), 405-418.
+#' \doi{10.1086/266533}
 #'
 #' Kosugi, K., & Fujihara, T. (2004). A technique for mapping attitude by a
 #' contour map model. *Behaviormetrika (Kodo Keiryogaku)*, *31*(1), 17-24.
