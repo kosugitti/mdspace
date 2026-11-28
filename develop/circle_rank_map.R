@@ -282,7 +282,7 @@
 }
 
 # 本体 --------------------------------------------------------------------------------------------
-# x: 非類似度(type = "dissimilarity")か類似度の正方行列。nrandom: 乱数の布置から始める本数(Torgerson 解に加えて)
+# x: 非類似度(type = "dissimilarity")か類似度の正方行列。ndim: 2 以上(1 次元は推定しない)。nrandom: 乱数の布置から始める本数(Torgerson 解に加えて)
 # sigma = "map"(既定): 同時の最大値のまま。sigma は小さめに出る(N=12 で MCMC の約 0.8 倍，N=50 で約 0.95 倍)
 # sigma = "laplace": sigma を周辺事後分布(ラプラス近似)の山で置き直し，その sigma で他の母数を最大化し直す
 #   (sigma は MCMC に近づくが半径が膨らむ・20261124_circle_rank_laplace_check.R)
@@ -291,6 +291,11 @@ circle_rank_map <- function(x, ndim = 2, type = c("dissimilarity", "similarity")
   type <- match.arg(type)
   sigma <- match.arg(sigma)
   x <- as.matrix(x)
+  # 次元は 2 以上(MDS として布置を描くため・1 次元は距離 |x_j - x_k| の角で勾配法が止まる)。
+  # 足場に P+1 個の点が要るので N - 1 以下
+  if (length(ndim) != 1 || !is.numeric(ndim) || ndim != round(ndim) || ndim < 2 || ndim > nrow(x) - 1) {
+    stop("`ndim` must be an integer between 2 and n - 1.")
+  }
   if (type == "similarity") x <- -x                    # 順位しか使わないので符号を変えるだけ
   dat <- .cr_prep(x, ndim)
   N <- dat$N

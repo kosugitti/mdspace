@@ -4,7 +4,7 @@
 MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パッケージ。
 科研費プロジェクト 24K06481 の成果物。CRAN公開を目指す。
 
-### 現在の状態（2026-11-27更新）
+### 現在の状態（2026-11-28更新）
 - 設計の正本は `develop/設計メモ_20261107.md`(既存 R でできること・骨組み・工程・nASYMS・asymmetry・GSTATIS・千野版との照合・欠測の決定)。二相三元の円モデルは `develop/設計メモ_二相三元円モデル_20261117.md`，フォンミーゼスモデルは `develop/設計メモ_フォンミーゼスモデル_20261118.md`，楕円モデルは `develop/設計メモ_楕円モデル_20261119.md`
 - 決定: 古典的MDS・Kruskal は**先生が自分で書く**(勉強のため・Claude は作らない)，楕円は1関数 `ellipse_mds()` で引数切り替え，**二相三元の円モデルは `circle_mds()` に統合**(行列のリストを渡す)，CRAN は非対称系がそろってから検討，スライドベクトル・ASYMSCAL(Young 型)は asymmetry を包む。**フォンミーゼスモデルはベイズ(Stan)版が本命，パッケージには Stan を入れず base R の事後モード(MAP)で入れる**。テキスト用に RTMB 版のコードも develop/ に置く
 - **実装済み**: `hfm_mds()`，`gstatis_mds()`，`as_proximity()`・`asym_decomp()`・`missing_pattern()`，欠測 `missing = "impute"`(MINERS 法)，`circle_mds()`(一相二元＝Okada & Imaizumi 1987・二相三元＝1997・nASYMS と照合済み)。**`vonmises_mds()`(荘島 2011/2012 の AMISESCAL・2次元)を実装・テスト済み**: Stan 版と同じ対数事後密度・座標の事前分布は重心からのずれ・識別はコレスキー型の足場(点1を原点・点2を第1軸・点3を上半面)で推定後に重心へ移し主軸に回す・omega = "free"/"fixed"・hessian で近似 SE。**`ellipse_mds()`(Okada 1990)の Model II(楕円)・III(円)を実装・テスト済み**: alpha・beta で6つの下位モデル，stress 式2，次元は座標の分散の大きい順(回転しない)，半軸を回す向きの確かめ(書籍表4.6)。**楕円の形は stress ではほとんど決まらない**(縛らないと細長く大きな楕円へ流れ，書籍表4.4 の解も極小でない)＝原典どおり既定では縛らず警告，`kappa`・`axis_max` で任意に上限。**Model I は制約の出典(Okada & Imaizumi 1984)が無いと横山先生から返事。II・III の親にあたる一般形で，そのままでは推定できない＝放置(先生 11/20)**
@@ -12,7 +12,10 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 - **楕円モデルのベイズ版(順位尤度)を develop/ で設計・試行**(`develop/ellipse_rank.stan`。設計と経緯の正本は TeX ノート `~/Dropbox/02_研究/mdspace/research_notes/20261121_OIモデルの確率モデル化/`): 順序プロビット(閾値 K-1・タイは一次)，楕円＝大きさ＋形の非中心化の階層の事前分布，平方和 N で正規化し sigma 推定，μ の符号は縛らない。職業データでは円モデルが最良(周辺尤度)
 - **円モデルの順位尤度版を base R の MAP で解く `circle_rank_map()` を develop/ に試作**(`develop/circle_rank_map.R`・Stan は `develop/circle_rank.stan`): 半径は差だけの母数(報告は最小を 0)，解析的な勾配の BFGS・Torgerson 解＋乱数の布置。布置・半径は MCMC とほぼ同じ。**sigma は同時の MAP で小さめに出る**(N=12 で MCMC の約 0.8 倍，N=50 で約 0.95 倍＝母数あたりの情報の不足)。ラプラスで sigma だけ置き直すのはいびつで半径も膨らむ＝**既定は全部 MAP**(先生 11/25)
 - **S3 メソッドは全クラスに print・summary・plot がそろった**(テストは `tests/testthat/test-methods.R`): summary のモデルごとの表は `extra`(名前つきリスト)に入れ，共通の `print.summary.mdspace` が順に出す＝新しいモデルを足すときもこの形に合わせる。`mdspace_asym` だけは `mdspace` を継承しないので自前の `summary.mdspace_asym`。**二相三元の円モデルの plot は `source` でソースの楕円を描く**(`NULL` 共通の円・番号か名前・`"all"` 重ね描き。軸の範囲は全ソースで固定。既定は共通の円のまま＝先生 11/27)，`which = "weights"` でソースを非対称重み u の平面に描く
-- 次: 1 次元の扱い(距離の角で BFGS が止まる)・楕円版の R の MAP・実データで当てはめ直し・TeX ノートへの追記。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版。欠測ソースのテスト
+- **1 次元は推定しない**(先生 11/28・MDS は布置を平面以上に描く): `circle_rank_map()`・`ellipse_rank_map()` は `ndim` が 2 以上でないと止まる(パッケージの `circle_mds`・`ellipse_mds` はまだ 1 次元を許す)
+- **どの行列にも観測のない対象・観測のないソースは止める**(先生 11/28): 内部関数 `.stop_if_absent()`(`R/missing.R`)を `circle_mds`(一相二元・二相三元)・`ellipse_mds`・`vonmises_mds` の入口で呼ぶ。あるソースにだけいない対象は他のソースから決まるので止めない。テストは `test-missing.R`
+- **楕円版の順位尤度の MAP `ellipse_rank_map()` を develop/ に試作**(`develop/ellipse_rank_map.R`): `ellipse_rank_std.stan` と同じ対数事後密度を解析的な勾配の BFGS で。`model` で楕円・円・等面積・対称。Stan と lp 1e-6・同じ山なら布置 1e-4 で一致，楕円の形は山が多く Stan の一つの出発点より高い山に届くことが約半数(`develop/20261128_ellipse_rank_map_check.R`)
+- 次: 楕円版の MAP の sigma の偏り(MCMC と比べる＝秘書セッションへ申し出る)・実データで当てはめ直し・TeX ノートに楕円版の MAP を追記するか。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版
 - 照合の基準: 岡太・今泉の公式 Shiny nASYMS(https://nasyms.shinyapps.io/nASYMS/ ・マニュアルは `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024) の表1.19・1.14
 
 ## コーディング規約
