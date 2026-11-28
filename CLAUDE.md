@@ -14,8 +14,8 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 - **S3 メソッドは全クラスに print・summary・plot がそろった**(テストは `tests/testthat/test-methods.R`): summary のモデルごとの表は `extra`(名前つきリスト)に入れ，共通の `print.summary.mdspace` が順に出す＝新しいモデルを足すときもこの形に合わせる。`mdspace_asym` だけは `mdspace` を継承しないので自前の `summary.mdspace_asym`。**二相三元の円モデルの plot は `source` でソースの楕円を描く**(`NULL` 共通の円・番号か名前・`"all"` 重ね描き。軸の範囲は全ソースで固定。既定は共通の円のまま＝先生 11/27)，`which = "weights"` でソースを非対称重み u の平面に描く
 - **1 次元は推定しない**(先生 11/28・MDS は布置を平面以上に描く): `circle_rank_map()`・`ellipse_rank_map()` は `ndim` が 2 以上でないと止まる(パッケージの `circle_mds`・`ellipse_mds` はまだ 1 次元を許す)
 - **どの行列にも観測のない対象・観測のないソースは止める**(先生 11/28): 内部関数 `.stop_if_absent()`(`R/missing.R`)を `circle_mds`(一相二元・二相三元)・`ellipse_mds`・`vonmises_mds` の入口で呼ぶ。あるソースにだけいない対象は他のソースから決まるので止めない。テストは `test-missing.R`
-- **楕円版の順位尤度の MAP `ellipse_rank_map()` を develop/ に試作**(`develop/ellipse_rank_map.R`): `ellipse_rank_std.stan` と同じ対数事後密度を解析的な勾配の BFGS で。`model` で楕円・円・等面積・対称。Stan と lp 1e-6・同じ山なら布置 1e-4 で一致，楕円の形は山が多く Stan の一つの出発点より高い山に届くことが約半数(`develop/20261128_ellipse_rank_map_check.R`)
-- 次: 楕円版の MAP の sigma の偏り(MCMC と比べる＝秘書セッションへ申し出る)・実データで当てはめ直し・TeX ノートに楕円版の MAP を追記するか。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版
+- **楕円版の順位尤度の MAP `ellipse_rank_map()` を develop/ に試作**(`develop/ellipse_rank_map.R`): `ellipse_rank_std.stan` と同じ対数事後密度を解析的な勾配の BFGS で。`model` で楕円・円・等面積・対称。Stan と lp 1e-6 で一致，楕円・等面積では6例中5例で Stan の一つの出発点より高い山に届く＝楕円の形は山が多く出発点を増やすことが要る。ほぼ同じ高さで布置の違う山もある(`develop/20261128_ellipse_rank_map_check.R`)
+- 次: 楕円版の MAP の sigma の偏り(MCMC と比べる＝秘書セッションへ申し出る)・出発点の数・実データで当てはめ直し。Stan 版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB 版
 - 照合の基準: 岡太・今泉の公式 Shiny nASYMS(https://nasyms.shinyapps.io/nASYMS/ ・マニュアルは `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024) の表1.19・1.14
 
 ## コーディング規約
