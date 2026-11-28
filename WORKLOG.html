@@ -346,9 +346,19 @@
 <li>欠測のテスト(<code>tests/testthat/test-missing.R</code> に4本): 二相三元の円モデルで，セルの欠測(片側・両側)と，あるソースにだけいない対象は正しく動き，誤差のないデータで真の解を回復する(stress &lt; 1e-4・半径の相関 &gt; 0.99・欠けのない解と点間距離の相関 &gt; 0.999)</li>
 <li>見つかった穴2つ(先生の判断で止める): (A) どの行列にも観測のない対象を <code>circle_mds</code>・<code>ellipse_mds</code> は黙って初期値のまま返していた(<code>vonmises_mds</code> は事前分布の中心 0,0)。(B) 二相三元でソースがまるごと NA だと cmdscale の中で読めないエラー。共通の内部関数 <code>.stop_if_absent()</code>(<code>R/missing.R</code>)を作り，<code>circle_mds</code>(一相二元・二相三元)・<code>ellipse_mds</code>・<code>vonmises_mds</code> の入口で呼ぶ。対象名・ソース名をエラーに出す。片側だけでも観測があれば止めない。全体 329 件通過</li>
 <li>楕円版の順位尤度の MAP <code>develop/ellipse_rank_map.R</code> の <code>ellipse_rank_map()</code>: <code>ellipse_rank_std.stan</code>(閾値を潜在変数の広がりで標準化)と同じ対数事後密度(定数込み・ヤコビアンなし)を，解析的な勾配の BFGS で最大化(Torgerson 解＋乱数の布置 10 本)。母数は Stan と同じ(基準の対象 = 他の平均 + exp(v) で鏡映を止める・回転しない)。形 et(和が 0)は正規直交基底の座標。<code>model = "ellipse"/"circle"/"equal_area"/"symmetric"</code> で下位モデル，使わない母数は推定せず事前密度の最大値を定数で足す。返り値は conf・semiaxis(半軸)・size(幾何平均)・sigma・cut・negative_mu(μ &lt; 0 のセルの数)</li>
-<li>照合 <code>develop/20261128_ellipse_rank_map_check.R</code>(職業データ表1.19・模擬データ2つ × 下位モデル4つ・2次元): 勾配は数値微分と 1e-7。Stan の最大値の点での対数事後密度は楕円モデルで 1e-6 の差，下位モデルは最大 5e-3(Stan が使わない母数を 0 の手前に残すためと推測・未確認)。R の最大値は12例すべてで Stan と同じか高く，同じ山なら布置は 1e-4 で一致。楕円・等面積の楕円では約半数で Stan の一つの出発点より高い山＝楕円の形は確率版でも山が多い。時間は 11 本で 0.3〜1.8 秒</li>
-<li>未コミット: 上の全部(R/ の4ファイル・テスト・develop/ の2ファイル追加と circle_rank_map.R)。先生の確認待ち</li>
-<li>次: 楕円版の MAP の sigma も小さめに出るか(MCMC と比べる＝重い計算は秘書セッションへ申し出る)，楕円版の初期値と出発点の本数，実データで当てはめ直し，TeX ノートに楕円版の MAP を追記するか(先生に未確認)，ordered_logistic 版，RTMB 版</li>
+<li>照合 <code>develop/20261128_ellipse_rank_map_check.R</code>(職業データ表1.19・模擬データ2つ × 下位モデル4つ・2次元): 勾配は数値微分と 1e-7。Stan の最大値の点での対数事後密度は楕円モデルで 1e-6 の差，下位モデルは最大 5e-3(Stan が使わない母数を 0 の手前に残すためと推測・未確認)。R の最大値は12例すべてで Stan と同じか高い。楕円・等面積の楕円では6例中5例で Stan の一つの出発点より 0.9〜24.6 高い山＝楕円の形は確率版でも山が多い(職業の楕円では11本の最大値が -181.96〜-188.19 に散らばり，Torgerson 解からの1本は最良でない)。職業の円・対称では高さの差 0.02〜0.2 で点間距離の相関 0.96＝ほぼ同じ高さで布置の違う山がある。布置が 1e-4 で一致したのは模擬データの一部だけ(当初「約半数」「同じ山なら 1e-4」と報告したのは不正確だったので直した)。時間は 11 本で 0.3〜1.8 秒</li>
+<li>コミット 05919aa・30782a0 を先生の指示で main へ push 済み。TeX ノートに「楕円モデルの R での事後確率最大値(11月28日の追記)」の節を足した(照合の表つき・21 頁)</li>
+<li>次: 楕円版の MAP の sigma も小さめに出るか(MCMC と比べる＝重い計算は秘書セッションへ申し出る)，楕円版の初期値と出発点の本数，実データで当てはめ直し，ordered_logistic 版，RTMB 版</li>
+</ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-28続き-等高線マップモデル-contour_mds">2026-11-28(続き) 等高線マップモデル contour_mds()<a class="anchor" aria-label="anchor" href="#id_2026-11-28%E7%B6%9A%E3%81%8D-%E7%AD%89%E9%AB%98%E7%B7%9A%E3%83%9E%E3%83%83%E3%83%97%E3%83%A2%E3%83%87%E3%83%AB-contour_mds"></a></h2>
+<ul><li>先生の決定: 次は等高線マップモデル(Abelson 1954-55・小杉・藤原 2004)。布置の尺度は渡されたまま(原典どおり)＋<code>normalize = TRUE</code> で重心からの平均二乗距離を 1 に，IDW は入れない(Abelson だけ)</li>
+<li>設計メモ <code>develop/設計メモ_等高線マップモデル_20261128.md</code>。材料は論文(全8頁)，過去の研究フォルダ <code>~/Dropbox/Labo/Study：バックアップ/研究：等高線/</code>(2004 年の VB 版 <code>ContourMapping/contourMap.frm</code>・<code>Rcode/abelson.R</code>・BSJ2012 の IDW・県と調査対象者ごとの布置 <code>ContourMapping/test/</code>・2013 年の <code>観光地データ.csv</code>)</li>
+<li>
+<code>R/contour_mds.R</code>: <code>contour_mds(conf, ratings, center = 0, normalize = FALSE)</code>。V(P) = Σ v_j / (1 + d²)。布置は行列か mdspace オブジェクト(2 次元以上)，評定はベクトルか人 × 対象の行列(名前で対応・NA は和から外す)。返り値は ratings・height(対象の点の高さ)・discrepancy(評定 − 高さ＝論文の表1)。格子は持たず plot・predict で都度計算。<code>predict.mdspace_contour</code>(任意の点の誘因価)，print・summary(1 人なら評定・高さ・ずれの表，複数なら行列)・plot(<code>type = "contour"</code> で 0 の線を太く，<code>"persp"</code> で評定を面の上は黒丸・下は白丸，3 次元以上は重心を通る平面，grid の既定は 101/41)</li>
+<li>テスト <code>tests/testthat/test-contour.R</code>(式(1)の手計算・千野版 <code>Abelson.map()</code> の格子と一致・回転と平行移動で不変・評定に線形・名前の対応・normalize・NA・3 次元・メソッド)。全体通過</li>
+<li>わかったこと: 論文の表1の高さ(−2.85〜−3.48)は手元の <code>CL広島S4.csv</code>(調査対象者 C と同じ評定)からは式(1)でも 6 次の多項式近似でも再現できない(論文は 3 県の INDSCAL 共通空間で座標が違う)。曲面の近似 <code>regression.cpp</code> は中央にそろえた評定からさらに 3 を引いているが，その版でも合わない。ずれ(評定 − 高さ)は「ほかの対象から来る力の和」の符号を変えたもの</li>
+<li>次: 実データ(第7章の観光地・2013 年データ)で試す，PREFMAP との当てはまりの比べ方</li>
 </ul></div>
 </div>
 

@@ -8,6 +8,8 @@
   : Decompose a square matrix into symmetric and skew-symmetric parts
 - [`circle_mds()`](https://kosugitti.github.io/mdspace/reference/circle_mds.md)
   : Nonmetric asymmetric MDS by the radius-distance (circle) model
+- [`contour_mds()`](https://kosugitti.github.io/mdspace/reference/contour_mds.md)
+  : Contour map model of valences on an MDS configuration
 - [`ellipse_mds()`](https://kosugitti.github.io/mdspace/reference/ellipse_mds.md)
   : Nonmetric asymmetric MDS by the ellipse-distance (Model II) and
   radius-distance (Model III) models
@@ -23,6 +25,8 @@
   : Plot the skew-symmetric part as a heat map
 - [`plot(`*`<mdspace_circle>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_circle.md)
   : Plot a radius-distance (circle) model solution
+- [`plot(`*`<mdspace_contour>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_contour.md)
+  : Plot a contour map model
 - [`plot(`*`<mdspace_ellipse>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_ellipse.md)
   : Plot an ellipse-distance or radius-distance model solution
 - [`plot(`*`<mdspace_gstatis>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_gstatis.md)
@@ -31,6 +35,8 @@
   : Plot one complex plane of an HFM solution
 - [`plot(`*`<mdspace_vonmises>`*`)`](https://kosugitti.github.io/mdspace/reference/plot.mdspace_vonmises.md)
   : Plot a von Mises model solution
+- [`predict(`*`<mdspace_contour>`*`)`](https://kosugitti.github.io/mdspace/reference/predict.mdspace_contour.md)
+  : Valences of a contour map model at given points
 - [`print(`*`<mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.mdspace.md)
   : Print an mdspace object
 - [`print(`*`<summary.mdspace>`*`)`](https://kosugitti.github.io/mdspace/reference/print.summary.mdspace.md)

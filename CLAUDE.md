@@ -83,13 +83,21 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 - **楕円版の順位尤度の MAP `ellipse_rank_map()` を develop/
   に試作**(`develop/ellipse_rank_map.R`): `ellipse_rank_std.stan`
   と同じ対数事後密度を解析的な勾配の BFGS で。`model`
-  で楕円・円・等面積・対称。Stan と lp 1e-6・同じ山なら布置 1e-4
-  で一致，楕円の形は山が多く Stan
-  の一つの出発点より高い山に届くことが約半数(`develop/20261128_ellipse_rank_map_check.R`)
+  で楕円・円・等面積・対称。Stan と lp 1e-6
+  で一致，楕円・等面積では6例中5例で Stan
+  の一つの出発点より高い山に届く＝楕円の形は山が多く出発点を増やすことが要る。ほぼ同じ高さで布置の違う山もある(`develop/20261128_ellipse_rank_map_check.R`)
+- **等高線マップモデル
+  [`contour_mds()`](https://kosugitti.github.io/mdspace/reference/contour_mds.md)
+  を実装・テスト済み**(11/28・設計は
+  `develop/設計メモ_等高線マップモデル_20261128.md`): V(P) = Σ
+  v_j/(1+d²)，布置はそのまま(`normalize = TRUE` で平均二乗距離 1)，IDW
+  は入れない。ずれ(評定 − 高さ)を返し，plot
+  は等高線図と誘因価曲面。論文の表1は手元のファイルからは再現できない(INDSCAL
+  共通空間の座標が無い)
 - 次: 楕円版の MAP の sigma の偏り(MCMC
-  と比べる＝秘書セッションへ申し出る)・実データで当てはめ直し・TeX
-  ノートに楕円版の MAP を追記するか。Stan 版の発散は adapt_delta 0.99
-  で消える(放置)。ordered_logistic 版。RTMB 版
+  と比べる＝秘書セッションへ申し出る)・出発点の数・実データで当てはめ直し。Stan
+  版の発散は adapt_delta 0.99 で消える(放置)。ordered_logistic 版。RTMB
+  版
 - 照合の基準: 岡太・今泉の公式 Shiny
   nASYMS(<https://nasyms.shinyapps.io/nASYMS/> ・マニュアルは
   `develop/references/nASYMS/`)と書籍 Okada & Imaizumi (2024)
@@ -162,7 +170,7 @@ MDS (多次元尺度構成法) の各種アルゴリズム実装 + Shiny GUI パ
 | ellipse_mds() | 楕円モデル II・III(引数で切り替え・I は出典が無く実装しない) | Okada (1990) | 実装済み(2026-11-20・書籍表4.4 と照合) |
 | circle_mds(list) | 二相三元の円モデル(行列のリストを渡す) | Okada & Imaizumi (1997) | 実装済み(2026-11-17・nASYMS と照合・縦横比の上限 kappa) |
 | vonmises_mds() | フォンミーゼスモデル(AMISESCAL) | 荘島 (2011, 2012) | 実装済み(2026-11-18・base R の MAP・テストは 11/20。Stan 版は develop/) |
-| contour_mds() | 等高線マップモデル | Abelson (1954-55); 小杉・藤原 (2004) | 未実装 |
+| contour_mds() | 等高線マップモデル | Abelson (1954-55); 小杉・藤原 (2004) | 実装済み(2026-11-28・千野版と照合) |
 
 ### Shiny連携（外部パッケージ経由）
 
