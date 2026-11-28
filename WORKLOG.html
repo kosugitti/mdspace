@@ -338,6 +338,18 @@
 <li>先生に未確認: <code>summary.mdspace_asym</code> の対象ごとの行和(K の行和と |K| の行和)は Claude の判断で入れた＝不要なら外す</li>
 <li>次: 1 次元の扱い(circle_rank_map)，楕円版の R の MAP，実データで当てはめ直し，TeX ノートへの追記，欠測ソースのテスト</li>
 </ul></div>
+<div class="section level2">
+<h2 id="id_2026-11-28-1次元の扱い欠測のテスト楕円版の順位尤度の-map">2026-11-28 1次元の扱い・欠測のテスト・楕円版の順位尤度の MAP<a class="anchor" aria-label="anchor" href="#id_2026-11-28-1%E6%AC%A1%E5%85%83%E3%81%AE%E6%89%B1%E3%81%84%E6%AC%A0%E6%B8%AC%E3%81%AE%E3%83%86%E3%82%B9%E3%83%88%E6%A5%95%E5%86%86%E7%89%88%E3%81%AE%E9%A0%86%E4%BD%8D%E5%B0%A4%E5%BA%A6%E3%81%AE-map"></a></h2>
+<ul><li>11/27 の未確認だった <code>summary.mdspace_asym</code> の対象ごとの行和(K の行和と |K| の行和)は，先生の判断で残す</li>
+<li>先生の決定: MDS は布置を平面以上に描く方法なので，1 次元はそもそも推定しない。<code>circle_rank_map()</code> に <code>ndim</code> は 2 以上 n − 1 以下(足場に P+1 点)の確かめを入れた。パッケージの <code><a href="reference/circle_mds.html">circle_mds()</a></code>・<code><a href="reference/ellipse_mds.html">ellipse_mds()</a></code> は 1 次元を許したまま(触っていない)</li>
+<li>TeX ノート(<code>02_研究/mdspace/research_notes/20261121_OIモデルの確率モデル化/</code>): 11/23〜25 の結果は 11/25 に書き込み済みだったので，1 次元を推定しない決定だけを書き足し(推定法の突き合わせ・R での MAP・残る課題の3か所)，コンパイルし直した(20 頁)</li>
+<li>欠測のテスト(<code>tests/testthat/test-missing.R</code> に4本): 二相三元の円モデルで，セルの欠測(片側・両側)と，あるソースにだけいない対象は正しく動き，誤差のないデータで真の解を回復する(stress &lt; 1e-4・半径の相関 &gt; 0.99・欠けのない解と点間距離の相関 &gt; 0.999)</li>
+<li>見つかった穴2つ(先生の判断で止める): (A) どの行列にも観測のない対象を <code>circle_mds</code>・<code>ellipse_mds</code> は黙って初期値のまま返していた(<code>vonmises_mds</code> は事前分布の中心 0,0)。(B) 二相三元でソースがまるごと NA だと cmdscale の中で読めないエラー。共通の内部関数 <code>.stop_if_absent()</code>(<code>R/missing.R</code>)を作り，<code>circle_mds</code>(一相二元・二相三元)・<code>ellipse_mds</code>・<code>vonmises_mds</code> の入口で呼ぶ。対象名・ソース名をエラーに出す。片側だけでも観測があれば止めない。全体 329 件通過</li>
+<li>楕円版の順位尤度の MAP <code>develop/ellipse_rank_map.R</code> の <code>ellipse_rank_map()</code>: <code>ellipse_rank_std.stan</code>(閾値を潜在変数の広がりで標準化)と同じ対数事後密度(定数込み・ヤコビアンなし)を，解析的な勾配の BFGS で最大化(Torgerson 解＋乱数の布置 10 本)。母数は Stan と同じ(基準の対象 = 他の平均 + exp(v) で鏡映を止める・回転しない)。形 et(和が 0)は正規直交基底の座標。<code>model = "ellipse"/"circle"/"equal_area"/"symmetric"</code> で下位モデル，使わない母数は推定せず事前密度の最大値を定数で足す。返り値は conf・semiaxis(半軸)・size(幾何平均)・sigma・cut・negative_mu(μ &lt; 0 のセルの数)</li>
+<li>照合 <code>develop/20261128_ellipse_rank_map_check.R</code>(職業データ表1.19・模擬データ2つ × 下位モデル4つ・2次元): 勾配は数値微分と 1e-7。Stan の最大値の点での対数事後密度は楕円モデルで 1e-6 の差，下位モデルは最大 5e-3(Stan が使わない母数を 0 の手前に残すためと推測・未確認)。R の最大値は12例すべてで Stan と同じか高く，同じ山なら布置は 1e-4 で一致。楕円・等面積の楕円では約半数で Stan の一つの出発点より高い山＝楕円の形は確率版でも山が多い。時間は 11 本で 0.3〜1.8 秒</li>
+<li>未コミット: 上の全部(R/ の4ファイル・テスト・develop/ の2ファイル追加と circle_rank_map.R)。先生の確認待ち</li>
+<li>次: 楕円版の MAP の sigma も小さめに出るか(MCMC と比べる＝重い計算は秘書セッションへ申し出る)，楕円版の初期値と出発点の本数，実データで当てはめ直し，TeX ノートに楕円版の MAP を追記するか(先生に未確認)，ordered_logistic 版，RTMB 版</li>
+</ul></div>
 </div>
 
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
